@@ -1,0 +1,4 @@
+---
+exclude:
+  - AWS018 # 'module.eks:aws_security_group_rule.cluster_private_access' should include a description for auditing purposes.
+  - AWS007 # 'module.eks:aws_security_group_rule.cluster_egress_internet' defines a fully open egress security group rule.

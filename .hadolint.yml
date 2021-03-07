@@ -1,0 +1,10 @@
+ignored:
+  - DL3006 # Version tagged dynamically for multiple kubectl versions
+  - DL3018 # Always using latest
+  - DL3007 # Always using latest
+  - DL3003 # Ignoring WORKDIR rule as we are CD'ing post clone
+  - DL4006 # Disabling edge case "SHELL option -o" check
+
+trustedRegistries:
+  - docker.io
+  - registry.gitlab.com

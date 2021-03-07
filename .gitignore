@@ -1,0 +1,30 @@
+# Kubernetes
+.kubeconfig*
+values.overrides*
+
+# Terraform
+*.tfvars
+*.tfstate*
+.terraform/
+terraform.tfstate.d/
+
+# Language and Compiler Files
+*.pyc
+
+# IDE Files
+.idea
+
+#ticketflap repo
+ticketflap/Ticketing
+Ticketflap/Ticketing
+
+# Others
+*.log
+*.vault*
+*.pem
+*.gpg
+.DS_Store
+
+# Environment
+.env*
+!.env.example
