@@ -1,2 +1,2 @@
-.terraform*
-k8s*
+.terraform/**/*
+**/*/.terraform
