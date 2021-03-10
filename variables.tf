@@ -66,7 +66,6 @@ variable "app_name" {
 
 variable "app_namespace" {
   description = "Tagged App Namespace"
-  default     = "technology-system"
 }
 
 variable "tfenv" {
@@ -101,12 +100,6 @@ variable "instance_max_size" {
 
 variable "billingcustomer" {
   description = "Which BILLINGCUSTOMER is setup in AWS"
-  default     = "ticketflap"
-}
-
-variable "key_name" {
-  description = "TF Key"
-  default     = "INFRA-env-singapore-key"
 }
 
 variable "root_vol_size" {
