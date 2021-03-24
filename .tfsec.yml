@@ -1,1 +1,6 @@
 ---
+exclude:
+  - AWS018 # 'module.eks:aws_security_group_rule.cluster_private_access' should include a description for auditing purposes.
+  - AWS069 # TODO: EKS Clusters should have the public access disable
+  - AWS066 # KMS Secruity Key Encryoption
+  - AWS007 # 'module.eks:aws_security_group_rule.cluster_egress_internet' defines a fully open egress security group rule.

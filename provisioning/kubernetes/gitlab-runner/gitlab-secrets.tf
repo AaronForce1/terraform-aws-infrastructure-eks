@@ -1,12 +1,12 @@
 resource "kubernetes_secret" "AWS" {
   metadata {
-    name      = "gitlab-runner-eks"
+    name = "s3access"
     namespace = "gitlab-runner"
   }
 
   data = {
-    username = var.gitlab_serviceaccount_id
-    password = var.gitlab_serviceaccount_secret
+    accesskey = var.gitlab_serviceaccount_id
+    secretkey = var.gitlab_serviceaccount_secret
   }
 
   type = "generic"

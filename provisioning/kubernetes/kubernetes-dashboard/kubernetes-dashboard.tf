@@ -4,7 +4,7 @@ resource "helm_release" "kubernetes-dashboard" {
   name             = "kubernetes-dashboard-${var.app_namespace}-${var.tfenv}"
   repository       = "https://kubernetes.github.io/dashboard"
   chart            = "kubernetes-dashboard"
-  version          = "4.0.0"
+  version          = "4.0.2"
   namespace        = "kubernetes-dashboard"
   create_namespace = false
 

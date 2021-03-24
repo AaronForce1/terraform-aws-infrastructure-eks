@@ -89,3 +89,11 @@ repositories:
   password: ""
   url: https://charts.helm.sh/stable
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: grafana
+  password: ""
+  url: https://grafana.github.io/helm-charts
+  username: ""
