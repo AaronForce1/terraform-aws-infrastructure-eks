@@ -21,16 +21,28 @@ module "eks" {
   cluster_endpoint_private_access_cidrs = module.eks-vpc.private_subnets_cidr_blocks
   cluster_endpoint_public_access        = true
 
+  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+  cluster_encryption_config = [
+    {
+      provider_key_arn = aws_kms_key.eks.arn
+      resources        = ["secrets"]
+    }
+  ]
+  enable_irsa = true
+
+  node_groups_defaults = {
+    disk_size = 50
+  }
+
   node_groups = {
     core = {
-      desired_capacity = var.instance_desired_size
-      max_capacity     = var.instance_max_size
-      min_capacity     = var.instance_min_size
-
-      instance_type = var.instance_type
+      desired_capacity    = var.instance_desired_size
+      max_capacity        = var.instance_max_size
+      min_capacity        = var.instance_min_size
+      instance_type       = var.instance_type
 
       k8s_labels = {
-        Environment = var.tfenv
+        Environment       = var.tfenv
       }
       tags = {
         Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -40,7 +52,7 @@ module "eks" {
         Product                                                                       = var.app_name
         Version                                                                       = data.local_file.infrastructure-terraform-eks-version.content
         infrastructure-terraform-eks                                                  = data.local_file.infrastructure-terraform-eks-version.content
-        "k8s.io/cluster-autoscaler/enabled"                                           = true
+        "k8s.io/cluster-autoscaler/enabled" = true
         "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
       }
       additional_tags = {
@@ -59,6 +71,18 @@ module "eks" {
   map_users    = var.map_users
   map_accounts = var.map_accounts
 }
+
+resource "aws_kms_key" "eks" {
+  enable_key_rotation = true
+  description = "${var.app_name}-${var.app_namespace}-${var.tfenv} EKS Secret Encryption Key"
+  tags = {
+    Environment                         = var.tfenv
+    Billingcustomer                     = var.billingcustomer
+    Namespace                           = var.app_namespace
+    Product                             = var.app_name
+  }
+}
+
 
 data "aws_eks_cluster" "my-cluster" {
   name = module.eks.cluster_id

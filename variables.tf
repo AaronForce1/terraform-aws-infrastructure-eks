@@ -117,3 +117,10 @@ variable "helm_installations" {
     ingress      = true
   }
 }
+variable "google_clientID" {
+  description = "Used for Infrastructure OAuth: Google Auth Client ID"
+}
+
+variable "google_clientSecret" {
+  description = "Used for Infrastructure OAuth: Google Auth Client Secret"
+}

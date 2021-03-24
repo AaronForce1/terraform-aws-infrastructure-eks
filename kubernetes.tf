@@ -66,6 +66,21 @@ module "consul" {
   root_domain_name = var.root_domain_name
   app_name         = var.app_name
 }
+
+module "elastic-stack" {
+  source = "./provisioning/kubernetes/elastic-stack"
+  depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+
+  app_namespace       = var.app_namespace
+  tfenv               = var.tfenv
+  root_domain_name    = var.root_domain_name
+  google_clientID     = var.google_clientID
+  google_clientSecret = var.google_clientSecret
+  billingcustomer     = var.billingcustomer
+  app_name            = var.app_name
+  aws_region          = var.aws_region
+}
+
 module "grafana" {
   source = "./provisioning/kubernetes/grafana"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
