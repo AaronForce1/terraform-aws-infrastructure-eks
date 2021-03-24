@@ -23,12 +23,12 @@ module "certmanager" {
 
 module "aws-support" {
   source     = "./provisioning/kubernetes/aws-support"
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.eks-vpc]
 }
 
 module "kubernetes-dashboard" {
   source     = "./provisioning/kubernetes/kubernetes-dashboard"
-  depends_on = [module.eks, module.namespaces]
+  depends_on = [module.eks-vpc, module.eks, module.namespaces]
 
   app_namespace = var.app_namespace
   tfenv         = var.tfenv
@@ -36,7 +36,7 @@ module "kubernetes-dashboard" {
 
 module "vault" {
   source     = "./provisioning/kubernetes/hashicorp-vault"
-  depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks-vpc, module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
   app_namespace    = var.app_namespace
@@ -47,7 +47,7 @@ module "vault" {
 
 module "consul" {
   source     = "./provisioning/kubernetes/hashicorp-consul"
-  depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks-vpc, module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
   app_namespace    = var.app_namespace
