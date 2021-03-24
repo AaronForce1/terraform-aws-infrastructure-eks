@@ -4,6 +4,7 @@ ignored:
   - DL3007 # Always using latest
   - DL3003 # Ignoring WORKDIR rule as we are CD'ing post clone
   - DL4006 # Disabling edge case "SHELL option -o" check
+  - DL4001 # Using CURL + WGET
 
 trustedRegistries:
   - docker.io

@@ -109,12 +109,14 @@ variable "root_vol_size" {
 
 variable "helm_installations" {
   type = object({
-    vault_consul = bool
-    ingress      = bool
+    gitlab_runner = bool
+    vault_consul  = bool
+    ingress       = bool
   })
   default = {
-    vault_consul = true
-    ingress      = true
+    gitlab_runner = false
+    vault_consul  = true
+    ingress       = true
   }
 }
 variable "google_clientID" {
