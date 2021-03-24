@@ -36,13 +36,13 @@ module "eks" {
 
   node_groups = {
     core = {
-      desired_capacity    = var.instance_desired_size
-      max_capacity        = var.instance_max_size
-      min_capacity        = var.instance_min_size
-      instance_type       = var.instance_type
+      desired_capacity = var.instance_desired_size
+      max_capacity     = var.instance_max_size
+      min_capacity     = var.instance_min_size
+      instance_type    = var.instance_type
 
       k8s_labels = {
-        Environment       = var.tfenv
+        Environment = var.tfenv
       }
       tags = {
         Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -52,7 +52,7 @@ module "eks" {
         Product                                                                       = var.app_name
         Version                                                                       = data.local_file.infrastructure-terraform-eks-version.content
         infrastructure-terraform-eks                                                  = data.local_file.infrastructure-terraform-eks-version.content
-        "k8s.io/cluster-autoscaler/enabled" = true
+        "k8s.io/cluster-autoscaler/enabled"                                           = true
         "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
       }
       additional_tags = {
@@ -74,12 +74,12 @@ module "eks" {
 
 resource "aws_kms_key" "eks" {
   enable_key_rotation = true
-  description = "${var.app_name}-${var.app_namespace}-${var.tfenv} EKS Secret Encryption Key"
+  description         = "${var.app_name}-${var.app_namespace}-${var.tfenv} EKS Secret Encryption Key"
   tags = {
-    Environment                         = var.tfenv
-    Billingcustomer                     = var.billingcustomer
-    Namespace                           = var.app_namespace
-    Product                             = var.app_name
+    Environment     = var.tfenv
+    Billingcustomer = var.billingcustomer
+    Namespace       = var.app_namespace
+    Product         = var.app_name
   }
 }
 

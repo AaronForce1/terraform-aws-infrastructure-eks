@@ -27,14 +27,14 @@ module "aws-support" {
 }
 
 module "aws-cluster-autoscaler" {
-  source = "./provisioning/kubernetes/cluster-autoscaler"
+  source     = "./provisioning/kubernetes/cluster-autoscaler"
   depends_on = [module.eks]
 
-  app_name = var.app_name
-  app_namespace = var.app_namespace
-  tfenv = var.tfenv
+  app_name                = var.app_name
+  app_namespace           = var.app_namespace
+  tfenv                   = var.tfenv
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-  aws_region = var.aws_region
+  aws_region              = var.aws_region
 }
 
 module "kubernetes-dashboard" {
@@ -68,7 +68,7 @@ module "consul" {
 }
 
 module "elastic-stack" {
-  source = "./provisioning/kubernetes/elastic-stack"
+  source     = "./provisioning/kubernetes/elastic-stack"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
 
   app_namespace       = var.app_namespace
@@ -82,7 +82,7 @@ module "elastic-stack" {
 }
 
 module "grafana" {
-  source = "./provisioning/kubernetes/grafana"
+  source     = "./provisioning/kubernetes/grafana"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
 
   app_namespace       = var.app_namespace
@@ -92,17 +92,17 @@ module "grafana" {
   google_clientSecret = var.google_clientSecret
 }
 
-module "gitlab_runner" {
-  source = "./provisioning/kubernetes/gitlab-runner"
-  depends_on = [module.namespaces, module.eks, module.eks-vpc]
-  count = var.helm_installations.gitlab_runner ? 1 : 0
+# module "gitlab_runner" {
+#   source     = "./provisioning/kubernetes/gitlab-runner"
+#   depends_on = [module.namespaces, module.eks, module.eks-vpc]
+#   count      = var.helm_installations.gitlab_runner ? 1 : 0
 
-  app_name                      = var.app_name
-  app_namespace                 = var.app_namespace
-  tfenv                         = var.tfenv
-  aws_region                    = var.aws_region
-  gitlab_serviceaccount_id      = var.gitlab_serviceaccount_id
-  gitlab_serviceaccount_secret  = var.gitlab_serviceaccount_secret
-  gitlab_runner_concurrent_agents = var.gitlab_runner_concurrent_agents
-  gitlab_runner_registration_token = var.gitlab_runner_registration_token
-}
+#   app_name                         = var.app_name
+#   app_namespace                    = var.app_namespace
+#   tfenv                            = var.tfenv
+#   aws_region                       = var.aws_region
+#   gitlab_serviceaccount_id         = var.gitlab_serviceaccount_id
+#   gitlab_serviceaccount_secret     = var.gitlab_serviceaccount_secret
+#   gitlab_runner_concurrent_agents  = var.gitlab_runner_concurrent_agents
+#   gitlab_runner_registration_token = var.gitlab_runner_registration_token
+# }

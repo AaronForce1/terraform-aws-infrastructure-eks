@@ -1,6 +1,6 @@
 resource "kubernetes_ingress" "kibana_oauth_ingress" {
   metadata {
-    name = "oauth2-proxy"
+    name      = "oauth2-proxy"
     namespace = "gitlab-managed-apps"
   }
 
@@ -19,7 +19,7 @@ resource "kubernetes_ingress" "kibana_oauth_ingress" {
     }
 
     tls {
-      hosts = [ "kibana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}" ]
+      hosts       = ["kibana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"]
       secret_name = "kibana-oauth-ingress-tls-secret"
     }
   }

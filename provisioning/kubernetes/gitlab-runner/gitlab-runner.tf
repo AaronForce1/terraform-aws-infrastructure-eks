@@ -1,11 +1,11 @@
 resource "helm_release" "gitlab-runner" {
-  name       = "gitlab-runner-${var.app_namespace}-${var.tfenv}"
-  depends_on = [ kubernetes_secret.AWS_Asiaticketing_ETS ]
-  repository = "https://charts.gitlab.io"
-  chart               = "gitlab-runner"
-  version             = "0.26.0"
-  namespace           = "gitlab-runner"
-  create_namespace    = false
+  name             = "gitlab-runner-${var.app_namespace}-${var.tfenv}"
+  depends_on       = [kubernetes_secret.AWS_Asiaticketing_ETS]
+  repository       = "https://charts.gitlab.io"
+  chart            = "gitlab-runner"
+  version          = "0.26.0"
+  namespace        = "gitlab-runner"
+  create_namespace = false
 
   values = [
     # file("${path.module}/values.v0.20.0.yaml")
@@ -14,22 +14,22 @@ resource "helm_release" "gitlab-runner" {
 }
 
 resource "local_file" "values_yaml" {
-  content   = yamlencode(local.helmChartValues)
-  filename  = "${path.module}/src/values.overrides.v0.23.0.yaml"
+  content  = yamlencode(local.helmChartValues)
+  filename = "${path.module}/src/values.overrides.v0.23.0.yaml"
 }
 
 locals {
   helmChartValues = {
-    "unregisterRunners" = true,
-    "imagePullPolicy" = "Always",
-    "gitlabUrl" = "https://git.hk.asiaticketing.com",
+    "unregisterRunners"       = true,
+    "imagePullPolicy"         = "Always",
+    "gitlabUrl"               = "https://git.hk.asiaticketing.com",
     "runnerRegistrationToken" = var.gitlab_runner_registration_token,
-    "concurrent" = var.gitlab_runner_concurrent_agents,
+    "concurrent"              = var.gitlab_runner_concurrent_agents,
     "rbac" = {
-      "create": true
+      "create" : true
     },
     "runners" = {
-      "config": <<EOF
+      "config" : <<EOF
         [[runners]]
           [runners.kubernetes]
             image = "docker:20.10.2-dind"
@@ -76,11 +76,11 @@ locals {
               BucketLocation = "ap-southeast-1"
               Insecure = false
         EOF
-      "tags": "kubernetes, cluster",
-      "runUntagged": true,
-      "secret": "gitlab-registry-secret"
-      "cache": {
-        "secretName": "s3access"
+      "tags" : "kubernetes, cluster",
+      "runUntagged" : true,
+      "secret" : "gitlab-registry-secret"
+      "cache" : {
+        "secretName" : "s3access"
       }
     }
   }

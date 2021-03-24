@@ -108,11 +108,14 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Source | Version |
 |------|--------|---------|
+| aws-cluster-autoscaler | ./provisioning/kubernetes/cluster-autoscaler |  |
 | aws-support | ./provisioning/kubernetes/aws-support |  |
 | certmanager | ./provisioning/kubernetes/certmanager |  |
 | consul | ./provisioning/kubernetes/hashicorp-consul |  |
 | eks | terraform-aws-modules/eks/aws | ~> 13.2.1 |
 | eks-vpc | terraform-aws-modules/vpc/aws | ~> 2.66 |
+| elastic-stack | ./provisioning/kubernetes/elastic-stack |  |
+| grafana | ./provisioning/kubernetes/grafana |  |
 | kubernetes-dashboard | ./provisioning/kubernetes/kubernetes-dashboard |  |
 | namespaces | ./provisioning/kubernetes/namespaces |  |
 | nginx-controller-ingress | ./provisioning/kubernetes/nginx-controller |  |
@@ -125,6 +128,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | [aws_availability_zones](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) |
 | [aws_eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) |
 | [aws_eks_cluster_auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) |
+| [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) |
 | [aws_vpc_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) |
 | [local_file](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) |
 | [random_integer](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) |
@@ -134,16 +138,17 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | app\_name | Application Name | `string` | `"eks"` | no |
-| app\_namespace | Tagged App Namespace | `string` | `"technology-system"` | no |
+| app\_namespace | Tagged App Namespace | `any` | n/a | yes |
 | aws\_region | Region for the VPC | `any` | n/a | yes |
-| billingcustomer | Which BILLINGCUSTOMER is setup in AWS | `string` | `"ticketflap"` | no |
+| billingcustomer | Which BILLINGCUSTOMER is setup in AWS | `any` | n/a | yes |
 | cluster\_version | Kubernetes Cluster Version | `string` | `"1.18"` | no |
-| helm\_installations | n/a | <pre>object({<br>    vault_consul = bool<br>    ingress      = bool<br>  })</pre> | <pre>{<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
+| google\_clientID | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
+| google\_clientSecret | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
+| helm\_installations | n/a | <pre>object({<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>  })</pre> | <pre>{<br>  "gitlab_runner": false,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
 | instance\_desired\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `8` | no |
 | instance\_max\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `12` | no |
 | instance\_min\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |
 | instance\_type | AWS Instance Type for provisioning | `string` | `"c5a.xlarge"` | no |
-| key\_name | TF Key | `string` | `"INFRA-env-singapore-key"` | no |
 | map\_accounts | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
 | map\_roles | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | map\_users | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
@@ -155,6 +160,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Description |
 |------|-------------|
-| env-dynamic-url | n/a |
 | kubecfg | n/a |
+| kubernetes-cluster-certificate-authority-data | n/a |
+| kubernetes-cluster-endpoint | n/a |
+| kubernetes-cluster-id | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

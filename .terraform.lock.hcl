@@ -22,7 +22,7 @@ provider "registry.terraform.io/gitlabhq/gitlab" {
 
 provider "registry.terraform.io/hashicorp/aws" {
   version     = "3.25.0"
-  constraints = ">= 2.70.0, >= 3.3.0, ~> 3.10"
+  constraints = ">= 2.23.0, >= 2.50.0, >= 2.70.0, >= 3.0.0, >= 3.3.0, ~> 3.10"
   hashes = [
     "h1:9bXU5cFO/2DX8z5whaGMA7wcCalKQJZrBm89AuePuEM=",
     "zh:2d3c65461bc63ec39bce7b5afdbed9a3b4dd5c2c8ee94616ad1866e24cf9b8f0",
@@ -58,7 +58,7 @@ provider "registry.terraform.io/hashicorp/helm" {
 
 provider "registry.terraform.io/hashicorp/kubernetes" {
   version     = "2.0.1"
-  constraints = ">= 1.11.1"
+  constraints = ">= 1.11.1, ~> 2.0"
   hashes = [
     "h1:jyg7vjMLicz7dawGK0sFlvJlaE3J7e4eC1bBzNbZgS8=",
     "zh:19a5656300f92e265b521a91b70fa822139589f5b53d7be5a990462b4bc93c8e",

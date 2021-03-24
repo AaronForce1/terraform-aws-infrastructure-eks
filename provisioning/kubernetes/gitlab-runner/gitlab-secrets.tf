@@ -1,6 +1,6 @@
 resource "kubernetes_secret" "AWS" {
   metadata {
-    name = "s3access"
+    name      = "s3access"
     namespace = "gitlab-runner"
   }
 
