@@ -76,6 +76,7 @@ module "elastic-stack" {
   root_domain_name    = var.root_domain_name
   google_clientID     = var.google_clientID
   google_clientSecret = var.google_clientSecret
+  google_authDomain   = var.google_authDomain
   billingcustomer     = var.billingcustomer
   app_name            = var.app_name
   aws_region          = var.aws_region
@@ -90,6 +91,7 @@ module "grafana" {
   root_domain_name    = var.root_domain_name
   google_clientID     = var.google_clientID
   google_clientSecret = var.google_clientSecret
+  google_authDomain   = var.google_authDomain
 }
 
 # module "gitlab_runner" {

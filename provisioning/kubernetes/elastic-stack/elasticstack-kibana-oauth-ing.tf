@@ -1,7 +1,7 @@
 resource "kubernetes_ingress" "kibana_oauth_ingress" {
   metadata {
     name      = "oauth2-proxy"
-    namespace = "gitlab-managed-apps"
+    namespace = "monitoring"
   }
 
   spec {

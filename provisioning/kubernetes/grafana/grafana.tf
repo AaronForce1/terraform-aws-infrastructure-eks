@@ -70,7 +70,7 @@ locals {
         "auth_url" : "https://accounts.google.com/o/oauth2/auth",
         "token_url" : "https://accounts.google.com/o/oauth2/token",
         "api_url" : "https://www.googleapis.com/oauth2/v1/userinfo",
-        "allowed_domains" : "magneticasia.com"
+        "allowed_domains" : var.google_authDomain
       }
     },
     "dashboardProviders" = {

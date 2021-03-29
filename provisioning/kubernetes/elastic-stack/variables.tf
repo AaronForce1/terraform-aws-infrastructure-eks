@@ -1,5 +1,6 @@
 variable "google_clientID" {}
 variable "google_clientSecret" {}
+variable "google_authDomain" {}
 
 variable "tfenv" {}
 variable "app_name" {}

@@ -3,24 +3,24 @@ data "aws_route53_zone" "base_domain" {
   name = var.root_domain_name
 }
 
-resource "aws_route53_record" "eks_domain" {
-  zone_id = data.aws_route53_zone.base_domain.id
-  name    = "${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
-  type    = "A"
+# resource "aws_route53_record" "eks_domain" {
+#   zone_id = data.aws_route53_zone.base_domain.id
+#   name    = "${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+#   type    = "A"
 
-  alias {
-    name                   = data.kubernetes_service.ingress_gateway.status.0.load_balancer.0.ingress.0.hostname
-    zone_id                = data.aws_elb_hosted_zone_id.elb_zone_id.id
-    evaluate_target_health = true
-  }
+#   alias {
+#     name                   = data.kubernetes_service.ingress_gateway.status.0.load_balancer.0.ingress.0.hostname
+#     zone_id                = data.aws_elb_hosted_zone_id.elb_zone_id.id
+#     evaluate_target_health = true
+#   }
 
-  depends_on = [helm_release.nginx-controller]
-}
-data "kubernetes_service" "ingress_gateway" {
-  metadata {
-    name = "nginx-controller"
-  }
-}
+#   depends_on = [helm_release.nginx-controller]
+# }
+# data "kubernetes_service" "ingress_gateway" {
+#   metadata {
+#     name = "nginx-controller"
+#   }
+# }
 
 # variable "ingress_gateway_annotations" {
 #   description = "Sets up standard HTTPS -> HTTP Ingress Controllers"

@@ -3,7 +3,7 @@ resource "helm_release" "elasticstack-oauth2-proxy" {
   repository = "https://charts.helm.sh/stable"
   chart      = "oauth2-proxy"
   version    = "3.2.5"
-  namespace  = "gitlab-managed-apps"
+  namespace  = "monitoring"
 
   values = [
     # file("${path.module}/values.v0.7.0.yaml")
@@ -36,7 +36,7 @@ locals {
     },
     "extraArgs" = {
       "provider" : "google",
-      "email-domain" : "magneticasia.com",
+      "email-domain" : var.google_authDomain,
       "upstream" : "file:///dev/null",
       "http-address" : "0.0.0.0:4180"
     }

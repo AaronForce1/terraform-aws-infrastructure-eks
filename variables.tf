@@ -126,3 +126,7 @@ variable "google_clientID" {
 variable "google_clientSecret" {
   description = "Used for Infrastructure OAuth: Google Auth Client Secret"
 }
+
+variable "google_authDomain" {
+  description = "Used for Infrastructure OAuth: Google Auth Domain"
+}
