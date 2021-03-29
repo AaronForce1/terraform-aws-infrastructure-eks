@@ -28,6 +28,7 @@ RUN wget --progress=dot:giga https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.
 RUN curl -L "$(curl -s https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest | grep -o -E "https://.+?-linux-amd64.tar.gz")" > terraform-docs.tgz && tar xzf terraform-docs.tgz && chmod +x terraform-docs && mv terraform-docs /usr/bin/
 RUN curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && mv tflint /usr/bin/
 RUN env GO111MODULE=on go get -u github.com/tfsec/tfsec/cmd/tfsec
+RUN pip3 install pre-commit
 
 COPY --from=gitlab_bulder /usr/bin/gitlab-terraform /usr/bin/gitlab-terraform
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/bin/kubectl

@@ -142,6 +142,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | aws\_region | Region for the VPC | `any` | n/a | yes |
 | billingcustomer | Which BILLINGCUSTOMER is setup in AWS | `any` | n/a | yes |
 | cluster\_version | Kubernetes Cluster Version | `string` | `"1.18"` | no |
+| google\_authDomain | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | google\_clientID | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | google\_clientSecret | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
 | helm\_installations | n/a | <pre>object({<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>  })</pre> | <pre>{<br>  "gitlab_runner": false,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |

@@ -22,10 +22,27 @@ locals {
     "imagePullPolicy" = "Always",
     "filebeatConfig" = {
       "filebeat.yml" : <<EOF
+        output.file.enabled: false
+        setup.ilm.enabled: false
+        setup.template.name: 'filebeat'
+        setup.template.pattern: 'filebeat-*'
         filebeat.inputs:
         - type: container
           paths:
             - '/var/lib/docker/containers/*/*.log'
+          json.keys_under_root: true
+          json.ignore_decoding_error: true
+          processors:
+            - add_id:
+                target_field: tie_breaker_id
+            - add_cloud_metadata: ~
+            - add_kubernetes_metadata: ~
+            - decode_json_fields:
+                fields: ["message"]
+                when:
+                  equals:
+                    kubernetes.container.namespace: "monitoring"
+                    kubernetes.container.name: "modsecurity-log"
 
         output.logstash:
           hosts: ["logstash-logstash:5044"]
