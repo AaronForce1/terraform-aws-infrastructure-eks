@@ -2,7 +2,7 @@ resource "helm_release" "grafana" {
   name       = "grafana-${var.app_namespace}-${var.tfenv}"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "grafana"
-  namespace  = "gitlab-managed-apps"
+  namespace  = "monitoring"
 
   values = [
     local_file.values_yaml.content

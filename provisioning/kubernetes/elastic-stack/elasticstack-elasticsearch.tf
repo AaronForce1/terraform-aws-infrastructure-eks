@@ -18,6 +18,7 @@ resource "local_file" "elasticsearch_values_yaml" {
 locals {
   elasticsearch_helmChartValues = {
     "imagePullPolicy" = "Always",
+    "replicas" = var.tfenv == "prod" ? 3 : 2
     "volumeClaimTemplate" = {
       "resources" : {
         "requests" : {

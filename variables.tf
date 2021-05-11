@@ -112,11 +112,15 @@ variable "helm_installations" {
     gitlab_runner = bool
     vault_consul  = bool
     ingress       = bool
+    elasticstack  = bool
+    grafana       = bool
   })
   default = {
     gitlab_runner = false
     vault_consul  = true
     ingress       = true
+    elasticstack  = false
+    grafana       = true
   }
 }
 variable "google_clientID" {

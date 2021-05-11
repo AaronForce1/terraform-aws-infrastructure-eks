@@ -81,4 +81,4 @@ For oauth configuration:
 
 Then install grafana using helm by:
 
-`helm install grafana grafana/grafana -f provisioning/kubernetes/grafana/src/values.v7.4.2.yaml -n gitlab-managed-apps`
+`helm install grafana grafana/grafana -f provisioning/kubernetes/grafana/src/values.v7.4.2.yaml -n monitoring`

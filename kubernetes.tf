@@ -70,6 +70,7 @@ module "consul" {
 module "elastic-stack" {
   source     = "./provisioning/kubernetes/elastic-stack"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.elasticstack ? 1 : 0
 
   app_namespace       = var.app_namespace
   tfenv               = var.tfenv
@@ -85,6 +86,7 @@ module "elastic-stack" {
 module "grafana" {
   source     = "./provisioning/kubernetes/grafana"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.grafana ? 1 : 0
 
   app_namespace       = var.app_namespace
   tfenv               = var.tfenv
