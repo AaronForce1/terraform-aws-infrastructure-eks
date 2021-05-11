@@ -90,79 +90,86 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.14.5 |
-| aws | ~> 3.10 |
-| gitlab | ~> 3.4 |
-| helm | ~> 2.0 |
-| kubernetes | ~> 2.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.10 |
+| <a name="requirement_gitlab"></a> [gitlab](#requirement\_gitlab) | ~> 3.4 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 3.10 |
-| local | n/a |
-| random | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.10 |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
+| <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| aws-cluster-autoscaler | ./provisioning/kubernetes/cluster-autoscaler |  |
-| aws-support | ./provisioning/kubernetes/aws-support |  |
-| certmanager | ./provisioning/kubernetes/certmanager |  |
-| consul | ./provisioning/kubernetes/hashicorp-consul |  |
-| eks | terraform-aws-modules/eks/aws | ~> 13.2.1 |
-| eks-vpc | terraform-aws-modules/vpc/aws | ~> 2.66 |
-| elastic-stack | ./provisioning/kubernetes/elastic-stack |  |
-| grafana | ./provisioning/kubernetes/grafana |  |
-| kubernetes-dashboard | ./provisioning/kubernetes/kubernetes-dashboard |  |
-| namespaces | ./provisioning/kubernetes/namespaces |  |
-| nginx-controller-ingress | ./provisioning/kubernetes/nginx-controller |  |
-| vault | ./provisioning/kubernetes/hashicorp-vault |  |
+| <a name="module_aws-cluster-autoscaler"></a> [aws-cluster-autoscaler](#module\_aws-cluster-autoscaler) | ./provisioning/kubernetes/cluster-autoscaler |  |
+| <a name="module_aws-support"></a> [aws-support](#module\_aws-support) | ./provisioning/kubernetes/aws-support |  |
+| <a name="module_certmanager"></a> [certmanager](#module\_certmanager) | ./provisioning/kubernetes/certmanager |  |
+| <a name="module_consul"></a> [consul](#module\_consul) | ./provisioning/kubernetes/hashicorp-consul |  |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 13.2.1 |
+| <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 2.66 |
+| <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack |  |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana |  |
+| <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard |  |
+| <a name="module_namespaces"></a> [namespaces](#module\_namespaces) | ./provisioning/kubernetes/namespaces |  |
+| <a name="module_nginx-controller-ingress"></a> [nginx-controller-ingress](#module\_nginx-controller-ingress) | ./provisioning/kubernetes/nginx-controller |  |
+| <a name="module_vault"></a> [vault](#module\_vault) | ./provisioning/kubernetes/hashicorp-vault |  |
 
 ## Resources
 
-| Name |
-|------|
-| [aws_availability_zones](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) |
-| [aws_eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) |
-| [aws_eks_cluster_auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) |
-| [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) |
-| [aws_vpc_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) |
-| [local_file](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) |
-| [random_integer](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) |
+| Name | Type |
+|------|------|
+| [aws_kms_key.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_vpc_endpoint.rds](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [random_integer.cidr_priv_1](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_priv_2](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_priv_3](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_pub_1](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_pub_2](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_pub_3](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [random_integer.cidr_vpc](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_eks_cluster.my-cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.my-auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
+| [local_file.infrastructure-terraform-eks-version](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| app\_name | Application Name | `string` | `"eks"` | no |
-| app\_namespace | Tagged App Namespace | `any` | n/a | yes |
-| aws\_region | Region for the VPC | `any` | n/a | yes |
-| billingcustomer | Which BILLINGCUSTOMER is setup in AWS | `any` | n/a | yes |
-| cluster\_version | Kubernetes Cluster Version | `string` | `"1.18"` | no |
-| google\_authDomain | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
-| google\_clientID | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
-| google\_clientSecret | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
-| helm\_installations | n/a | <pre>object({<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>  })</pre> | <pre>{<br>  "gitlab_runner": false,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
-| instance\_desired\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `8` | no |
-| instance\_max\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `12` | no |
-| instance\_min\_size | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |
-| instance\_type | AWS Instance Type for provisioning | `string` | `"c5a.xlarge"` | no |
-| map\_accounts | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
-| map\_roles | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| map\_users | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| root\_domain\_name | Domain root where all kubernetes systems are orchestrating control | `any` | n/a | yes |
-| root\_vol\_size | Root Volume Size | `string` | `"50"` | no |
-| tfenv | Environment | `any` | n/a | yes |
+| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application Name | `string` | `"eks"` | no |
+| <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Tagged App Namespace | `any` | n/a | yes |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region for the VPC | `any` | n/a | yes |
+| <a name="input_billingcustomer"></a> [billingcustomer](#input\_billingcustomer) | Which BILLINGCUSTOMER is setup in AWS | `any` | n/a | yes |
+| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Cluster Version | `string` | `"1.18"` | no |
+| <a name="input_enable_aws_vault_unseal"></a> [enable\_aws\_vault\_unseal](#input\_enable\_aws\_vault\_unseal) | If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS | `bool` | `false` | no |
+| <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
+| <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
+| <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
+| <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>    elasticstack  = bool<br>    grafana       = bool<br>  })</pre> | <pre>{<br>  "elasticstack": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
+| <a name="input_instance_desired_size"></a> [instance\_desired\_size](#input\_instance\_desired\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `8` | no |
+| <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `12` | no |
+| <a name="input_instance_min_size"></a> [instance\_min\_size](#input\_instance\_min\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |
+| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | AWS Instance Type for provisioning | `string` | `"m5a.xlarge"` | no |
+| <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
+| <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_root_domain_name"></a> [root\_domain\_name](#input\_root\_domain\_name) | Domain root where all kubernetes systems are orchestrating control | `any` | n/a | yes |
+| <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
+| <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| kubecfg | n/a |
-| kubernetes-cluster-certificate-authority-data | n/a |
-| kubernetes-cluster-endpoint | n/a |
-| kubernetes-cluster-id | n/a |
+| <a name="output_kubecfg"></a> [kubecfg](#output\_kubecfg) | n/a |
+| <a name="output_kubernetes-cluster-certificate-authority-data"></a> [kubernetes-cluster-certificate-authority-data](#output\_kubernetes-cluster-certificate-authority-data) | n/a |
+| <a name="output_kubernetes-cluster-endpoint"></a> [kubernetes-cluster-endpoint](#output\_kubernetes-cluster-endpoint) | n/a |
+| <a name="output_kubernetes-cluster-id"></a> [kubernetes-cluster-id](#output\_kubernetes-cluster-id) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

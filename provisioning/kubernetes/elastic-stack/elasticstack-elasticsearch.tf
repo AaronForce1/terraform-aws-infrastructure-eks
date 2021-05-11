@@ -18,13 +18,17 @@ resource "local_file" "elasticsearch_values_yaml" {
 locals {
   elasticsearch_helmChartValues = {
     "imagePullPolicy" = "Always",
-    "replicas" = var.tfenv == "prod" ? 3 : 2
+    "replicas"        = var.tfenv == "prod" ? 3 : 2
     "volumeClaimTemplate" = {
       "resources" : {
         "requests" : {
           "storage" : var.tfenv == "prod" ? "1000Gi" : "200Gi"
         }
-      }
+      },
+      "storageClassName" = "st1"
+    }
+    "persitence" = {
+      "storageClass" = "st1"
     }
   }
 }

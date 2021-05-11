@@ -34,7 +34,12 @@ Version         1.6.1
 ```
 It should show that vault is already unsealed.
 
-## Auto-Seal is not yet implemented!!!
+## AWS Auto-Seal *(optional)*
+
+Configuring the terraform variable `enable_aws_vault_unseal` to `true` will allow you to leverage AWS keys for automatic unsealing. That said, even with KMS auto-unseal, you will still need to run `vault operator init` upon first initialisation.
+
+https://learn.hashicorp.com/tutorials/vault/autounseal-aws-kms
+> The initialization generates recovery keys (instead of unseal keys) when using auto-unseal. Some of the Vault operations still require Shamir keys. For example, to regenerate a root token, each key holder must enter their recovery key. Similar to unseal keys, you can specify the number of recovery keys and the threshold using the -recovery-shares and -recovery-threshold flags. It is strongly recommended to initialize Vault with PGP.
 
 Make sure that both vault pods are unsealed - in this example we are using dev1
 Port forward to the first pod which is the master node and then make sure it is unsealed
@@ -42,11 +47,26 @@ Port forward to the first pod which is the master node and then make sure it is 
 kubectl port-forward pods/dev1-0 8200:8200 --address 0.0.0.0 -n hashicorp
 ​export VAULT_ADDR=http://127.0.0.1:8200
 vault status
+vault operator init \
+    -recovery-shares=4 \
+    -recovery-threshold=2 \
+    -recovery-pgp-keys="aaron.baideme.asc,ronel.cartas.asc,clayton.stevenson.asc,dan.helyar.asc" \
+    -root-token-pgp-key="aaron.baideme.asc"
 ```
-Port forward to the 2nd pod which is the standby pod and make sure it is unsealed
+**Example Output**
 ```bash
-kubectl port-forward pods/dev1-1 8200:8200 --address 0.0.0.0 -n hashicorp
-vault status 
+Recovery Key 1: iz1XWxe4CM+wrOGqRCx8ex8kB2XvGJEdfjhXFC+MA6Rc
+Recovery Key 2: rKZETr6IAy686IxfO3ZBKXPDAOkkwkpSepIME+bjeUT7
+Recovery Key 3: 4XA/KJqFOm+jzbBkKQuRVePEYPrQe3H3TmFVmdlUjRFv
+Recovery Key 4: lfnaYoZufP0uhooO3mHDAKGNZB5HLP9HYYb+LAfKkUmd
+Recovery Key 5: L169hHj3DMpphGsOnS8TEz3Febvdx3vsG3Xr8kGWdUtW
+
+Initial Root Token: s.AWnDagUkKNNbvkENiL72wysn
+
+Success! Vault is initialized
+
+Recovery key initialized with 5 key shares and a key threshold of 3. Please
+securely distribute the key shares printed above.
 ```
 
 ## Configure Kubernetes Auth Capabilities Deployment Integration
@@ -67,18 +87,44 @@ subjects:
   - kind: ServiceAccount
     name: <SERVICE ACCOUNT NAME>
     namespace: default
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: <SERVICE ACCOUNT NAME>
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "update", "patch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: <SERVICE ACCOUNT NAME>
+roleRef:
+  kind: Role
+  name: <SERVICE ACCOUNT NAME>
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: <SERVICE ACCOUNT NAME>
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: <SERVICE ACCOUNT NAME>
+  namespace: default
 ```
 
 ```bash
-kubectl create serviceaccount vault
-kubectl apply -f provisioning/kubernettes/hashicorp-vault/files/kubernetes-auth.yaml
+kubectl apply -f k8s-auth-role.yaml
 
 # Port forward via vault service
 kubectl port-forward -n hashicorp svc/vault-eks-ets... 8200:8200
 ​export VAULT_ADDR=http://127.0.0.1:8200
-
-# Create the hashicorp role you need - this will have a read permission on your secret/ keystore
-vault write auth/kubernetes/role/vault bound_service_account_names=vault bound_service_account_namespaces="*" policies=secret-reader ttl=1h
 
 export VAULT_SA_NAME=$(kubectl get sa vault \
     -o jsonpath="{.secrets[*]['name']}")
@@ -93,6 +139,9 @@ export SA_CA_CRT=$(kubectl get secret $VAULT_SA_NAME \
 export K8S_HOST=https://<CLUSTER URL>
 # Activate kubernetes authentication method
 vault auth enable kubernetes
+
+# Create the hashicorp role you need - this will have a read permission on your secret/ keystore
+vault write auth/kubernetes/role/vault bound_service_account_names=vault bound_service_account_namespaces="*" policies=secret-reader ttl=1h
 
 # Create k8s-manager policy
 vault policy write k8s-manager provisioning/kubernetes/hashicorp-vault/files/k8s-manager.hcl 
@@ -180,19 +229,12 @@ vault write auth/oidc/role/oidc-manager \
         user_claim="sub" \
         policies="oidc-manager"
 ```
-### Vault Secret Usage Sample Instructions
+#### Vault Secret Pod Injection
 ```
 helm repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
 ​
 # Install the vault-operator to the hashicorp namespace
 helm upgrade --namespace hashicorp --install vault-operator banzaicloud-stable/vault-operator --wait
-​
-# Clone the bank-vaults project
-git clone git@github.com:banzaicloud/bank-vaults.git
-cd bank-vaults
-​
-# Create a Vault instance with the operator which has the Kubernetes auth method configured
-kubectl apply -f operator/deploy/rbac.yaml
 ​
 # Next, install the mutating webhook with Helm into its own namespace (to bypass the catch-22 situation of self mutation)
 helm upgrade --namespace hashicorp --install vault-secrets-webhook banzaicloud-stable/vault-secrets-webhook --wait

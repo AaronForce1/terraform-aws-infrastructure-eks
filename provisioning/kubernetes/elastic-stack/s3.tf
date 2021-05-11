@@ -11,13 +11,20 @@ resource "aws_kms_key" "eks_logging" {
 }
 
 module "log_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 1.25"
+
   # create_bucket = var.tfenv == "prod" ? true : false
 
   bucket = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-logs"
 
   acl           = "log-delivery-write"
   force_destroy = var.tfenv == "prod" ? false : true
+
+  block_public_policy     = true
+  block_public_acls       = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   server_side_encryption_configuration = {
     rule = {
@@ -30,13 +37,20 @@ module "log_bucket" {
 }
 
 module "s3_elasticstack_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 1.25"
+
   # create_bucket = var.tfenv == "prod" ? true : false
 
   bucket = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack"
 
   acl           = "private"
   force_destroy = var.tfenv == "prod" ? false : true
+
+  block_public_policy     = true
+  block_public_acls       = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   server_side_encryption_configuration = {
     rule = {

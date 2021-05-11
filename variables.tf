@@ -80,7 +80,7 @@ variable "cluster_version" {
 variable "instance_type" {
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
-  default     = "c5a.xlarge"
+  default     = "m5a.xlarge"
 }
 
 variable "instance_desired_size" {
@@ -123,6 +123,12 @@ variable "helm_installations" {
     grafana       = true
   }
 }
+
+variable "enable_aws_vault_unseal" {
+  description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
+  default     = false
+}
+
 variable "google_clientID" {
   description = "Used for Infrastructure OAuth: Google Auth Client ID"
 }

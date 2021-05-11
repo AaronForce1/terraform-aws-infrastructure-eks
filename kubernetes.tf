@@ -50,10 +50,13 @@ module "vault" {
   depends_on = [module.eks-vpc, module.eks, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  app_namespace    = var.app_namespace
-  tfenv            = var.tfenv
-  root_domain_name = var.root_domain_name
-  app_name         = var.app_name
+  app_namespace           = var.app_namespace
+  tfenv                   = var.tfenv
+  root_domain_name        = var.root_domain_name
+  app_name                = var.app_name
+  billingcustomer         = var.billingcustomer
+  aws_region              = var.aws_region
+  enable_aws_vault_unseal = var.enable_aws_vault_unseal
 }
 
 module "consul" {

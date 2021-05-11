@@ -10,10 +10,12 @@ module "eks" {
   write_kubeconfig   = "true"
   config_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
   tags = {
-    Terraform       = "true"
-    Environment     = var.tfenv
-    Product         = var.app_name
-    billingcustomer = var.billingcustomer
+    Terraform                    = "true"
+    Environment                  = var.tfenv
+    Product                      = var.app_name
+    billingcustomer              = var.billingcustomer
+    Namespace                    = var.app_namespace
+    infrastructure-terraform-eks = data.local_file.infrastructure-terraform-eks-version.content
   }
   vpc_id = module.eks-vpc.vpc_id
 
