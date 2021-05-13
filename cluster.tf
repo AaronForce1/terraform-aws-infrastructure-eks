@@ -37,6 +37,7 @@ module "eks" {
   }
 
   node_groups = {
+    node_public_ip     = var.node_public_ip
     core = {
       desired_capacity = var.instance_desired_size
       max_capacity     = var.instance_max_size

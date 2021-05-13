@@ -107,6 +107,11 @@ variable "root_vol_size" {
   default     = "50"
 }
 
+variable "node_public_ip" { 
+  description = "assign public ip on the nodes"
+  default = false
+}
+
 variable "helm_installations" {
   type = object({
     gitlab_runner = bool
