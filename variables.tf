@@ -152,9 +152,9 @@ variable "google_authDomain" {
 }
 
 variable "launch_template_version" {
-  default = ""
+  default = "$Latest"
 }
 
 variable "launch_template_id" {
-  default = ""
+  default = "null"
 }
