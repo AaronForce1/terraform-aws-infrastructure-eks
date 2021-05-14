@@ -37,12 +37,12 @@ module "eks" {
   }
 
   node_groups = {
-    public_ip     = var.node_public_ip
     core = {
       desired_capacity = var.instance_desired_size
       max_capacity     = var.instance_max_size
       min_capacity     = var.instance_min_size
       instance_type    = var.instance_type
+      public_ip     = var.node_public_ip
 
       k8s_labels = {
         Environment = var.tfenv
