@@ -43,7 +43,8 @@ module "eks" {
       max_capacity     = var.instance_max_size
       min_capacity     = var.instance_min_size
       instance_type    = var.instance_type
-     # public_ip     = var.node_public_ip
+      key_name         = var.node_key_name
+      public_ip        = var.node_public_ip
 
       k8s_labels = {
         Environment = var.tfenv
