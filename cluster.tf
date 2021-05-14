@@ -1,6 +1,6 @@
 module "eks" {
   source     = "terraform-aws-modules/eks/aws"
-  version    = "~> 13.2.1"
+  version    = "~> 15.2.0"
   depends_on = [module.eks-vpc]
 
   cluster_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
