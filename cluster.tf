@@ -33,8 +33,10 @@ module "eks" {
   enable_irsa = true
 
   node_groups_defaults = {
-    disk_size = 50
-   
+    disk_size               = "50"
+    key_name                = var.node_key_name
+    launch_template_version = var.launch_template_version
+    launch_template_id      = var.launch_template_id 
   }
 
   node_groups = {
