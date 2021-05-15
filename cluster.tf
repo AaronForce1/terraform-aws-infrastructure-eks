@@ -32,6 +32,11 @@ module "eks" {
   ]
   enable_irsa = true
 
+  node_groups_defaults = {
+    ami_type  = "AL2_x86_64"
+    disk_size = 50
+  }
+
   node_groups = {
     core = {
       desired_capacity = var.instance_desired_size
