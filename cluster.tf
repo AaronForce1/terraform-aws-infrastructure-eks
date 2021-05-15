@@ -32,13 +32,6 @@ module "eks" {
   ]
   enable_irsa = true
 
-  node_groups_defaults = {
-    disk_size               = "50"
-    key_name                = var.node_key_name
-    launch_template_version = var.launch_template_version
-    launch_template_id      = var.launch_template_id 
-  }
-
   node_groups = {
     core = {
       desired_capacity = var.instance_desired_size
@@ -48,6 +41,7 @@ module "eks" {
       key_name         = var.node_key_name
       public_ip        = var.node_public_ip
 
+      disk_size        = "50"
       k8s_labels = {
         Environment = var.tfenv
       }
