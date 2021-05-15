@@ -150,11 +150,3 @@ variable "google_clientSecret" {
 variable "google_authDomain" {
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
-
-variable "launch_template_version" {
-  default = ""
-}
-
-variable "launch_template_id" {
-  default = ""
-}
