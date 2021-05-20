@@ -150,3 +150,8 @@ variable "google_clientSecret" {
 variable "google_authDomain" {
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
+
+variable "create_launch_template" { 
+  description = "enable launch template on node group"
+  default = false
+}

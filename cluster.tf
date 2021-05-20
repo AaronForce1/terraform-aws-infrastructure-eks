@@ -45,7 +45,8 @@ module "eks" {
       instance_type    = var.instance_type
       key_name         = var.node_key_name
       public_ip        = var.node_public_ip
-
+      create_launch_template = var.create_launch_template
+      launch_template
       disk_size        = "50"
       k8s_labels = {
         Environment = var.tfenv
