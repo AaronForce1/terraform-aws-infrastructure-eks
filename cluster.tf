@@ -6,7 +6,7 @@ module "eks" {
   cluster_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   # https://docs.gitlab.com/ee/user/project/clusters/#supported-cluster-versions
   cluster_version    = var.cluster_version
-  subnets            = module.eks-vpc.private_subnets
+  subnets            = module.eks-vpc.public_subnets
   write_kubeconfig   = "true"
   config_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
   tags = {
