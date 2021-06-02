@@ -155,7 +155,3 @@ variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
 }
-
-variable "private_access_cidrs" {
-  default = module.eks-vpc.private_subnets_cidr_blocks
-}
