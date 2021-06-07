@@ -37,12 +37,16 @@ module "eks" {
     disk_size = var.root_vol_size
   }
 
+  worker_group_defaults = {
+    instance_type = var.instance_type
+  }
+
   node_groups = {
     core = {
       desired_capacity = var.instance_desired_size
       max_capacity     = var.instance_max_size
       min_capacity     = var.instance_min_size
-      instance_types   = [tolist(var.instance_type)]
+      instance_type   = var.instance_type
       key_name         = var.node_key_name
       public_ip        = var.node_public_ip
       create_launch_template = var.create_launch_template
