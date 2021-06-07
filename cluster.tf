@@ -37,7 +37,7 @@ module "eks" {
     disk_size = var.root_vol_size
   }
 
-  worker_group_defaults = {
+  workers_group_defaults = {
     instance_type = var.instance_type
   }
 
