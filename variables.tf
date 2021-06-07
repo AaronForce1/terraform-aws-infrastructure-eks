@@ -80,7 +80,7 @@ variable "cluster_version" {
 variable "instance_type" {
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
-  default     = "m5a.xlarge"
+  default     = "c5a.large"
 }
 
 variable "instance_desired_size" {
