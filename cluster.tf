@@ -6,7 +6,7 @@ module "eks" {
   cluster_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   # https://docs.gitlab.com/ee/user/project/clusters/#supported-cluster-versions
   cluster_version    = var.cluster_version
-  subnets            = module.eks-vpc.public_subnets
+  subnets            = concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
   write_kubeconfig   = "true"
   config_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
   tags = {
@@ -41,41 +41,7 @@ module "eks" {
     instance_type = var.instance_type
   }
 
-  node_groups = {
-    core = {
-      desired_capacity = var.instance_desired_size
-      max_capacity     = var.instance_max_size
-      min_capacity     = var.instance_min_size
-      instance_type   = var.instance_type
-      key_name         = var.node_key_name
-      public_ip        = var.node_public_ip
-      create_launch_template = var.create_launch_template
-      disk_size        = "50"
-      k8s_labels = {
-        Environment = var.tfenv
-      }
-      tags = {
-        Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-        Environment                                                                   = var.tfenv
-        billingcustomer                                                               = var.billingcustomer
-        Namespace                                                                     = var.app_namespace
-        Product                                                                       = var.app_name
-        Version                                                                       = data.local_file.infrastructure-terraform-eks-version.content
-        infrastructure-terraform-eks                                                  = data.local_file.infrastructure-terraform-eks-version.content
-        "k8s.io/cluster-autoscaler/enabled"                                           = true
-        "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
-      }
-      additional_tags = {
-        Name                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-        Environment                  = var.tfenv
-        billingcustomer              = var.billingcustomer
-        Namespace                    = var.app_namespace
-        Product                      = var.app_name
-        Version                      = data.local_file.infrastructure-terraform-eks-version.content
-        infrastructure-terraform-eks = data.local_file.infrastructure-terraform-eks-version.content
-      }
-    }
-  }
+  node_groups = len(var.managed_node_groups) > 0 ? {} : local.default_node_group
 
   map_roles    = var.map_roles
   map_users    = var.map_users
