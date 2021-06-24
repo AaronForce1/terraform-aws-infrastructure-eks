@@ -41,7 +41,7 @@ module "eks" {
     instance_type = var.instance_type
   }
 
-  node_groups = len(var.managed_node_groups) > 0 ? {} : local.default_node_group
+  node_groups = length(var.managed_node_groups) > 0 ? {} : local.default_node_group
 
   map_roles    = var.map_roles
   map_users    = var.map_users
