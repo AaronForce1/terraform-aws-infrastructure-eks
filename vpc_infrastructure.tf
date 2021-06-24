@@ -174,6 +174,19 @@ resource "aws_vpc_endpoint" "rds" {
     module.eks.cluster_security_group_id,
     module.eks.worker_security_group_id
   ]
+
+  tags = {
+    Name                                                                 = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint"
+    Terraform                                                            = "true"
+    Environment                                                          = var.tfenv
+    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}"        = "shared"
+    Namespace                                                            = var.app_namespace
+    Billingcustomer                                                      = var.billingcustomer
+    Product                                                              = var.app_name
+    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
+  } 
+
+  subnet_ids = flatten(module.eks-vpc.private_subnets)
 }
 
 ## TODO: Create external VPC for Bastion Hosts and Direct Office - AWS Connetions
