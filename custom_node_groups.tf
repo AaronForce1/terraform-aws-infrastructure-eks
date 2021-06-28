@@ -21,14 +21,19 @@ resource "aws_eks_node_group" "custom_node_groip" {
   labels = {
     Environment = var.tfenv
   }
-  tags = concat(local.kubernetes_tags, local.additional_kubernetes_tags)
-  taint = var.managed_node_groups[count.index].taints
+  tags = local.kubernetes_tags
+  dynamic "taint" {
+    for_each = var.managed_node_groups[count.index].taints
+    content {
+      key = taint.value["key"]
+      value = taint.value["value"]
+      effect = taint.value["effect"]
+    }
+  }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
   depends_on = [
-    aws_iam_role_policy_attachment.example-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.example-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,
+    module.eks-vpc, module.eks
   ]
 }

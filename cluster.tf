@@ -43,7 +43,7 @@ module "eks" {
 
   node_groups = length(var.managed_node_groups) > 0 ? {} : local.default_node_group
 
-  map_roles    = var.map_roles
+  map_roles    = concat(var.map_roles, local.default_aws_auth_roles)
   map_users    = var.map_users
   map_accounts = var.map_accounts
 }
