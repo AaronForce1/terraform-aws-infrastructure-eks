@@ -109,6 +109,6 @@ data "aws_iam_policy_document" "policy_data" {
 ## IAM POLICY ATTACHMENT
 resource "aws_iam_user_policy_attachment" "s3_attach" {
 
-  user       = module.iam_user.this_iam_user_name
+  user       = module.iam_user.iam_user_name
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }

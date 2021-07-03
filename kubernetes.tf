@@ -112,5 +112,5 @@ module "gitlab_runner" {
   ## Gitlab Runner Configuration
   gitlab_runner_concurrent_agents  = var.gitlab_runner_configuration.concurrent_agents
   gitlab_runner_registration_url   = var.gitlab_runner_configuration.url
-  gitlab_runner_registration_token = var.gitlab_runner_registration_token
+  gitlab_runner_registration_token = var.gitlab_runner_configuration.registration_token
 }
