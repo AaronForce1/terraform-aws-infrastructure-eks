@@ -73,7 +73,7 @@ locals {
             [runners.cache.s3]
               ServerAddress = "s3.amazonaws.com"
               BucketName = "gitlab-runner-${var.app_namespace}-${var.tfenv}-cache"
-              BucketLocation = "${var.gitlab_serviceaccount_region}"
+              BucketLocation = "${var.aws_region}"
               Insecure = false
         EOF
       "tags" : "kubernetes, cluster",
@@ -90,20 +90,8 @@ variable "app_name" {}
 variable "app_namespace" {}
 variable "tfenv" {}
 variable "aws_region" {}
-variable "gitlab_runner_storage_type" {
-  default = "local"
-}
 variable "gitlab_runner_registration_url" {
   default = "https://gitlab.com"
-}
-variable "gitlab_serviceaccount_id" {
-  default = ""
-}
-variable "gitlab_serviceaccount_secret" {
-  default = ""
-}
-variable "gitlab_serviceaccount_region" {
-  default = "ap-southeast-1"
 }
 variable "gitlab_runner_concurrent_agents" {
   default = 10

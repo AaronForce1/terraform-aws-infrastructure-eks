@@ -1,5 +1,4 @@
 resource "kubernetes_secret" "AWS" {
-  count = var.gitlab_runner_storage_type == "S3" ? 1 : 0
 
   metadata {
     name      = "s3access"
@@ -7,8 +6,8 @@ resource "kubernetes_secret" "AWS" {
   }
 
   data = {
-    accesskey = var.gitlab_serviceaccount_id
-    secretkey = var.gitlab_serviceaccount_secret
+    accesskey = module.iam_user.iam_access_key_id
+    secretkey = module.iam_user.iam_access_key_secret
   }
 
   type = "generic"

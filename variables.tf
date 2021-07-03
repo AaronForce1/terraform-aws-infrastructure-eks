@@ -143,24 +143,12 @@ variable "gitlab_runner_configuration" {
   description = "Deployment configuration for Gitlab Runner"
   type = object({
     url = string
-    cache = object({
-      type = string
-      serviceaccount_id = string
-      serviceaccount_secret = string
-      region = string
-    })
     concurrent_agents = number
     registration_token = string
   })
   default = {
-    url = "https://gitlab.com",
-    cache = {
-      type = "local"
-      serviceaccount_id = ""
-      serviceaccount_secret = ""
-      region = "ap-southeast-1"
-    },
-    concurrent_agents = 10,
+    url = "https://gitlab.com"
+    concurrent_agents = 10
     registration_token = ""
   }
 }
