@@ -3,7 +3,7 @@ resource "helm_release" "gitlab-runner" {
   depends_on       = [kubernetes_secret.AWS_Asiaticketing_ETS]
   repository       = "https://charts.gitlab.io"
   chart            = "gitlab-runner"
-  version          = "0.26.0"
+  version          = "0.30.0"
   namespace        = "gitlab-runner"
   create_namespace = false
 
