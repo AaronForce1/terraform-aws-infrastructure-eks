@@ -3,7 +3,7 @@
 ### IAM USER DEFINITION
 module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name = "gitlab-runner-${var.app_namespace}-${var.tfenv}-cache-user"
   path = "/serviceaccounts/${var.app_namespace}/${var.tfenv}/"

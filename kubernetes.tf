@@ -110,10 +110,6 @@ module "gitlab_runner" {
   aws_region                       = var.aws_region
 
   ## Gitlab Runner Configuration
-  gitlab_runner_storage_type       = var.gitlab_runner_configuration.cache.type
-  gitlab_serviceaccount_id         = var.gitlab_runner_configuration.cache.serviceaccount_id
-  gitlab_serviceaccount_secret     = var.gitlab_runner_configuration.cache.serviceaccount_secret
-  gitlab_serviceaccount_region     = var.gitlab_runner_configuration.cache.region
   gitlab_runner_concurrent_agents  = var.gitlab_runner_configuration.concurrent_agents
   gitlab_runner_registration_url   = var.gitlab_runner_configuration.url
   gitlab_runner_registration_token = var.gitlab_runner_registration_token
