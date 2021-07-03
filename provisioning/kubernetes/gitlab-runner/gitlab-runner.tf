@@ -22,7 +22,7 @@ locals {
   helmChartValues = {
     "unregisterRunners"       = true,
     "imagePullPolicy"         = "Always",
-    "gitlabUrl"               = "https://git.hk.asiaticketing.com",
+    "gitlabUrl"               = var.gitlab_runner_registration_url,
     "runnerRegistrationToken" = var.gitlab_runner_registration_token,
     "concurrent"              = var.gitlab_runner_concurrent_agents,
     "rbac" = {
@@ -52,7 +52,7 @@ locals {
             helper_cpu_request = "0.1"
             helper_memory_limit = "256Mi"
             helper_memory_request = "128Mi"
-            helper_image =  "registry.git.hk.asiaticketing.com/ticketflap/ticketing-v2/gitlab-runner-helper:$CI_RUNNER_VERSION"
+            helper_image =  "registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:$CI_RUNNER_VERSION"
             ephemeral_storage_limit = "2000Mi"
             ephemeral_storage_request = "100Mi"
             ephemeral_storage_limit_overwrite_max_allowed = "8000Mi"
@@ -72,8 +72,8 @@ locals {
             Shared = false
             [runners.cache.s3]
               ServerAddress = "s3.amazonaws.com"
-              BucketName = "infra-git-prod-gitlab-runner-cache"
-              BucketLocation = "ap-southeast-1"
+              BucketName = "gitlab-runner-${var.app_namespace}-${var.tfenv}-cache"
+              BucketLocation = "${var.gitlab_serviceaccount_region}"
               Insecure = false
         EOF
       "tags" : "kubernetes, cluster",
@@ -90,7 +90,24 @@ variable "app_name" {}
 variable "app_namespace" {}
 variable "tfenv" {}
 variable "aws_region" {}
-variable "gitlab_serviceaccount_id" {}
-variable "gitlab_serviceaccount_secret" {}
-variable "gitlab_runner_concurrent_agents" {}
-variable "gitlab_runner_registration_token" {}
+variable "gitlab_runner_storage_type" {
+  default = "local"
+}
+variable "gitlab_runner_registration_url" {
+  default = "https://gitlab.com"
+}
+variable "gitlab_serviceaccount_id" {
+  default = ""
+}
+variable "gitlab_serviceaccount_secret" {
+  default = ""
+}
+variable "gitlab_serviceaccount_region" {
+  default = "ap-southeast-1"
+}
+variable "gitlab_runner_concurrent_agents" {
+  default = 10
+}
+variable "gitlab_runner_registration_token" {
+  default = ""
+}

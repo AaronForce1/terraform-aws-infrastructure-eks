@@ -127,7 +127,7 @@ variable "helm_installations" {
   })
   default = {
     gitlab_runner = false
-    vault_consul  = true
+    vault_consul  = false
     ingress       = true
     elasticstack  = false
     grafana       = true
@@ -137,6 +137,32 @@ variable "helm_installations" {
 variable "enable_aws_vault_unseal" {
   description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
   default     = false
+}
+
+variable "gitlab_runner_configuration" {
+  description = "Deployment configuration for Gitlab Runner"
+  type = object({
+    url = string
+    cache = object({
+      type = string
+      serviceaccount_id = string
+      serviceaccount_secret = string
+      region = string
+    })
+    concurrent_agents = number
+    registration_token = string
+  })
+  default = {
+    url = "https://gitlab.com",
+    cache = {
+      type = "local"
+      serviceaccount_id = ""
+      serviceaccount_secret = ""
+      region = "ap-southeast-1"
+    },
+    concurrent_agents = 10,
+    registration_token = ""
+  }
 }
 
 variable "google_clientID" {

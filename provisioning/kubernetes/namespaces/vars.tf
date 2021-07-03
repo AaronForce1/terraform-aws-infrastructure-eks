@@ -1,6 +1,9 @@
 variable "helm_installations" {
   type = object({
-    vault_consul = bool
-    ingress      = bool
+    gitlab_runner = bool
+    vault_consul  = bool
+    ingress       = bool
+    elasticstack  = bool
+    grafana       = bool
   })
 }
