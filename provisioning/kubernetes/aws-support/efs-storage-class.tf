@@ -8,14 +8,14 @@ resource "kubernetes_storage_class" "efs-storage-class" {
 resource "aws_security_group" "efs-driver" {
   name = "efs-csi-driver-sg"
   description = "Allow EFS inbound traffic"
-  vpc_id      = module.eks-vpc.vpc_id 
+  vpc_id      = var.vpc_id
   
   ingress {
     description = "Allow EFS Traffic on Private Subnets"
     from_port = 2049
     to_port = 2049
     protocol = "tcp"
-    cidr_blocks = [module.eks-vpc.private_subnets_cidr_blocks]
+    cidr_blocks = [var.cidr_blocks]
   }
   
   egress {
@@ -83,11 +83,11 @@ resource "aws_iam_role" "eks-efs-csi-driver-role" {
         Effect = "Allow"
         Condition = {
           StringEquals = {
-            "oidc.eks.${var.aws_region}.amazonaws.com/id/${module.eks.cluster_oidc_issuer_url}:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+            "oidc.eks.${var.aws_region}.amazonaws.com/id/${var.oidc_url}:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
           }
         }
         Principal = {
-          "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${module.eks.cluster_oidc_issuer_url}"
+          "Federated": "arn:aws:iam::${var.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${var.oidc_url}"
         }
       }
     ]

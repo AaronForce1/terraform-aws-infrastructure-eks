@@ -24,6 +24,10 @@ module "certmanager" {
 module "aws-support" {
   source     = "./provisioning/kubernetes/aws-support"
   depends_on = [module.eks, module.eks-vpc]
+  vpc_id     = module.eks-vpc.vpc_id
+  cidr_blocks = module.eks-vpc.private_subnets_cidr_blocks
+  oidc_url   = module.eks.cluster_oidc_issuer_url
+  account_id = data.aws_caller_identity.current.account_id
 }
 
 module "aws-cluster-autoscaler" {
