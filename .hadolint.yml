@@ -6,6 +6,7 @@ ignored:
   - DL4006 # Disabling edge case "SHELL option -o" check
   - DL4001 # Using CURL + WGET
   - DL3013 # PIP Versions not pinned for pre-commit package, no need
+  - DL3059 # Multiple RUN Commands. Will not remove
 
 trustedRegistries:
   - docker.io
