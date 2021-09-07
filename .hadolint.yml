@@ -5,6 +5,7 @@ ignored:
   - DL3003 # Ignoring WORKDIR rule as we are CD'ing post clone
   - DL4006 # Disabling edge case "SHELL option -o" check
   - DL4001 # Using CURL + WGET
+  - DL3013 # PIP Versions not pinned for pre-commit package, no need
 
 trustedRegistries:
   - docker.io

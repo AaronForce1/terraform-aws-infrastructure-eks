@@ -28,14 +28,14 @@ RUN wget --progress=dot:mega https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.
 RUN curl -L "$(curl -s https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest | grep -o -E "https://.+?-linux-amd64.tar.gz")" > terraform-docs.tgz && tar xzf terraform-docs.tgz && chmod +x terraform-docs && mv terraform-docs /usr/bin/
 RUN curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && mv tflint /usr/bin/
 RUN env GO111MODULE=on go get -u github.com/aquasecurity/tfsec/cmd/tfsec
-RUN pip3 install pre-commit
+RUN pip3 install --no-cache-dir pre-commit
 
 COPY --from=gitlab_bulder /usr/bin/gitlab-terraform /usr/bin/gitlab-terraform
 COPY --from=kubectl_builder /usr/local/bin/kubectl /usr/bin/kubectl
 COPY --from=tfutils_builder /build/tfk8s/tfk8s /usr/bin/tfk8s
 COPY . ./terraform_repo_eks
 
-RUN helm repo update 
+RUN helm repo update
 
 # USER deploy
 WORKDIR /deploy/terraform_repo_eks
