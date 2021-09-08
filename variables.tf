@@ -55,6 +55,30 @@ variable "map_users" {
   # ]
 }
 
+variable "managed_node_groups" {
+  description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
+  type = list(object({
+    name = string
+    desired_capacity = number
+    max_capacity = number
+    min_capacity = number
+    instance_type = string
+    key_name = string
+    public_ip = bool
+    create_launch_template = bool
+    disk_size = number
+    taints = list(object({
+      key = string
+      value = string
+      effect = string
+    }))
+    subnet_selections = object({
+      public = bool
+      private = bool
+    })
+  }))
+}
+
 variable "root_domain_name" {
   description = "Domain root where all kubernetes systems are orchestrating control"
 }
@@ -109,7 +133,7 @@ variable "root_vol_size" {
 
 variable "node_key_name" {
   description = "EKS Node Key Name"
-  default = "ETS-env-singapore-key"
+  default = ""
 }
 
 variable "node_public_ip" { 
