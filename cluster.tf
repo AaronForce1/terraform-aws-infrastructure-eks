@@ -1,6 +1,6 @@
 module "eks" {
   source     = "terraform-aws-modules/eks/aws"
-  version    = "~> 15.2.0"
+  version    = "~> 17.15.0"
   depends_on = [module.eks-vpc]
 
   cluster_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -8,7 +8,7 @@ module "eks" {
   cluster_version    = var.cluster_version
   subnets            = concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
   write_kubeconfig   = "true"
-  config_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
+  kubeconfig_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
   tags = {
     Terraform                    = "true"
     Environment                  = var.tfenv

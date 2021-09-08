@@ -1,4 +1,4 @@
-resource "aws_eks_node_group" "custom_node_groip" {
+resource "aws_eks_node_group" "custom_node_group" {
   count = length(var.managed_node_groups)
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -25,9 +25,9 @@ resource "aws_eks_node_group" "custom_node_groip" {
   dynamic "taint" {
     for_each = var.managed_node_groups[count.index].taints
     content {
-      key = taint.value["key"]
-      value = taint.value["value"]
-      effect = taint.value["effect"]
+      key = taint.value[key]
+      value = taint.value[value]
+      effect = taint.value[effect]
     }
   }
 

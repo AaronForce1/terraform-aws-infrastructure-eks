@@ -1,8 +1,8 @@
 default:
-  image: docker:20.10.2
+  image: docker:20.10
 
 services:
-  - docker:20.10.2-dind
+  - docker:20.10-dind
     
 # Default output file for Terraform plan
 variables:
@@ -136,7 +136,7 @@ validate build:
   stage: validate
   image: $CONTAINER_IMAGE
   before_script:
-    - *terraform_init
+    - terraform init -backend=false
   script:
     - gitlab-terraform validate
   except:
@@ -146,7 +146,7 @@ validate release:
   stage: validate
   image: $RELEASE_IMAGE
   before_script:
-    - *terraform_init
+    - terraform init -backend=false
   script:
     - gitlab-terraform validate
   only:
@@ -165,113 +165,3 @@ tfsec:
   artifacts:
     reports:
       sast: gl-sast-report.json
-
-# merge review:
-#   stage: plan
-#   before_script:
-#     - *terraform_init
-#   script:
-#     - terraform plan -out=$PLAN
-#     - "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
-#     - echo \`\`\`diff > plan.txt
-#     - terraform show -no-color ${PLAN} | tee -a plan.txt
-#     - echo \`\`\` >> plan.txt
-#     - sed -i -e 's/  +/+/g' plan.txt
-#     - sed -i -e 's/  ~/~/g' plan.txt
-#     - sed -i -e 's/  -/-/g' plan.txt
-#     - MESSAGE=$(cat plan.txt)
-#     - >-
-#       curl -X POST -g -H "PRIVATE-TOKEN: ${GITLAB_TOKEN}" 
-#       --data-urlencode "body=${MESSAGE}" 
-#       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/discussions"
-#   artifacts:
-#     name: plan
-#     paths:
-#       - $PLAN
-#     reports:
-#         terraform: $JSON_PLAN_FILE
-#   only:
-#     - merge_requests
-
-# plan:
-#   stage: plan
-#   image: infrastructure-eks-terraform:$CI_COMMIT_REF_NAME
-#   before_script:
-#     - *terraform_init
-#   cache:
-#     key: eks-${TF_VAR_tfenv}
-#     paths:
-#       - ${TF_ROOT}/.terraform
-#   script:
-#     - gitlab-terraform plan -lock=false
-#     - gitlab-terraform plan-json
-#   artifacts:
-#     name: plan
-#     paths:
-#       - ${TF_ROOT}/plan.cache
-#       - ${TF_ROOT}/outputs.json
-#   only:
-#     - branches
-#     - tags
-#   resource_group: production
-
-##################################
-#### ------------------------ ####
-####                          ####
-####      TERRAFORM APPLY     ####
-####                          ####
-#### ------------------------ ####
-##################################
-
-# apply:
-#   stage: apply
-#   image: infrastructure-eks-terraform:$CI_COMMIT_REF_NAME
-#   before_script:
-#     - *terraform_init
-#   cache:
-#     key: eks-${TF_VAR_tfenv}
-#     paths:
-#       - ${TF_ROOT}/.terraform
-#   script:
-#     - gitlab-terraform apply
-#     - gitlab-terraform output -json | jq > $TF_ROOT/outputs.json
-#     - DYNAMIC_ENVIRONMENT_URL=$(terraform output -no-color env-dynamic-url)
-#     - echo "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL" >> ${TF_ROOT}/deploy.env
-#     - gitlab-terraform output -json | jq > $TF_ROOT/outputs.json
-#   dependencies:
-#     - plan
-#   artifacts:
-#     name: plan
-#     paths:
-#       - ${TF_ROOT}/plan.cache
-#       - ${TF_ROOT}/outputs.json
-#       - ${TF_ROOT}/deploy.env
-#       - ${TF_ROOT}/.kubeconfig.${TF_VAR_app_name}_${TF_VAR_tfenv}
-#     reports:
-#       dotenv: deploy.env
-#       terraform: ${TF_ROOT}/outputs.json
-#   only:
-#     - tags
-#   resource_group: eks-${TF_VAR_tfenv}
-#   environment:
-#     name: eks-${TF_VAR_tfenv}
-#     url: $DYNAMIC_ENVIRONMENT_URL
-#     on_stop: destroy
-
-# destroy:
-#   stage: destroy
-#   image: infrastructure-eks-terraform:$CI_COMMIT_REF_NAME
-#   before_script:
-#     - *terraform_init
-#   cache:
-#     key: eks-${TF_VAR_tfenv}
-#     paths:
-#       - ${TF_ROOT}/.terraform
-#   script:
-#     - gitlab-terraform destroy --auto-approve  
-#   when: manual
-#   only:
-#     - tags
-#   environment:
-#     name: eks-${TF_VAR_tfenv}
-#     action: stop

@@ -7,8 +7,6 @@ services:
       context: .
     volumes:
       - .:/deploy/terraform_repo_eks/
-    env_file:
-      - .env
     environment:
       CI_PROJECT_DIR: /build
       AWS_DEFAULT_REGION: ap-southeast-1
