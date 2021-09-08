@@ -1,6 +1,12 @@
 ---
 exclude:
   - AWS018 # 'module.eks:aws_security_group_rule.cluster_private_access' should include a description for auditing purposes.
-  - AWS069 # TODO: EKS Clusters should have the public access disable
-  - AWS066 # KMS Secruity Key Encryoption
+  - AWS069 # TODO:EKS Clusters should have the public access disable
+  - AWS068 # TODO:EKS Cluster 0.0.0.0/0 for control plane as we do not have a VPN in place yet.
+  - AWS066 # KMS Secruity Key Encryption
   - AWS007 # 'module.eks:aws_security_group_rule.cluster_egress_internet' defines a fully open egress security group rule.
+  - AWS009 # 'module.eks:efs:aws_security_group_rule.cluster_egress_internet' defines a fully open egress security group rule.
+  - AWS082 # FALSE POSITIVE | "Default VPC" is actually not used
+  - AWS077 # FALSE POSITIVE | No need to version S3 web files
+  - AWS098 # TODO:Public Access Block for S3?
+  
