@@ -15,7 +15,7 @@ resource "aws_security_group" "efs-driver" {
     from_port = 2049
     to_port = 2049
     protocol = "tcp"
-    cidr_blocks = [var.cidr_blocks]
+    cidr_blocks = var.cidr_blocks
   }
   
   egress {

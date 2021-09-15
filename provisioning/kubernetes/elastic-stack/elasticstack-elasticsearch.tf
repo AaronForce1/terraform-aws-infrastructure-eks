@@ -22,7 +22,7 @@ locals {
     "volumeClaimTemplate" = {
       "resources" : {
         "requests" : {
-          "storage" : var.tfenv == "prod" ? "1000Gi" : "200Gi"
+          "storage" : var.tfenv == "prod" ? "100Gi" : "20Gi"
         }
       },
       "storageClassName" = "st1"

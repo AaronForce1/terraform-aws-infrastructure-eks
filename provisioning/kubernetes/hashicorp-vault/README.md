@@ -11,7 +11,7 @@ Next we init vault from web url otherwise you can vault operator init which wont
 - Aaron Baideme
 - Ronel Cartas
 - Clayton Stevenson
-- Jon King *(GPG Key still pending)*
+- Diederik Damen
 - Dan Helyar
 
 ```bash
@@ -45,12 +45,12 @@ Make sure that both vault pods are unsealed - in this example we are using dev1
 Port forward to the first pod which is the master node and then make sure it is unsealed
 ```bash
 kubectl port-forward pods/dev1-0 8200:8200 --address 0.0.0.0 -n hashicorp
-​export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_ADDR=http://127.0.0.1:8200
 vault status
 vault operator init \
     -recovery-shares=4 \
     -recovery-threshold=2 \
-    -recovery-pgp-keys="aaron.baideme.asc,ronel.cartas.asc,clayton.stevenson.asc,dan.helyar.asc" \
+    -recovery-pgp-keys="aaron.baideme.asc,ronel.cartas.asc,clayton.stevenson.asc,dan.helyar.asc,diederik.damen.asc" \
     -root-token-pgp-key="aaron.baideme.asc"
 ```
 **Example Output**
@@ -124,24 +124,27 @@ kubectl apply -f k8s-auth-role.yaml
 
 # Port forward via vault service
 kubectl port-forward -n hashicorp svc/vault-eks-ets... 8200:8200
-​export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_ADDR=http://127.0.0.1:8200
 
-export VAULT_SA_NAME=$(kubectl get sa vault \
-    -o jsonpath="{.secrets[*]['name']}")
+export VAULT_SA_NAME=$(kubectl -n hashicorp get sa -l app.kubernetes.io/name=vault -o jsonpath="{..secrets[*]['name']}")
 
-export SA_JWT_TOKEN=$(kubectl get secret $VAULT_SA_NAME \
+export SA_JWT_TOKEN=$(kubectl -n hashicorp get secret $VAULT_SA_NAME \
     -o jsonpath="{.data.token}" | base64 --decode; echo)
 
-export SA_CA_CRT=$(kubectl get secret $VAULT_SA_NAME \
+export SA_CA_CRT=$(kubectl -n hashicorp get secret $VAULT_SA_NAME \
     -o jsonpath="{.data['ca\.crt']}" | base64 --decode; echo)    
 
 # Use kubectl cluster-info to get the kubernetes master API url which should be exported as:
-export K8S_HOST=https://<CLUSTER URL>
+export K8S_HOST=$(kubectl config view --minify | grep server | sed "s/^.*http/http/g")
 # Activate kubernetes authentication method
 vault auth enable kubernetes
 
 # Create the hashicorp role you need - this will have a read permission on your secret/ keystore
-vault write auth/kubernetes/role/vault bound_service_account_names=vault bound_service_account_namespaces="*" policies=secret-reader ttl=1h
+vault write auth/kubernetes/role/<ROLE NAME> \
+  bound_service_account_names=<SA NAMES, COMMA SEPARATED> \
+  bound_service_account_namespaces="*" \
+  policies="secret-reader" \
+  ttl=1h
 
 # Create k8s-manager policy
 vault policy write k8s-manager provisioning/kubernetes/hashicorp-vault/files/k8s-manager.hcl 
@@ -185,6 +188,11 @@ This should be configured within Google Cloud: APIs and Services (https://consol
    - the `AUTH0_DOMAIN` domain should be the OAUTH provider; in our main case it is `https://accounts.google.com`
    - the `VAULT_URL` should reflect the domain standard configured by our helm chart: `https://vault.{app_namespace}-{tvenv}.{root_domain_name}`
 
+```bash
+export AUTH0_DOMAIN=https://accounts.google.com
+export VAULT_URL=https://vault.<APP_NAMESPACE>-<TFENV>.<ROOT>
+```
+
 The folowing specifications should be used when configuring a new OAuth API Client in GCP (https://console.cloud.google.com/apis/credentials):
 
 1. Application Type: `Web Application`
@@ -199,7 +207,7 @@ vault write auth/oidc/config \
         oidc_discovery_url="$AUTH0_DOMAIN" \
         oidc_client_id="$AUTH0_CLIENT_ID" \
         oidc_client_secret="$AUTH0_CLIENT_SECRET" \
-        default_role="secret-reader"
+        default_role="secret-manager"
 Success! Data written to: auth/oidc/config
 ```
 
@@ -232,10 +240,10 @@ vault write auth/oidc/role/oidc-manager \
 #### Vault Secret Pod Injection
 ```
 helm repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
-​
+
 # Install the vault-operator to the hashicorp namespace
 helm upgrade --namespace hashicorp --install vault-operator banzaicloud-stable/vault-operator --wait
-​
+
 # Next, install the mutating webhook with Helm into its own namespace (to bypass the catch-22 situation of self mutation)
 helm upgrade --namespace hashicorp --install vault-secrets-webhook banzaicloud-stable/vault-secrets-webhook --wait
 
@@ -244,6 +252,6 @@ helm upgrade --namespace hashicorp --install vault-secrets-webhook banzaicloud-s
 ## References
 > https://banzaicloud.com/blog/inject-secrets-into-pods-vault-revisited/
 > https://learn.hashicorp.com/tutorials/vault/agent-kubernetes
-​
+
 ## TODO
 > https://learn.hashicorp.com/tutorials/vault/pki-engine

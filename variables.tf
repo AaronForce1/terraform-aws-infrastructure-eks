@@ -179,3 +179,14 @@ variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
 }
+
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
+  type = list(string)
+  default = []
+}
+
+variable "default_ami_type" {
+  description = "Default AMI used for node provisioning"
+  default = "AL2_x86_64"
+}

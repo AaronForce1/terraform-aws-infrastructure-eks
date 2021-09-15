@@ -4,7 +4,7 @@ resource "helm_release" "kubernetes-dashboard" {
   name             = "kubernetes-dashboard-${var.app_namespace}-${var.tfenv}"
   repository       = "https://kubernetes.github.io/dashboard"
   chart            = "kubernetes-dashboard"
-  version          = "4.0.2"
+  version          = "5.0.0"
   namespace        = "kubernetes-dashboard"
   create_namespace = false
 
@@ -15,7 +15,7 @@ resource "helm_release" "kubernetes-dashboard" {
 
 resource "local_file" "values_yaml" {
   content  = yamlencode(local.helmChartValues)
-  filename = "${path.module}/src/values.overrides.v4.0.0.yaml"
+  filename = "${path.root}/.values/values.overrides.v5.0.0.yaml"
 }
 
 locals {
