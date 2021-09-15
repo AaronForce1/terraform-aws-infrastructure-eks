@@ -21,7 +21,7 @@ module "eks" {
 
   cluster_endpoint_private_access       = true
   cluster_endpoint_private_access_cidrs = module.eks-vpc.private_subnets_cidr_blocks
-  cluster_endpoint_public_access        = len(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
+  cluster_endpoint_public_access        = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
   cluster_endpoint_public_access_cidrs  = var.cluster_endpoint_public_access_cidrs
 
   cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]

@@ -123,7 +123,7 @@ module "eks-vpc" {
     Namespace                                                            = var.app_namespace
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = var.infrastructure_eks_terraform_version
+    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
   }
 
   vpc_tags = {
