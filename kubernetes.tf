@@ -18,16 +18,18 @@ module "nginx-controller-ingress" {
 module "certmanager" {
   source     = "./provisioning/kubernetes/certmanager"
   depends_on = [module.eks, module.namespaces, module.nginx-controller-ingress]
+  
   count      = var.helm_installations.ingress ? 1 : 0
 }
 
 module "aws-support" {
-  source     = "./provisioning/kubernetes/aws-support"
-  depends_on = [module.eks, module.eks-vpc]
-  vpc_id     = module.eks-vpc.vpc_id
-  cidr_blocks = module.eks-vpc.private_subnets_cidr_blocks
-  oidc_url   = module.eks.cluster_oidc_issuer_url
-  account_id = data.aws_caller_identity.current.account_id
+source                    = "./provisioning/kubernetes/aws-support"
+  depends_on              = [module.eks, module.eks-vpc]
+
+  vpc_id                  = module.eks-vpc.vpc_id
+  cidr_blocks             = module.eks-vpc.private_subnets_cidr_blocks
+  oidc_url                = module.eks.cluster_oidc_issuer_url
+  account_id              = data.aws_caller_identity.current.account_id
   aws_region              = var.aws_region
 }
 
