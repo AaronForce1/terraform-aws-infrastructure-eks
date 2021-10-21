@@ -1,6 +1,6 @@
 resource "helm_release" "gitlab-runner" {
   name             = "gitlab-runner-${var.app_namespace}-${var.tfenv}"
-  depends_on       = [kubernetes_secret.AWS_Asiaticketing_ETS]
+  depends_on       = [kubernetes_secret.AWS]
   repository       = "https://charts.gitlab.io"
   chart            = "gitlab-runner"
   version          = "0.26.0"

@@ -5,13 +5,30 @@ resource "helm_release" "grafana" {
   namespace  = "monitoring"
 
   values = [
-    local_file.values_yaml.content
+    <<-EOF
+      ingress:
+        enabled: true
+        annotations:
+          "kubernetes.io/ingress.class: "nginx"
+          "kubernetes.io/tls-acme": true,
+          "cert-manager.io/cluster-issuer": "letsencrypt-prod"
+        labels:
+          "env": ${var.tfenv}
+          "app": "grafana
+          "tier": support
+        hosts:
+          - "grafana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+        tls:
+          - secretName: "grafana-${var.app_namespace}-${var.tfenv}-ing-tls"
+            hosts:
+              - "grafana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+      persistence:
+        enabled: true
+        size: ${var.tfenv == "prod" ? "100Gi" : "20Gi"}
+      dataSources:
+        
+    EOF
   ]
-}
-
-resource "local_file" "values_yaml" {
-  content  = yamlencode(local.helmChartValues)
-  filename = "${path.module}/src/values.overrides.v6.6.1.yaml"
 }
 
 locals {

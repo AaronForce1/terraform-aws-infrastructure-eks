@@ -98,7 +98,7 @@ variable "tfenv" {
 
 variable "cluster_version" {
   description = "Kubernetes Cluster Version"
-  default     = "1.18"
+  default     = "1.21"
 }
 
 variable "instance_type" {

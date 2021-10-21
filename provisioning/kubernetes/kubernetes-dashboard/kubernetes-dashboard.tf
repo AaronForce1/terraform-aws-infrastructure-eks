@@ -8,19 +8,7 @@ resource "helm_release" "kubernetes-dashboard" {
   namespace        = "kubernetes-dashboard"
   create_namespace = false
 
-  values = [
-    local_file.values_yaml.content
-  ]
-}
-
-resource "local_file" "values_yaml" {
-  content  = yamlencode(local.helmChartValues)
-  filename = "${path.root}/.values/values.overrides.v5.0.0.yaml"
-}
-
-locals {
-  helmChartValues = {
-  }
+  values = []
 }
 
 variable "app_namespace" {}

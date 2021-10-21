@@ -27,8 +27,6 @@ locals {
       },
       "storageClassName" = "st1"
     }
-    "persitence" = {
-      "storageClass" = "st1"
-    }
+    "antiAffinity" = var.tfenv == "prod" ? "hard" : "soft"
   }
 }
