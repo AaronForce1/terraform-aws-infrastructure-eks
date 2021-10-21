@@ -58,14 +58,14 @@ data "aws_iam_policy_document" "eks_efs_csi_driver_trust_policy" {
     effect = "Allow"
     principals {
         type = "Federated"
-        identifiers = ["arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.cluster_oidc_issuer_url, -32, -1)}"]
+        identifiers = ["arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}"]
     }
     actions = [
       "sts:AssumeRoleWithWebIdentity"
     ]
     condition {
         test = "StringEquals"
-        variable = "oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.cluster_oidc_issuer_url, -32, -1)}:sub"
+        variable = "oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}:sub"
         values = ["system:serviceaccount:kube-system:efs-csi-controller-sa"]
     }
   }

@@ -12,7 +12,10 @@ module "nginx-controller-ingress" {
 
   root_domain_name = var.root_domain_name
   app_namespace    = var.app_namespace
+  app_name         = var.app_name
   tfenv            = var.tfenv
+  infrastructure_eks_terraform_version = data.local_file.infrastructure-terraform-eks-version.content
+  billingcustomer = var.billingcustomer
 }
 
 module "certmanager" {
@@ -31,6 +34,9 @@ source                    = "./provisioning/kubernetes/aws-support"
   oidc_url                = module.eks.cluster_oidc_issuer_url
   account_id              = data.aws_caller_identity.current.account_id
   aws_region              = var.aws_region
+  app_name = var.app_name
+  app_namespace = var.app_namespace
+  tfenv = var.tfenv
 }
 
 module "aws-cluster-autoscaler" {
