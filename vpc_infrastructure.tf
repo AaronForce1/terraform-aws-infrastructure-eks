@@ -2,59 +2,36 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# TODO: Cleanup Random CIDR configurations / Generate a pool
-resource "random_integer" "cidr_vpc" {
-  min = 64
-  max = 128
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
+module "subnet_addrs" {
+  source = "hashicorp/subnets/cidr"
 
-resource "random_integer" "cidr_priv_1" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_priv_2" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-resource "random_integer" "cidr_priv_3" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-resource "random_integer" "cidr_pub_1" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_pub_2" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_pub_3" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
+  base_cidr_block = "172.0.0.0/8"
+  networks = [
+    {
+      name     = "pub-1"
+      new_bits = 8
+    },
+    {
+      name     = "pub-2"
+      new_bits = 8
+    },
+    {
+      name     = "pub-3"
+      new_bits = 8
+    },
+    {
+      name     = "priv-1"
+      new_bits = 8
+    },
+    {
+      name     = "priv-2"
+      new_bits = 8
+    },
+    {
+      name     = "priv-3"
+      new_bits = 8
+    },
+  ]
 }
 
 module "eks-vpc" {
@@ -62,8 +39,7 @@ module "eks-vpc" {
   version = "~> 3.1"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  cidr = "172.${random_integer.cidr_vpc.result}.0.0/16"
-
+  cidr = module.subnet_addrs.base_cidr_block
 
   # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
   azs = [
@@ -72,14 +48,14 @@ module "eks-vpc" {
     data.aws_availability_zones.available.names[2]
   ]
   private_subnets = [
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_1.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_2.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_3.result}.0/24",
+    module.subnet_addrs.networks.priv-1.cidr_block,
+    module.subnet_addrs.networks.priv-2.cidr_block,
+    module.subnet_addrs.networks.priv-3.cidr_block,
   ]
   public_subnets = [
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_1.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_2.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_3.result}.0/24"
+    module.subnet_addrs.networks.pub-1.cidr_block,
+    module.subnet_addrs.networks.pub-2.cidr_block,
+    module.subnet_addrs.networks.pub-3.cidr_block,
   ]
 
   # TODO: Configure NAT Gateway setting overrides
@@ -91,7 +67,7 @@ module "eks-vpc" {
   # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
   enable_vpn_gateway                  = false
   propagate_public_route_tables_vgw   = false
-  
+
   # Manage Default VPC
   manage_default_vpc                = false
 
@@ -158,12 +134,12 @@ module "eks-vpc-endpoints" {
   version = "~> 3.1"
 
   vpc_id = module.eks-vpc.vpc_id
-  security_group_ids = [ 
+  security_group_ids = [
     module.eks.cluster_primary_security_group_id,
     module.eks.cluster_security_group_id,
     module.eks.worker_security_group_id
    ]
-  
+
   endpoints = {
     s3 = {
       service = "s3"
@@ -202,7 +178,7 @@ resource "aws_vpc_endpoint" "rds" {
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
     infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
-  } 
+  }
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)
 }
