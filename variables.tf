@@ -136,7 +136,7 @@ variable "node_key_name" {
   default = ""
 }
 
-variable "node_public_ip" { 
+variable "node_public_ip" {
   description = "assign public ip on the nodes"
   default = false
 }
@@ -158,6 +158,20 @@ variable "helm_installations" {
   }
 }
 
+variable "vpc_subnet_configuration" {
+  type = object({
+    base_cidr = string
+    subnet_bit_interval = number
+    autogenerate = optional(bool)
+  })
+  description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
+  default = {
+    base_cidr = "172.%s.%s.0/24"
+    subnet_bit_interval = 3
+    autogenerate = true
+  }
+}
+
 variable "enable_aws_vault_unseal" {
   description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
   default     = false
@@ -175,7 +189,7 @@ variable "google_authDomain" {
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
 
-variable "create_launch_template" { 
+variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
 }

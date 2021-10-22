@@ -5,31 +5,31 @@ data "aws_availability_zones" "available" {
 module "subnet_addrs" {
   source = "hashicorp/subnets/cidr"
 
-  base_cidr_block = "172.0.0.0/8"
+  base_cidr_block = local.base_cidr
   networks = [
     {
-      name     = "pub-1"
-      new_bits = 8
+      name     = "public-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
     {
-      name     = "pub-2"
-      new_bits = 8
+      name     = "public-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
     {
-      name     = "pub-3"
-      new_bits = 8
+      name     = "public-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
     {
-      name     = "priv-1"
-      new_bits = 8
+      name     = "private-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
     {
-      name     = "priv-2"
-      new_bits = 8
+      name     = "private-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
     {
-      name     = "priv-3"
-      new_bits = 8
+      name     = "private-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
     },
   ]
 }
@@ -48,14 +48,14 @@ module "eks-vpc" {
     data.aws_availability_zones.available.names[2]
   ]
   private_subnets = [
-    module.subnet_addrs.networks.priv-1.cidr_block,
-    module.subnet_addrs.networks.priv-2.cidr_block,
-    module.subnet_addrs.networks.priv-3.cidr_block,
+    module.subnet_addrs.networks.private-1.cidr_block,
+    module.subnet_addrs.networks.private-2.cidr_block,
+    module.subnet_addrs.networks.private-3.cidr_block,
   ]
   public_subnets = [
-    module.subnet_addrs.networks.pub-1.cidr_block,
-    module.subnet_addrs.networks.pub-2.cidr_block,
-    module.subnet_addrs.networks.pub-3.cidr_block,
+    module.subnet_addrs.networks.public-1.cidr_block,
+    module.subnet_addrs.networks.public-2.cidr_block,
+    module.subnet_addrs.networks.public-3.cidr_block,
   ]
 
   # TODO: Configure NAT Gateway setting overrides
