@@ -166,8 +166,8 @@ variable "vpc_subnet_configuration" {
   })
   description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
   default = {
-    base_cidr = "172.%s.%s.0/24"
-    subnet_bit_interval = 3
+    base_cidr = "172.%s.0.0/16"
+    subnet_bit_interval = 4
     autogenerate = true
   }
 }

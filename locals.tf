@@ -46,16 +46,11 @@ locals {
     }
   ]
 
-  base_cidr = var.vpc_subnet_configuration.autogenerate ?
-    format(
-      var.vpc_subnet_configuration.base_cidr,
-      random_integer.cidr_vpc[0],
-      random_integer.cidr_vpc[1]) :
-    var.vpc_subnet_configuration.base_cidr
+  base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0]) : var.vpc_subnet_configuration.base_cidr
 }
 
 resource "random_integer" "cidr_vpc" {
-  count = var.vpc_subnet_configuration.autogenerate ? 2 : 0
+  count = var.vpc_subnet_configuration.autogenerate ? 1 : 0
   min = 0
   max = 255
   keepers = {
