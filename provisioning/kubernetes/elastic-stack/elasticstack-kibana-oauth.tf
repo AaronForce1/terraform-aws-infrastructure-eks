@@ -5,23 +5,22 @@ resource "helm_release" "elasticstack-oauth2-proxy" {
   version    = "3.2.5"
   namespace  = "monitoring"
 
-  values = [
-    <<-EOF
-      config:
-        clientID: ${var.google_clientID}
-        clientSecret: ${var.google_clientSecret}
-        cookieSecret: ${base64encode(random_string.random.result)}
-        configFile: ${local.config_file}
-      image:
-        repository: quay.io/pusher/oauth2_proxy
-        tag: latest
-        pullPolicy: IfNotPresent
-      extraArgs
-        provider: google
-        email-domain: ${var.google_authDomain}
-        upstream: "file:///dev/null"
-        http-address: "0.0.0.0:4180"
-    EOF
+  values = [<<EOF
+config:
+  clientID: "${var.google_clientID}"
+  clientSecret: "${var.google_clientSecret}"
+  cookieSecret: "${base64encode(random_string.random.result)}"
+  configFile: ${local.config_file}
+image:
+  repository: quay.io/pusher/oauth2_proxy
+  tag: latest
+  pullPolicy: IfNotPresent
+extraArgs
+  provider: google
+  email-domain: "${var.google_authDomain}"
+  upstream: "file:///dev/null"
+  http-address: "0.0.0.0:4180"
+EOF
   ]
 }
 

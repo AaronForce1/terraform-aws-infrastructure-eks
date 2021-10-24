@@ -5,27 +5,26 @@ resource "helm_release" "vault" {
   namespace           = "hashicorp"
   create_namespace    = false
 
-  values = [
-    <<-EOF
-      metrics:
-        enabled: true
-      server:
-        extraSecretEnvironmentVars: ${local.extraSecretEnvironmentVars}
-        ingress:
-          enabled: true
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            cert-manager.io/cluster-issuer: "letsencrypt-prod"
-          hosts:
-            - host:"vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}",
-              paths:
-                - "/"
-          tls:
-            secretName: vault-ing-tls
-            hosts:
-              - "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
-        ha: ${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
-    EOF
+  values = [<<EOF
+metrics:
+  enabled: true
+server:
+  extraSecretEnvironmentVars: $${local.extraSecretEnvironmentVars}
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    hosts:
+      - host:"vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}",
+        paths:
+          - "/"
+    tls:
+      secretName: vault-ing-tls
+      hosts:
+        - "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+  ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
+EOF
   ]
 }
 

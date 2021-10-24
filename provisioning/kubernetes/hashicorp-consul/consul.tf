@@ -5,28 +5,27 @@ resource "helm_release" "consul" {
   namespace           = "hashicorp"
   create_namespace    = true
 
-  values = [
-    <<-EOF
-      global:
-        domain: "consul.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
-        datacenter: "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-      server:
-        enabled: true
-        replicas: 2
-      client:
-        enabled: true
-      ui:
-        enabled: true
-      syncCatalog
-        enabled: false
-        toConsul: false
-        toK8s: false
-      connectInject:
-        enabled: false
-        default: true
-      controller:
-        enabled: true
-    EOF
+  values = [<<EOF
+global:
+  domain: consul.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}
+  datacenter: ${var.app_name}-${var.app_namespace}-${var.tfenv}
+server:
+  enabled: "true"
+  replicas: 2
+client:
+  enabled: "true"
+ui:
+  enabled: "true"
+syncCatalog:
+  enabled: "false"
+  toConsul: "false"
+  toK8s: "false"
+connectInject:
+  enabled: "false"
+  default: "true"
+controller:
+  enabled: "true"
+EOF
   ]
 }
 
