@@ -123,9 +123,9 @@ module "eks-vpc" {
   default_security_group_egress  = [{}]
 
   # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = true
-  create_flow_log_cloudwatch_log_group = true
-  create_flow_log_cloudwatch_iam_role  = true
+  enable_flow_log                      = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_log_group = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
   tags = {
@@ -184,7 +184,7 @@ resource "aws_vpc_endpoint" "rds" {
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
     infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
-  } 
+  }
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)
 }
@@ -196,19 +196,19 @@ resource "aws_vpc_endpoint" "rds" {
 #   name = "eks-${var.tfenv}-external-vpc"
 #   cidr = "172.22.0.0/16"
 #   azs            = [
-#                     data.aws_availability_zones.available.names[0], 
-#                     data.aws_availability_zones.available.names[1], 
+#                     data.aws_availability_zones.available.names[0],
+#                     data.aws_availability_zones.available.names[1],
 #                     data.aws_availability_zones.available.names[2]
 #                    ]
 #   private_subnets = [
-#                       // "172.22.0.0/21", 
+#                       // "172.22.0.0/21",
 #                       "172.22.0.0/23",
 #                       "172.22.2.0/23",
 #                       "172.22.4.0/23",
 #                       // "172.22.6.0/23"
 #                     ]
 #   public_subnets = [
-#                       // "172.22.100.0/21", 
+#                       // "172.22.100.0/21",
 #                       "172.22.100.0/23",
 #                       "172.22.102.0/23",
 #                       "172.22.104.0/23",
@@ -243,6 +243,6 @@ resource "aws_vpc_endpoint" "rds" {
 #   }
 
 #   vpc_tags = {
-#    Name = "eks-${var.tfenv}-external-vpc" 
+#    Name = "eks-${var.tfenv}-external-vpc"
 #   }
 # }

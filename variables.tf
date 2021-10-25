@@ -136,9 +136,17 @@ variable "node_key_name" {
   default = ""
 }
 
-variable "node_public_ip" { 
+variable "node_public_ip" {
   description = "assign public ip on the nodes"
   default = false
+}
+
+variable "vpc_flow_logs" {
+  description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
+  type = object({
+    enabled = optional(bool)
+  })
+  default = {}
 }
 
 variable "helm_installations" {
@@ -175,7 +183,7 @@ variable "google_authDomain" {
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
 
-variable "create_launch_template" { 
+variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
 }
