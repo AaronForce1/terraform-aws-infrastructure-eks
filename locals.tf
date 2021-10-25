@@ -46,7 +46,7 @@ locals {
     }
   ]
 
-  base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0]) : var.vpc_subnet_configuration.base_cidr
+  base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0].result) : var.vpc_subnet_configuration.base_cidr
 }
 
 resource "random_integer" "cidr_vpc" {

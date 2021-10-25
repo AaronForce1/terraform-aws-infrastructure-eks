@@ -48,14 +48,14 @@ module "eks-vpc" {
     data.aws_availability_zones.available.names[2]
   ]
   private_subnets = [
-    module.subnet_addrs.networks.private-1.cidr_block,
-    module.subnet_addrs.networks.private-2.cidr_block,
-    module.subnet_addrs.networks.private-3.cidr_block,
+    module.subnet_addrs.networks[3].cidr_block,
+    module.subnet_addrs.networks[4].cidr_block,
+    module.subnet_addrs.networks[5].cidr_block,
   ]
   public_subnets = [
-    module.subnet_addrs.networks.public-1.cidr_block,
-    module.subnet_addrs.networks.public-2.cidr_block,
-    module.subnet_addrs.networks.public-3.cidr_block,
+    module.subnet_addrs.networks[0].cidr_block,
+    module.subnet_addrs.networks[1].cidr_block,
+    module.subnet_addrs.networks[2].cidr_block,
   ]
 
   # TODO: Configure NAT Gateway setting overrides
