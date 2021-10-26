@@ -67,7 +67,7 @@ locals {
     }
 
     service_registration "kubernetes" {}
-    EOF
+EOF
   })
 
   haConfig_default = indent(1, yamlencode({
