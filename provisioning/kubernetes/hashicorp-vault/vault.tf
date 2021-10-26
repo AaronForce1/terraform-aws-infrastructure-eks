@@ -27,7 +27,6 @@ server:
       secretName: vault-ing-tls
   ha:
     ${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
-    ${var.enable_aws_vault_unseal ? local.haConfigKMS_config : null }
 EOT
   ]
 }
@@ -49,7 +48,7 @@ locals {
   haConfig_KMS = yamlencode({
     enabled: true,
     replicas: 2,
-    config:
+    config: ${local.haConfig_KMS_config}
   })  
 
   haConfig_KMS_config = <<EOF
@@ -71,7 +70,7 @@ locals {
       address = "HOST_IP:8500"
     }
 
-     service_registration "kubernetes" {}
+    service_registration "kubernetes" {}
 EOF
 
   haConfig_default = indent(1, yamlencode({
