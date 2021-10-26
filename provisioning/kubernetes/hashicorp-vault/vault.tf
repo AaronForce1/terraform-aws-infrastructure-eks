@@ -47,7 +47,6 @@ locals {
   haConfig_KMS = indent(4, yamlencode({
   enabled: true,
   replicas: 2,
-#  config: "${data.template_file.haConfig_KMS_config.rendered}"
   config: <<-EOF
     ui = "true"
 
@@ -100,13 +99,5 @@ variable "root_domain_name" {}
 variable "app_name" {}
 variable "enable_aws_vault_unseal" {}
 variable "billingcustomer" {}
-
-#data "template_file" "haConfig_KMS_config" {
-#  template = "${file(files/haConfig_KMS_config.txt)}"
-#  vars = {
-#    aws_region = "${var.aws_region}"
-#    kms_key_id = "${var.enable_aws_vault_unseal ? aws_kms_key.vault[0].key_id : ""}"
-#  }
-#}
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
