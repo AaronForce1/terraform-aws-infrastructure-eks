@@ -100,6 +100,5 @@ variable "root_domain_name" {}
 variable "app_name" {}
 variable "enable_aws_vault_unseal" {}
 variable "billingcustomer" {}
-}
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
