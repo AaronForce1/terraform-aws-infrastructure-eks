@@ -32,24 +32,6 @@ EOT
 }
 
 locals {
-  extraSecretEnvironmentVars = var.enable_aws_vault_unseal ? indent(2, yamlencode([
-      {
-        "envName": "AWS_ACCESS_KEY_ID",
-        "secretName": "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials",
-        "secretKey": "AWS_ACCESS_KEY_ID"
-      },
-      {
-        "envName": "AWS_SECRET_ACCESS_KEY",
-        "secretName": "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials",
-        "secretKey": "AWS_SECRET_ACCESS_KEY"
-      }
-])) : yamlencode([])
-  
-  haConfig_KMS = yamlencode({
-    enabled: true,
-    replicas: 2,
-    config: ${local.haConfig_KMS_config}
-  })  
 
   haConfig_KMS_config = <<EOF
     ui = "true"
@@ -72,6 +54,28 @@ locals {
 
     service_registration "kubernetes" {}
 EOF
+
+}
+
+locals {
+  extraSecretEnvironmentVars = var.enable_aws_vault_unseal ? indent(2, yamlencode([
+      {
+        "envName": "AWS_ACCESS_KEY_ID",
+        "secretName": "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials",
+        "secretKey": "AWS_ACCESS_KEY_ID"
+      },
+      {
+        "envName": "AWS_SECRET_ACCESS_KEY",
+        "secretName": "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials",
+        "secretKey": "AWS_SECRET_ACCESS_KEY"
+      }
+])) : yamlencode([])
+  
+  haConfig_KMS = yamlencode({
+    enabled: true,
+    replicas: 2,
+    config: "${local.haConfig_KMS_config}"
+  })  
 
   haConfig_default = indent(1, yamlencode({
   enabled: true,
