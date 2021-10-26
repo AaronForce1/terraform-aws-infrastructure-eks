@@ -47,7 +47,7 @@ locals {
   haConfig_KMS = yamlencode({
     enabled: true,
     replicas: 2,
-    config: <<EOF
+    config: <<EOT
     ui = "true"
 
     listener "tcp" {
@@ -67,7 +67,7 @@ locals {
     }
 
     service_registration "kubernetes" {}
-EOF
+EOT
   })
 
   haConfig_default = indent(1, yamlencode({
