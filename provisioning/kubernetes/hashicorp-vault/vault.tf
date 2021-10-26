@@ -49,25 +49,25 @@ locals {
     enabled: true,
     replicas: 2,
     config: <<-EOF
-     ui = "true"
+    ui = "true"
 
-     listener "tcp" {
-      tls_disable = 1
-      address = "[::]:8200"
-      cluster_address = "[::]:8201"
-     }
+    listener "tcp" {
+     tls_disable = 1
+     address = "[::]:8200"
+     cluster_address = "[::]:8201"
+    }
 
-     seal "awskms" {
-       region     = "${var.aws_region}"
-       kms_key_id =  "${var.enable_aws_vault_unseal ? aws_kms_key.vault[0].key_id : ""}"
-     }
+    seal "awskms" {
+      region     = "${var.aws_region}"
+      kms_key_id =  "${var.enable_aws_vault_unseal ? aws_kms_key.vault[0].key_id : ""}"
+    }
 
-     storage "consul" {
-       path = "vault"
-       address = "HOST_IP:8500"
-     }
+    storage "consul" {
+      path = "vault"
+      address = "HOST_IP:8500"
+    }
  
-     service_registration "kubernetes" {}
+    service_registration "kubernetes" {}
   EOF
   })  
 
