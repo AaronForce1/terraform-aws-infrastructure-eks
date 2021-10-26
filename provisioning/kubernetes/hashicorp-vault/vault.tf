@@ -88,7 +88,7 @@ locals {
   }
 
   service_registration "kubernetes" {}
-    EOF
+EOF
   }))
 }
 
