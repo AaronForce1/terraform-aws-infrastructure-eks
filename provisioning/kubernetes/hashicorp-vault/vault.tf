@@ -25,7 +25,7 @@ server:
     - hosts:
       - "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
       secretName: vault-ing-tls
-  ha: 
+  ha:
     ${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
 EOT
   ]
