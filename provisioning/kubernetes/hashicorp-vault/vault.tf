@@ -48,7 +48,7 @@ locals {
   enabled: true,
   replicas: 2,
   config: <<-EOF
-    ui = "true"
+    ui = true
 
     listener "tcp" {
       tls_disable = 1
