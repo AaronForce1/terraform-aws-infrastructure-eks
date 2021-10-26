@@ -48,7 +48,7 @@ locals {
   haConfig_KMS = yamlencode({
     enabled: true,
     replicas: 2,
-    config: <<-EOF
+    config: <<EOF
     ui = "true"
 
     listener "tcp" {
