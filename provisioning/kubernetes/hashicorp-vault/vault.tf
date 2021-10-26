@@ -49,7 +49,7 @@ locals {
   haConfig_KMS = yamlencode({
     enabled: true,
     replicas: 2,
-    config: |
+    config:
   })  
 
   haConfig_KMS_config = <<EOF
@@ -103,17 +103,6 @@ variable "root_domain_name" {}
 variable "app_name" {}
 variable "enable_aws_vault_unseal" {}
 variable "billingcustomer" {}
-variable "aws_vault_ha_config" {
-  type = "string"
-  default = <<EOF
-    ui = "true"
-
-    listener "tcp" {
-      tls_disable = 1
-      address = "[::]:8200"
-      cluster_address = "[::]:8201"
-    }
-EOF
 }
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
