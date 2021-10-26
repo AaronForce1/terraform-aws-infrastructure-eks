@@ -44,7 +44,7 @@ locals {
         "secretKey": "AWS_SECRET_ACCESS_KEY"
       }
 ])) : yamlencode([])
-  haConfig_KMS = indent(1, yamlencode({
+  haConfig_KMS = indent(2, yamlencode({
   enabled: true,
   replicas: 2,
   config: <<-EOF
