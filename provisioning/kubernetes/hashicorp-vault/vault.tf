@@ -26,7 +26,7 @@ server:
       - "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
       secretName: vault-ing-tls
   ha:
-    ${var.enable_aws_vault_unseal ? yamlencode({local.haConfig_KMS}) : local.haConfig_default}
+    ${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
 EOT
   ]
 }
@@ -44,10 +44,10 @@ locals {
         "secretKey": "AWS_SECRET_ACCESS_KEY"
       }
 ])) : yamlencode([])
-  haConfig_KMS = <<EOF
+  haConfig_KMS = indent(1, yamlencode({
   enabled: true,
   replicas: 2,
-  config:
+  config: <<EOF
     ui = "true"
 
     listener "tcp" {
@@ -68,6 +68,7 @@ locals {
 
     service_registration "kubernetes" {}
   EOF
+  }))
 
   haConfig_default = indent(1, yamlencode({
   enabled: true,
