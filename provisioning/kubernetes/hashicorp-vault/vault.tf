@@ -32,32 +32,6 @@ EOT
 }
 
 locals {
-
-  haConfig_KMS_config = <<EOF
-    ui = "true"
-
-    listener "tcp" {
-      tls_disable = 1
-      address = "[::]:8200"
-      cluster_address = "[::]:8201"
-    }
-
-    seal "awskms" {
-      region     = "${var.aws_region}"
-      kms_key_id =  "${var.enable_aws_vault_unseal ? aws_kms_key.vault[0].key_id : ""}"
-    }
-
-    storage "consul" {
-      path = "vault"
-      address = "HOST_IP:8500"
-    }
-
-    service_registration "kubernetes" {}
-EOF
-
-}
-
-locals {
   extraSecretEnvironmentVars = var.enable_aws_vault_unseal ? indent(2, yamlencode([
       {
         "envName": "AWS_ACCESS_KEY_ID",
@@ -74,7 +48,27 @@ locals {
   haConfig_KMS = yamlencode({
     enabled: true,
     replicas: 2,
-    config: "${local.haConfig_KMS_config}"
+    config: <<-EOF
+     ui = "true"
+
+     listener "tcp" {
+      tls_disable = 1
+      address = "[::]:8200"
+      cluster_address = "[::]:8201"
+     }
+
+     seal "awskms" {
+       region     = "${var.aws_region}"
+       kms_key_id =  "${var.enable_aws_vault_unseal ? aws_kms_key.vault[0].key_id : ""}"
+     }
+
+     storage "consul" {
+       path = "vault"
+       address = "HOST_IP:8500"
+     }
+ 
+     service_registration "kubernetes" {}
+  EOF
   })  
 
   haConfig_default = indent(1, yamlencode({
