@@ -143,9 +143,10 @@ variable "node_public_ip" {
 
 variable "vpc_flow_logs" {
   description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
-  type = object({
-    enabled = optional(bool)
-  })
+  ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
+  # type = object({
+  #   enabled = optional(bool)
+  # })
   default = {}
 }
 
