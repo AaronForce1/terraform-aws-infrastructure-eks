@@ -32,6 +32,8 @@ EOT
 }
 
 locals {
+  ## False positive regarding exposing secrets via local values in terraform; no secrets are exposed as they are managed via k8s secrets
+  #tfsec:ignore:GEN002 
   extraSecretEnvironmentVars = var.enable_aws_vault_unseal ? indent(2, yamlencode([
       {
         "envName": "AWS_ACCESS_KEY_ID",
