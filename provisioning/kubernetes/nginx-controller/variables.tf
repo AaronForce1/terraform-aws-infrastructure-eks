@@ -9,3 +9,8 @@ variable "app_namespace" {
 variable "tfenv" {
   description = "Environment"
 }
+
+variable "billingcustomer" {}
+variable "app_name" {}
+
+variable infrastructure_eks_terraform_version {}

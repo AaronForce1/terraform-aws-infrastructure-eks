@@ -1,7 +1,7 @@
 # Create a base domain for EKS Cluster
-data "aws_route53_zone" "base_domain" {
-  name = var.root_domain_name
-}
+# data "aws_route53_zone" "base_domain" {
+#   name = var.root_domain_name
+# }
 
 # resource "aws_route53_record" "eks_domain" {
 #   zone_id = data.aws_route53_zone.base_domain.id

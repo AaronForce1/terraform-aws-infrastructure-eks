@@ -98,7 +98,7 @@ variable "tfenv" {
 
 variable "cluster_version" {
   description = "Kubernetes Cluster Version"
-  default     = "1.18"
+  default     = "1.21"
 }
 
 variable "instance_type" {
@@ -166,6 +166,20 @@ variable "helm_installations" {
   }
 }
 
+variable "vpc_subnet_configuration" {
+  type = object({
+    base_cidr = string
+    subnet_bit_interval = number
+    autogenerate = optional(bool)
+  })
+  description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
+  default = {
+    base_cidr = "172.%s.0.0/16"
+    subnet_bit_interval = 4
+    autogenerate = true
+  }
+}
+
 variable "enable_aws_vault_unseal" {
   description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
   default     = false
@@ -186,4 +200,15 @@ variable "google_authDomain" {
 variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
+}
+
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
+  type = list(string)
+  default = []
+}
+
+variable "default_ami_type" {
+  description = "Default AMI used for node provisioning"
+  default = "AL2_x86_64"
 }
