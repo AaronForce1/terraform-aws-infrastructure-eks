@@ -30,7 +30,7 @@ resource "kubernetes_storage_class" "gp3-storage-class" {
     name = "gp3"
   }
   storage_provisioner = "ebs.csi.aws.com"
-  paramenters = {
+  parameters = {
     type = "gp3"
     fsType = "ext4"
   }
