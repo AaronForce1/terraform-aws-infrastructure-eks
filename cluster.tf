@@ -10,18 +10,19 @@ module "eks" {
   write_kubeconfig   = "true"
   kubeconfig_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
   tags = {
-    Terraform                    = "true"
-    Environment                  = var.tfenv
-    Product                      = var.app_name
-    billingcustomer              = var.billingcustomer
-    Namespace                    = var.app_namespace
-    infrastructure-terraform-eks = data.local_file.infrastructure-terraform-eks-version.content
+    Environment                         = var.tfenv
+    Terraform                           = "true"
+    Namespace                           = var.app_namespace
+    Billingcustomer                     = var.billingcustomer
+    Product                             = var.app_name
+    infrastructure-eks-terraform        = data.local_file.infrastructure-terraform-eks-version.content
   }
   vpc_id = module.eks-vpc.vpc_id
 
   cluster_endpoint_private_access       = true
-  cluster_endpoint_private_access_cidrs = module.eks-vpc.public_subnets_cidr_blocks
-  cluster_endpoint_public_access        = true
+  cluster_endpoint_private_access_cidrs = module.eks-vpc.private_subnets_cidr_blocks
+  cluster_endpoint_public_access        = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
+  cluster_endpoint_public_access_cidrs  = var.cluster_endpoint_public_access_cidrs
 
   cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
   cluster_encryption_config = [
@@ -33,7 +34,7 @@ module "eks" {
   enable_irsa = true
 
   node_groups_defaults = {
-    ami_type  = "AL2_x86_64"
+    ami_type  = var.default_ami_type
     disk_size = var.root_vol_size
   }
 
@@ -52,10 +53,13 @@ resource "aws_kms_key" "eks" {
   enable_key_rotation = true
   description         = "${var.app_name}-${var.app_namespace}-${var.tfenv} EKS Secret Encryption Key"
   tags = {
-    Environment     = var.tfenv
-    Billingcustomer = var.billingcustomer
-    Namespace       = var.app_namespace
-    Product         = var.app_name
+    Environment                         = var.tfenv
+    Terraform                           = "true"
+    Namespace                           = var.app_namespace
+    Billingcustomer                     = var.billingcustomer
+    Product                             = var.app_name
+    infrastructure-eks-terraform        = data.local_file.infrastructure-terraform-eks-version.content
+    Name                                = "${var.app_name}-${var.app_namespace}-${var.tfenv}-key"
   }
 }
 
@@ -67,12 +71,3 @@ data "aws_eks_cluster" "my-cluster" {
 data "aws_eks_cluster_auth" "my-auth" {
   name = module.eks.cluster_id
 }
-
-####################################
-##                                ##
-##      SUPPLEMENTAL SUPPORT      ##
-##    TRADITIONAL INFRA INTEG.    ##
-##                                ##
-####################################
-
-## TODO: Allow for custom integration with NAT VPC peering to private AWS infrastructure/VPCs.

@@ -98,7 +98,7 @@ variable "tfenv" {
 
 variable "cluster_version" {
   description = "Kubernetes Cluster Version"
-  default     = "1.18"
+  default     = "1.21"
 }
 
 variable "instance_type" {
@@ -136,9 +136,18 @@ variable "node_key_name" {
   default = ""
 }
 
-variable "node_public_ip" { 
+variable "node_public_ip" {
   description = "assign public ip on the nodes"
   default = false
+}
+
+variable "vpc_flow_logs" {
+  description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
+  ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
+  # type = object({
+  #   enabled = optional(bool)
+  # })
+  default = {}
 }
 
 variable "helm_installations" {
@@ -155,6 +164,20 @@ variable "helm_installations" {
     ingress       = true
     elasticstack  = false
     grafana       = true
+  }
+}
+
+variable "vpc_subnet_configuration" {
+  type = object({
+    base_cidr = string
+    subnet_bit_interval = number
+    autogenerate = optional(bool)
+  })
+  description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
+  default = {
+    base_cidr = "172.%s.0.0/16"
+    subnet_bit_interval = 4
+    autogenerate = true
   }
 }
 
@@ -175,7 +198,18 @@ variable "google_authDomain" {
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
 
-variable "create_launch_template" { 
+variable "create_launch_template" {
   description = "enable launch template on node group"
   default = false
+}
+
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
+  type = list(string)
+  default = []
+}
+
+variable "default_ami_type" {
+  description = "Default AMI used for node provisioning"
+  default = "AL2_x86_64"
 }

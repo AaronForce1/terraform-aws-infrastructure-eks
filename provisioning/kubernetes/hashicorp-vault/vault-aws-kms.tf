@@ -1,21 +1,21 @@
 resource "aws_kms_key" "vault" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count                   = var.enable_aws_vault_unseal ? 1 : 0
 
   description             = "${var.app_name}-${var.app_namespace}-${var.tfenv} VAULT EKS Unseal Key"
   enable_key_rotation     = true
   deletion_window_in_days = 10
 
   tags = {
-    Name            = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-unseal"
-    Environment     = var.tfenv
+    Name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-unseal"
+    Environment = var.tfenv
     Billingcustomer = var.billingcustomer
-    Namespace       = var.app_namespace
-    Product         = var.app_name
+    Namespace = var.app_namespace
+    Product = var.app_name
   }
 }
 
 resource "aws_kms_alias" "vault" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count                   = var.enable_aws_vault_unseal ? 1 : 0
 
   name          = "alias/${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-eks"
   target_key_id = aws_kms_key.vault[0].key_id
@@ -27,7 +27,7 @@ resource "aws_kms_alias" "vault" {
 
 ### IAM USER DEFINITION
 module "iam_user" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count   = var.enable_aws_vault_unseal ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "~> 3.0"
@@ -35,7 +35,7 @@ module "iam_user" {
   name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-eks-serviceaccount-user"
   path = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
 
-  create_iam_access_key         = true
+  create_iam_access_key = true
   create_iam_user_login_profile = false
 
 
@@ -44,17 +44,17 @@ module "iam_user" {
   ## TODO: Setup PGP Encryption for Access KEY/SECRET provisioning
   # pgp_key = "keybase:test"
 
-  password_reset_required = false
+  password_reset_required = false  
 }
 
 ### IAM POLICY DEFINITION
 resource "aws_iam_policy" "kms_access_policy" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count       = var.enable_aws_vault_unseal ? 1 : 0
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-unseal-policy"
   description = "Terraform Generated : ${var.app_name}-${var.app_namespace}-${var.tfenv}"
 
-  path   = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
+  path = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
   policy = data.aws_iam_policy_document.kms_policy_data.json
 }
 
@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "kms_policy_data" {
     aws_kms_key.vault
   ]
   statement {
-    sid    = "2"
+    sid = "2"
     effect = "Allow"
     actions = [
       "kms:Encrypt",
@@ -77,21 +77,21 @@ data "aws_iam_policy_document" "kms_policy_data" {
 }
 
 resource "aws_iam_user_policy_attachment" "kms_policy_attach" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count   = var.enable_aws_vault_unseal ? 1 : 0
 
   user       = module.iam_user[0].this_iam_user_name
   policy_arn = aws_iam_policy.kms_access_policy[0].arn
 }
 
 resource "kubernetes_secret" "kms_iam_user" {
-  count = var.enable_aws_vault_unseal ? 1 : 0
+  count   = var.enable_aws_vault_unseal ? 1 : 0
   metadata {
-    name      = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials"
+    name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-credentials"
     namespace = "hashicorp"
   }
 
   data = {
-    AWS_ACCESS_KEY_ID     = module.iam_user[0].this_iam_access_key_id
+    AWS_ACCESS_KEY_ID = module.iam_user[0].this_iam_access_key_id
     AWS_SECRET_ACCESS_KEY = module.iam_user[0].this_iam_access_key_secret
   }
 

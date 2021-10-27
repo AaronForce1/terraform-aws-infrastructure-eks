@@ -1,121 +1,75 @@
-// Configure AWS VPC, Subnets, and Routes
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# resource "aws_eip" "nat_gw_elastic_ip" {
-#   vpc = true
+module "subnet_addrs" {
+  source = "hashicorp/subnets/cidr"
 
-#   tags = {
-#     Name                = "eks_${var.tfenv}-nat-eip"
-#     Terraform           = "true",
-#     Environment         = "${var.tfenv}"
-#     Namespace           = "${var.app_namespace}"
-#     billingcustomer     = "${var.billingcustomer}"
-#   }
-# }
-
-resource "random_integer" "cidr_vpc" {
-  min = 64
-  max = 128
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_priv_1" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_priv_2" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-resource "random_integer" "cidr_priv_3" {
-  min = 0
-  max = 150
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-resource "random_integer" "cidr_pub_1" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
+  base_cidr_block = local.base_cidr
+  networks = [
+    {
+      name     = "public-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+    {
+      name     = "public-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+    {
+      name     = "public-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+    {
+      name     = "private-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+    {
+      name     = "private-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+    {
+      name     = "private-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+    },
+  ]
 }
 
-resource "random_integer" "cidr_pub_2" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
-
-resource "random_integer" "cidr_pub_3" {
-  min = 151
-  max = 255
-  keepers = {
-    name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
-}
 module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 2.66"
+  version = "~> 3.1"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  cidr = "172.${random_integer.cidr_vpc.result}.0.0/16"
+  cidr = module.subnet_addrs.base_cidr_block
 
-
-  ##TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
+  # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
   azs = [
     data.aws_availability_zones.available.names[0],
     data.aws_availability_zones.available.names[1],
     data.aws_availability_zones.available.names[2]
   ]
   private_subnets = [
-    // "172.10.0.0/21",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_1.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_2.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_priv_3.result}.0/24",
-    // "172.20.6.0/23"
+    module.subnet_addrs.networks[3].cidr_block,
+    module.subnet_addrs.networks[4].cidr_block,
+    module.subnet_addrs.networks[5].cidr_block,
   ]
   public_subnets = [
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_1.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_2.result}.0/24",
-    "172.${random_integer.cidr_vpc.result}.${random_integer.cidr_pub_3.result}.0/24"
+    module.subnet_addrs.networks[0].cidr_block,
+    module.subnet_addrs.networks[1].cidr_block,
+    module.subnet_addrs.networks[2].cidr_block,
   ]
 
-  enable_nat_gateway   = true
-  enable_dns_hostnames = true
-  #TODO: For DEV - only one nat gateway is probably fine
-  single_nat_gateway     = var.tfenv == "prod" ? false : true
-  one_nat_gateway_per_az = false
+  # TODO: Configure NAT Gateway setting overrides
+  enable_nat_gateway                  = true
+  enable_dns_hostnames                = true
+  single_nat_gateway                  = var.tfenv == "prod" ? false : true
+  one_nat_gateway_per_az              = false
   # reuse_nat_ips                     = true
   # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
-  enable_vpn_gateway                = false
-  propagate_public_route_tables_vgw = false
+  enable_vpn_gateway                  = false
+  propagate_public_route_tables_vgw   = false
 
-  # VPC endpoint for S3
-  enable_s3_endpoint = true
-
-  # VPC endpoint for RDS
-  # enable_rds_endpoint = true
-  # rds_endpoint_private_dns_enabled = true
-  # rds_endpoint_security_group_ids = [
-  #   module.eks.cluster_primary_security_group_id,
-  #   module.eks.cluster_security_group_id,
-  #   module.eks.worker_security_group_id
-  # ]
+  # Manage Default VPC
+  manage_default_vpc                = false
 
   # Default security group - ingress/egress rules cleared to deny all
   manage_default_security_group  = false
@@ -123,18 +77,28 @@ module "eks-vpc" {
   default_security_group_egress  = [{}]
 
   # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = true
-  create_flow_log_cloudwatch_log_group = true
-  create_flow_log_cloudwatch_iam_role  = true
+  enable_flow_log                      = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_log_group = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
   tags = {
-    Terraform                                                     = "true"
-    Environment                                                   = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    infrastructure-eks-terraform                                  = data.local_file.infrastructure-terraform-eks-version.content
+    Terraform                                                            = "true"
+    Environment                                                          = var.tfenv
+    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}"        = "shared"
+    Namespace                                                            = var.app_namespace
+    Billingcustomer                                                      = var.billingcustomer
+    Product                                                              = var.app_name
+    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
+  }
+
+  nat_gateway_tags = {
+    Terraform                                                            = "true"
+    "Environment"                                                        = var.tfenv
+    Namespace                                                            = var.app_namespace
+    Billingcustomer                                                      = var.billingcustomer
+    Product                                                              = var.app_name
+    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
   }
 
   vpc_tags = {
@@ -148,6 +112,7 @@ module "eks-vpc" {
     Terraform                                                     = "true"
     Namespace                                                     = var.app_namespace
     Billingcustomer                                               = var.billingcustomer
+    Product                                                       = var.app_name
     infrastructure-eks-terraform                                  = data.local_file.infrastructure-terraform-eks-version.content
   }
 
@@ -158,7 +123,35 @@ module "eks-vpc" {
     Terraform                                                     = "true"
     Namespace                                                     = var.app_namespace
     Billingcustomer                                               = var.billingcustomer
+    Product                                                       = var.app_name
     infrastructure-eks-terraform                                  = data.local_file.infrastructure-terraform-eks-version.content
+  }
+}
+
+module "eks-vpc-endpoints" {
+  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  version = "~> 3.1"
+
+  vpc_id = module.eks-vpc.vpc_id
+  security_group_ids = [
+    module.eks.cluster_primary_security_group_id,
+    module.eks.cluster_security_group_id,
+    module.eks.worker_security_group_id
+   ]
+
+  endpoints = {
+    s3 = {
+      service = "s3"
+      tags    = {
+        "Environment"                                                    = var.tfenv
+        "Terraform"                                                      = "true"
+        "Namespace"                                                      = var.app_namespace
+        "Billingcustomer"                                                = var.billingcustomer
+        "Product"                                                        = var.app_name
+        "infrastructure-eks-terraform"                                   = data.local_file.infrastructure-terraform-eks-version.content
+        "Name"                                                           = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
+      }
+    }
   }
 }
 
@@ -184,65 +177,7 @@ resource "aws_vpc_endpoint" "rds" {
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
     infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
-  } 
+  }
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)
 }
-
-## TODO: Create external VPC for Bastion Hosts and Direct Office - AWS Connetions
-# module "external-vpc" {
-#   source = "terraform-aws-modules/vpc/aws"
-
-#   name = "eks-${var.tfenv}-external-vpc"
-#   cidr = "172.22.0.0/16"
-#   azs            = [
-#                     data.aws_availability_zones.available.names[0], 
-#                     data.aws_availability_zones.available.names[1], 
-#                     data.aws_availability_zones.available.names[2]
-#                    ]
-#   private_subnets = [
-#                       // "172.22.0.0/21", 
-#                       "172.22.0.0/23",
-#                       "172.22.2.0/23",
-#                       "172.22.4.0/23",
-#                       // "172.22.6.0/23"
-#                     ]
-#   public_subnets = [
-#                       // "172.22.100.0/21", 
-#                       "172.22.100.0/23",
-#                       "172.22.102.0/23",
-#                       "172.22.104.0/23",
-#                       // "172.22.106.0/23"
-#                    ]
-
-#   enable_nat_gateway                = false
-#   enable_dns_hostnames              = true
-#   enable_vpn_gateway                = false
-#   propagate_public_route_tables_vgw = false
-
-#   # VPC endpoint for S3
-#   enable_s3_endpoint = false
-
-#   # Default security group - ingress/egress rules cleared to deny all
-#   manage_default_security_group  = true
-#   default_security_group_ingress = [{}]
-#   default_security_group_egress = [{}]
-
-#   # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-#   enable_flow_log                      = true
-#   create_flow_log_cloudwatch_log_group = true
-#   create_flow_log_cloudwatch_iam_role  = true
-#   flow_log_max_aggregation_interval    = 60
-
-#   tags = {
-#     Terraform                                       = "true",
-#     Environment                                     = "${var.tfenv}"
-#     "kubernetes.io/cluster/eks_${var.tfenv}"        = "shared"
-#     Namespace                                       = "${var.app_namespace}"
-#     billingcustomer                                 = "${var.billingcustomer}"
-#   }
-
-#   vpc_tags = {
-#    Name = "eks-${var.tfenv}-external-vpc" 
-#   }
-# }

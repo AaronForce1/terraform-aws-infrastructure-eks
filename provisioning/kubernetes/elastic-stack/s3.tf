@@ -12,7 +12,7 @@ resource "aws_kms_key" "eks_logging" {
 
 module "log_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 1.25"
+  version = "~> 2.6"
 
   # create_bucket = var.tfenv == "prod" ? true : false
 
@@ -38,7 +38,7 @@ module "log_bucket" {
 
 module "s3_elasticstack_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 1.25"
+  version = "~> 2.6"
 
   # create_bucket = var.tfenv == "prod" ? true : false
 
@@ -62,7 +62,7 @@ module "s3_elasticstack_bucket" {
   }
 
   logging = {
-    target_bucket = module.log_bucket.this_s3_bucket_id
+    target_bucket = module.log_bucket.s3_bucket_id
     target_prefix = "logs/"
   }
 
