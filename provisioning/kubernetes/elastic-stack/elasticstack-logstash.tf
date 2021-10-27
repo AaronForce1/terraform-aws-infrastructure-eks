@@ -6,7 +6,7 @@ resource "helm_release" "elasticstack-logstash" {
   namespace  = "monitoring"
 
   values = [<<EOF
-  imagePullPolicy: Always
+  imagePullPolicy: "Always"
   logstashConfig:
     logstash.yml: $${local.logstash_yml}
   logstashPipeline:
@@ -15,12 +15,12 @@ resource "helm_release" "elasticstack-logstash" {
     type: ClusterIP
     loadBalancerIP: ""
     ports:
-      - name: logstash
-        port: 5044
-        protocol: TCP
-      - name: http
-        port: 8080
-        targetPort: 8080
+      - name: "logstash"
+        port: "5044"
+        protocol: "TCP"
+      - name: "http"
+        port: "8080"
+        targetPort: "8080"
   resources:
     limits:
       cpu: "2"
