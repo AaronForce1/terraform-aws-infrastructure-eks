@@ -2,7 +2,7 @@ resource "helm_release" "gp3-storage-class" {
   name       = "aws-ebs-csi-driver"
   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
   chart      = "aws-ebs-csi-driver"
-  namespace           = "kube-system"
+  namespace  = "kube-system"
 
   set {
     name = "image.repository"
@@ -30,4 +30,8 @@ resource "kubernetes_storage_class" "gp3-storage-class" {
     name = "gp3"
   }
   storage_provisioner = "ebs.csi.aws.com"
+  paramenters = {
+    type = "gp3"
+    fsType = "ext4"
+  }
 }
