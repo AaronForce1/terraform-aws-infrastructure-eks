@@ -13,7 +13,7 @@ resource "helm_release" "elasticstack-elasticsearch" {
         resources:
           requests:
             storage: ${var.tfenv == "prod" ? "50Gi" : "20Gi"}
-        storageClassName: st1
+        storageClassName: gp3
       antiAffinity: ${var.tfenv == "prod" ? "hard" : "soft"}
     EOF
   ]

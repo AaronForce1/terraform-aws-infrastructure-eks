@@ -5,7 +5,7 @@ resource "helm_release" "elasticstack-oauth2-proxy" {
   version    = "3.2.5"
   namespace  = "monitoring"
 
-  values = [<<EOF
+  values = [<<EOT
 config:
   clientID: "${var.google_clientID}"
   clientSecret: "${var.google_clientSecret}"
@@ -15,12 +15,12 @@ image:
   repository: quay.io/pusher/oauth2_proxy
   tag: latest
   pullPolicy: IfNotPresent
-extraArgs
+extraArgs:
   provider: google
   email-domain: "${var.google_authDomain}"
   upstream: "file:///dev/null"
   http-address: "0.0.0.0:4180"
-EOF
+EOT
   ]
 }
 
