@@ -9,7 +9,7 @@ resource "helm_release" "elasticstack-filebeat" {
     <<-EOF
       imagePullPolicy: Always
       filebeatConfig:
-        "filebeat.yml": ${local.filebeat_yml}
+        ${local.filebeat_yml}
     EOF
   ]
 
@@ -17,7 +17,8 @@ resource "helm_release" "elasticstack-filebeat" {
 }
 
 locals {
-  filebeat_yml = <<EOF
+  filebeat_yml = indent(2, yamlencode({
+  "filebeat.yml": <<-EOF
       output.file.enabled: false
       setup.ilm.enabled: false
       setup.template.name: 'filebeat'
@@ -28,7 +29,7 @@ locals {
           - '/var/lib/docker/containers/*/*.log'
         json.keys_under_root: true
         json.ignore_decoding_error: true
-      multiline.pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3} \- \-|^ERROR [0-9]{4}-[0-9]{2}-[0-9]{2}|^INFO [0-9]{4}-[0-9]{2}-[0-9]{2}|^\[[0-9]{4}-[0-9]{2}-[0-9]{2}|^[0-9]{4}\/[0-9]{2}\/[0-9]{2}'
+        multiline.pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3} \- \-|^ERROR [0-9]{4}-[0-9]{2}-[0-9]{2}|^INFO [0-9]{4}-[0-9]{2}-[0-9]{2}|^\[[0-9]{4}-[0-9]{2}-[0-9]{2}|^[0-9]{4}\/[0-9]{2}\/[0-9]{2}'
         multiline.negate: true
         multiline.match: after
         processors:
@@ -47,4 +48,5 @@ locals {
         hosts: ["logstash-logstash:5044"]
         index: "filebeat-%%{[agent.version]}-%%{+yyyy.MM.dd}"
     EOF
+  }))
 }
