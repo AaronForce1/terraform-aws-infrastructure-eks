@@ -20,7 +20,7 @@ resource "helm_release" "gp3-storage-class" {
   }
 
   set {
-    name = "controller.serviceAccount.annotations.eks.amazonaws.com/role-arn"
+    name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = "${aws_iam_role.amazoneks-ebs-csi-driver-role.arn}"
   }
 }
