@@ -12,15 +12,12 @@ server:
   extraSecretEnvironmentVars: 
   ${local.extraSecretEnvironmentVars}
   ingress:
-    enabled: false
+    enabled: true
     annotations:
       kubernetes.io/ingress.class: "nginx"
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
     - host: "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
-      paths:
-      - path: "/"
-        pathType: ImplementationSpecific
     tls:
     - hosts:
       - "vault.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
