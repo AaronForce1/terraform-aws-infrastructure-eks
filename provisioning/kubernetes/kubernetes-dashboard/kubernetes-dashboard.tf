@@ -7,7 +7,6 @@ resource "helm_release" "kubernetes-dashboard" {
   version          = "5.0.0"
   namespace        = "kubernetes-dashboard"
   create_namespace = false
-  verify           = false
 
   values = []
 }

@@ -4,7 +4,6 @@ resource "helm_release" "aws-cluster-autoscaler" {
   chart            = "cluster-autoscaler"
   namespace        = "kube-system"
   create_namespace = false
-  verify           = false
 
   set {
     name = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
