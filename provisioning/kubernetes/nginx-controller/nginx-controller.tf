@@ -8,6 +8,7 @@ resource "helm_release" "nginx-controller" {
   force_update        = true
   recreate_pods       = true
   verify              = false
+  disable_openapi_validation = true
  
   values = [yamlencode({
     "controller": {
