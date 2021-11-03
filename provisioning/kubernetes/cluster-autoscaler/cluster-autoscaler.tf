@@ -4,6 +4,7 @@ resource "helm_release" "aws-cluster-autoscaler" {
   chart            = "cluster-autoscaler"
   namespace        = "kube-system"
   create_namespace = false
+  verify           = false
 
   values = [
     # file("${path.module}/values.v0.7.0.yaml")
