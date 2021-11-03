@@ -24,7 +24,7 @@ locals {
       "create" : true,
       "serviceAccount" : {
         "name" : "aws-cluster-autoscaler",
-        "annodations" : [
+        "annotations" : [
           {
             "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.this_iam_role_arn
           }
