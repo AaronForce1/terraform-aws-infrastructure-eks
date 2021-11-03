@@ -2,12 +2,15 @@ resource "helm_release" "nginx-controller" {
   name       = "nginx-controller"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart               = "ingress-nginx"
-  #version             = "4.0.6"
+  version             = "4.0.6"
   namespace           = "ingress-nginx"
   create_namespace    = true
   force_update        = true
   recreate_pods       = true
   verify              = true
+  timeout             = 900
+  skip_crds           = true
+  lint                = true
  
   values = [yamlencode({
     "controller": {
