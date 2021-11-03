@@ -4,7 +4,6 @@ resource "helm_release" "aws-efs-csi-driver" {
   chart               = "aws-efs-csi-driver"
   namespace           = "kube-system"
   force_update = "true"
-  verify     = false
 
   set {
       name = "image.repository"
