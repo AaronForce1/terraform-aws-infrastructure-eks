@@ -5,7 +5,7 @@ resource "helm_release" "elasticstack-oauth2-proxy" {
   version    = "3.2.5"
   namespace  = "monitoring"
 
-  values = [<<EOF
+  values = [<<EOT
 config:
   clientID: "${var.google_clientID}"
   clientSecret: "${var.google_clientSecret}"
@@ -20,12 +20,12 @@ extraArgs:
   email-domain: "${var.google_authDomain}"
   upstream: "file:///dev/null"
   http-address: "0.0.0.0:4180"
-EOF
+EOT
   ]
 }
 
 locals {
-  config_file = <<EOF
+  config_file = <<-EOF
     pass_basic_auth = false
     pass_access_token = true
     set_authorization_header = true
