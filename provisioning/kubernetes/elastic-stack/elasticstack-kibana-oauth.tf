@@ -10,7 +10,15 @@ config:
   clientID: "${var.google_clientID}"
   clientSecret: "${var.google_clientSecret}"
   cookieSecret: "${base64encode(random_string.random.result)}"
-  configFile: indent(4, ${local.config_file})
+  #configFile: "indent(4, ${local.config_file})"
+  configFile: indent(4, yamlencode({
+  config_file = <<-EOF
+      pass_basic_auth = false
+      pass_access_token = true
+      set_authorization_header = true
+      pass_authorization_header = true
+  EOF
+  }))
 image:
   repository: quay.io/pusher/oauth2_proxy
   tag: latest
@@ -24,14 +32,14 @@ EOT
   ]
 }
 
-locals {
-  config_file = <<-EOF
-      pass_basic_auth = false
-      pass_access_token = true
-      set_authorization_header = true
-      pass_authorization_header = true
-  EOF
-}
+#locals {
+#  config_file = <<-EOF
+#      pass_basic_auth = false
+#      pass_access_token = true
+#      set_authorization_header = true
+#      pass_authorization_header = true
+#  EOF
+#}
 
 resource "random_string" "random" {
   length  = 16
