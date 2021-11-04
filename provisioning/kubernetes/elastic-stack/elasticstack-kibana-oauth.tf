@@ -10,8 +10,7 @@ config:
   clientID: "${var.google_clientID}"
   clientSecret: "${var.google_clientSecret}"
   cookieSecret: "${base64encode(random_string.random.result)}"
-  configFile: indent(
-  config_file = ${local.config_file}
+  configFile: ${local.config_file}
 image:
   repository: quay.io/pusher/oauth2_proxy
   tag: latest
