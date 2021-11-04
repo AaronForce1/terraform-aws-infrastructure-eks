@@ -25,13 +25,12 @@ EOT
 }
 
 locals {
-  indent(4, yamlencode({ config_file = <<-EOF
+  config_file = <<-EOF
       pass_basic_auth = false
       pass_access_token = true
       set_authorization_header = true
       pass_authorization_header = true
   EOF
-  }))
 }
 
 resource "random_string" "random" {
