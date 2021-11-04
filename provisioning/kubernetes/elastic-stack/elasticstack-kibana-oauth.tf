@@ -25,7 +25,7 @@ EOT
 }
 
 locals {
-  config_file = <<EOF
+  config_file = <<-EOF
       pass_basic_auth = false
       pass_access_token = true
       set_authorization_header = true
