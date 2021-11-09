@@ -12,6 +12,7 @@ resource "helm_release" "nginx-controller" {
     "controller": {
       "service": {
 	    "annotations": {
+                  "aws-nlb-helper.3scale.net/enable-targetgroups-proxy-protocol": "true"
 		  "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "tcp"
                   "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol": "*"
                   "service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol": "true"
