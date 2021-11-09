@@ -2,6 +2,13 @@ resource "kubernetes_ingress" "kibana_oauth_ingress" {
   metadata {
     name      = "oauth2-proxy"
     namespace = "monitoring"
+    annotations = {
+      "cert-manager.io/cluster-issuer" = "letsencrypt-prod",
+      "kubernetes.io/ingress.class" = "nginx",
+      "kubernetes.io/tls-acme" = "true",
+      "terraform": "true"
+    }
+
   }
 
   spec {
@@ -20,7 +27,7 @@ resource "kubernetes_ingress" "kibana_oauth_ingress" {
 
     tls {
       hosts       = ["kibana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"]
-      secret_name = "kibana-oauth-ingress-tls-secret"
+      secret_name = "kibana-ing-tls-secret"
     }
   }
 }
