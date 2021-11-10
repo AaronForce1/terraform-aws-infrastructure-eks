@@ -10,6 +10,9 @@ resource "helm_release" "nginx-controller" {
  
   values = [yamlencode({
     "controller": {
+      "config": {
+        "use-proxy-protocol": "true"
+      }
       "service": {
 	    "annotations": {
                   "aws-nlb-helper.3scale.net/enable-targetgroups-proxy-protocol": "true"
