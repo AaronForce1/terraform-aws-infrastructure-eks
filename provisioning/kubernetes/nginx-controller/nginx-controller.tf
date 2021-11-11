@@ -10,9 +10,6 @@ resource "helm_release" "nginx-controller" {
  
   values = [yamlencode({
     "controller": {
-      "config": {
-        "use-proxy-protocol": "true"
-      }
       "service": {
 	    "annotations": {
 		  "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled": "true"
