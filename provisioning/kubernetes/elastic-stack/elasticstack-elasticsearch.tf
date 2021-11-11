@@ -15,6 +15,9 @@ resource "helm_release" "elasticstack-elasticsearch" {
             storage: ${var.tfenv == "prod" ? "50Gi" : "20Gi"}
         storageClassName: gp3
       antiAffinity: ${var.tfenv == "prod" ? "hard" : "soft"}
+      extraEnvs:
+        - name: xpack.security.enabled
+          value: "false"
     EOF
   ]
 }
