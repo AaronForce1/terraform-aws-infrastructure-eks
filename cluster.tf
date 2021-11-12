@@ -15,7 +15,7 @@ module "eks" {
     Namespace                           = var.app_namespace
     Billingcustomer                     = var.billingcustomer
     Product                             = var.app_name
-    infrastructure-eks-terraform        = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform        = local.module_version
   }
   vpc_id = module.eks-vpc.vpc_id
 
@@ -58,7 +58,7 @@ resource "aws_kms_key" "eks" {
     Namespace                           = var.app_namespace
     Billingcustomer                     = var.billingcustomer
     Product                             = var.app_name
-    infrastructure-eks-terraform        = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform        = local.module_version
     Name                                = "${var.app_name}-${var.app_namespace}-${var.tfenv}-key"
   }
 }

@@ -89,7 +89,7 @@ module "eks-vpc" {
     Namespace                                                            = var.app_namespace
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform                                         = local.module_version
   }
 
   nat_gateway_tags = {
@@ -98,7 +98,7 @@ module "eks-vpc" {
     Namespace                                                            = var.app_namespace
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform                                         = local.module_version
   }
 
   vpc_tags = {
@@ -113,7 +113,7 @@ module "eks-vpc" {
     Namespace                                                     = var.app_namespace
     Billingcustomer                                               = var.billingcustomer
     Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform                                  = local.module_version
   }
 
   private_subnet_tags = {
@@ -124,7 +124,7 @@ module "eks-vpc" {
     Namespace                                                     = var.app_namespace
     Billingcustomer                                               = var.billingcustomer
     Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform                                  = local.module_version
   }
 }
 
@@ -148,7 +148,7 @@ module "eks-vpc-endpoints" {
         "Namespace"                                                      = var.app_namespace
         "Billingcustomer"                                                = var.billingcustomer
         "Product"                                                        = var.app_name
-        "infrastructure-eks-terraform"                                   = data.local_file.infrastructure-terraform-eks-version.content
+        "infrastructure-eks-terraform"                                   = local.module_version
         "Name"                                                           = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
       }
     }
@@ -176,7 +176,7 @@ resource "aws_vpc_endpoint" "rds" {
     Namespace                                                            = var.app_namespace
     Billingcustomer                                                      = var.billingcustomer
     Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = data.local_file.infrastructure-terraform-eks-version.content
+    infrastructure-eks-terraform                                         = local.module_version
   }
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)

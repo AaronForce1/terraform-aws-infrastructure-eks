@@ -1,12 +1,16 @@
 locals {
+  module_version = chomp(data.local_file.infrastructure-terraform-eks-version.content)
+}
+
+locals {
   kubernetes_tags = {
       Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
       Environment                                                                   = var.tfenv
       billingcustomer                                                               = var.billingcustomer
       Namespace                                                                     = var.app_namespace
       Product                                                                       = var.app_name
-      Version                                                                       = data.local_file.infrastructure-terraform-eks-version.content
-      infrastructure-terraform-eks                                                  = data.local_file.infrastructure-terraform-eks-version.content
+      Version                                                                       = local.module_version
+      infrastructure-terraform-eks                                                  = local.module_version
       "k8s.io/cluster-autoscaler/enabled"                                           = true
       "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
   }
@@ -16,7 +20,7 @@ locals {
       billingcustomer              = var.billingcustomer
       Namespace                    = var.app_namespace
       Product                      = var.app_name
-      infrastructure-terraform-eks = data.local_file.infrastructure-terraform-eks-version.content
+      infrastructure-terraform-eks = local.module_version
   }
 
 

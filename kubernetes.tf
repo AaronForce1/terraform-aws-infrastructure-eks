@@ -14,7 +14,7 @@ module "nginx-controller-ingress" {
   app_namespace    = var.app_namespace
   app_name         = var.app_name
   tfenv            = var.tfenv
-  infrastructure_eks_terraform_version = data.local_file.infrastructure-terraform-eks-version.content
+  infrastructure_eks_terraform_version = local.module_version
   billingcustomer = var.billingcustomer
 }
 
