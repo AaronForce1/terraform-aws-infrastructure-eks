@@ -1,3 +1,7 @@
+## -----------
+## MODULE: EKS
+## -----------
+
 output "kubecfg" {
   value = module.eks.kubeconfig
 }
@@ -11,4 +15,33 @@ output "kubernetes-cluster-id" {
 
 output "kubernetes-cluster-endpoint" {
   value = module.eks.cluster_endpoint
+}
+
+## -----------
+## MODULE: VPC
+## -----------
+output "vpc_id" {
+  value = module.eks-vpc.vpc_id
+}
+
+output "private_subnet_ids" {
+  value = module.eks-vpc.private_subnets
+}
+
+output "private_subnets_cidr_blocks" {
+  value = {
+    ipv4 = module.eks-vpc.private_subnets_cidr_blocks
+    ipv6 = module.eks-vpc.private_subnets_ipv6_cidr_blocks
+  }
+}
+
+output "public_subnet_ids" {
+  value = module.eks-vpc.public_subnets
+}
+
+output "public_subnets_cidr_blocks" {
+  value = {
+    ipv4 = module.eks-vpc.public_subnets_cidr_blocks
+    ipv6 = module.eks-vpc.public_subnets_ipv6_cidr_blocks
+  }
 }
