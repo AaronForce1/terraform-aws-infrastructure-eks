@@ -28,8 +28,12 @@ resource "helm_release" "gp3-storage-class" {
 resource "kubernetes_storage_class" "gp3-storage-class" {
   metadata {
     name = "gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
   }
   storage_provisioner = "ebs.csi.aws.com"
+  reclaim_policy      = "Retain"
   parameters = {
     type = "gp3"
     fsType = "ext4"

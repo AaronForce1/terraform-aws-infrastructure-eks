@@ -12,6 +12,7 @@ global:
 server:
   enabled: true
   replicas: 2
+  storageClass: gp3
 client:
   enabled: true
 ui:

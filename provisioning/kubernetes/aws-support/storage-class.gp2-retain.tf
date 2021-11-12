@@ -1,10 +1,11 @@
-resource "kubernetes_storage_class" "st1-storage-class" {
+resource "kubernetes_storage_class" "gp2-storage-class" {
   metadata {
-    name = "st1"
+    name = "gp2-retain"
   }
   storage_provisioner = "kubernetes.io/aws-ebs"
   reclaim_policy      = "Retain"
   parameters = {
-    type = "st1"
+    type = "gp2"
+    fsType = "ext4"
   }
 }

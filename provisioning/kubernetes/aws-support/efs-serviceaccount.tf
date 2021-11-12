@@ -8,7 +8,7 @@
 #    }
 #    annotations = {
 #        "eks.amazonaws.com/role-arn": "${data.aws_caller_identity.aws-support.account_id}:role/${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-EFS_CSI_Driver-role"
-#    } 
+#    }
 #  }
 #  automount_service_account_token = true
 #}
