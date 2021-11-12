@@ -148,7 +148,19 @@ vault write auth/kubernetes/role/<ROLE NAME> \
 
 # Create k8s-manager policy
 vault policy write k8s-manager provisioning/kubernetes/hashicorp-vault/files/k8s-manager.hcl 
+```
 
+**IMPORTANT: If using EKS version 1.21 and above we need to add `disable_iss_validation=true` as an option.**
+```bash
+vault write auth/kubernetes/config \
+        token_reviewer_jwt="$SA_JWT_TOKEN" \
+        kubernetes_host="$K8S_HOST" \
+        kubernetes_ca_cert="$SA_CA_CRT" \
+        disable_iss_validation=true
+```
+
+**NOTE: If using EKS earlier than version 1.21, use this setting.**
+```bash
 vault write auth/kubernetes/config \
         token_reviewer_jwt="$SA_JWT_TOKEN" \
         kubernetes_host="$K8S_HOST" \
