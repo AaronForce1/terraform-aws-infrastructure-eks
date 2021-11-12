@@ -24,6 +24,7 @@ ingress:
 persistence:
   enabled: "true"
   size: "${var.tfenv == "prod" ? "60Gi" : "20Gi"}"
+  storageClassName: "gp3"
 datasources:
   datasources.yaml:
     apiVersion: 1

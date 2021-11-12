@@ -5,6 +5,12 @@ resource "helm_release" "aws-cluster-autoscaler" {
   namespace        = "kube-system"
   create_namespace = false
 
+  set {
+    name = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.iam_assumable_role_admin.this_iam_role_arn
+    type = "string"
+  }
+
   values = [
     # file("${path.module}/values.v0.7.0.yaml")
     local_file.values_yaml.content
@@ -22,12 +28,12 @@ locals {
     "rbac" = {
       "create" : true,
       "serviceAccount" : {
-        "name" : "aws-cluster-autoscaler",
-        "annodations" : [
-          {
-            "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.this_iam_role_arn
-          }
-        ]
+        "name" : "aws-cluster-autoscaler-service-account",
+#        "annotations" : [
+#          {
+#            "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.this_iam_role_arn
+#          }
+#        ]
       }
     },
     "autoDiscovery" = {

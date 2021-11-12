@@ -12,7 +12,7 @@ resource "helm_release" "nginx-controller" {
     "controller": {
       "service": {
 	    "annotations": {
-		  "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "tcp"
+                  "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "tcp"
 		  "service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled": "true"
 		  "service.beta.kubernetes.io/aws-load-balancer-type": "nlb"
 		  "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags": "Environment=${var.tfenv},Billingcustomer=${var.billingcustomer},Namespace=${var.app_namespace},Product=${var.app_name},Version=${var.infrastructure_eks_terraform_version},infrastructure-eks-terraform=${var.infrastructure_eks_terraform_version}"

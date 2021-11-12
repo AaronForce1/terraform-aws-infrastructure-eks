@@ -21,8 +21,9 @@ resource "helm_release" "aws-efs-csi-driver" {
   }
 
   set {
-    name = "controller.serviceAccount.annotations.eks.amazonaws.com/role-arn"
+    name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com\\/role\\-arn"
     value = aws_iam_role.amazoneks-efs-csi-driver-role.arn
+    type = "string"
   }
 
   #set {
@@ -36,4 +37,5 @@ resource "kubernetes_storage_class" "efs-storage-class" {
     name = "efs"
   }
   storage_provisioner = "efs.csi.aws.com"
+  reclaim_policy      = "Retain"
 }
