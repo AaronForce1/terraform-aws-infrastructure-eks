@@ -153,6 +153,15 @@ vault write auth/kubernetes/config \
         token_reviewer_jwt="$SA_JWT_TOKEN" \
         kubernetes_host="$K8S_HOST" \
         kubernetes_ca_cert="$SA_CA_CRT"
+
+IMPORTANT: If using EKS version 1.21 we need to add `disable_iss_validation=true` as an option.
+
+
+vault write auth/kubernetes/config \
+        token_reviewer_jwt="$SA_JWT_TOKEN" \
+        kubernetes_host="$K8S_HOST" \
+        kubernetes_ca_cert="$SA_CA_CRT" \
+        disable_iss_validation=true
 ```
 
 ## OIDC SETUP FOR VAULT
