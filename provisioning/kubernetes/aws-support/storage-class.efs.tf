@@ -21,8 +21,9 @@ resource "helm_release" "aws-efs-csi-driver" {
   }
 
   set {
-    name = "controller.serviceAccount.annotations.eks.amazonaws.com/role-arn"
+    name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com\\/role\\-arn"
     value = aws_iam_role.amazoneks-efs-csi-driver-role.arn
+    type = "string"
   }
 
   #set {
