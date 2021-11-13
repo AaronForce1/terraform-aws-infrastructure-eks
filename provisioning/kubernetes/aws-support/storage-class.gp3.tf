@@ -29,7 +29,7 @@ resource "kubernetes_storage_class" "gp3-storage-class" {
   metadata {
     name = "gp3"
     annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "true"
+      "storageclass.kubernetes.io/is-default-class" = "false"
     }
   }
   storage_provisioner = "ebs.csi.aws.com"
