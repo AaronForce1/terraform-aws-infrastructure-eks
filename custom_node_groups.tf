@@ -18,9 +18,19 @@ resource "aws_eks_node_group" "custom_node_group" {
   disk_size = var.managed_node_groups[count.index].disk_size
   instance_types = [var.managed_node_groups[count.index].instance_type]
 
-  labels = {
-    Environment = var.tfenv
-  }
+  labels = merge(
+    {Environment = var.tfenv},
+    zipmap(
+      [
+        for x in var.managed_node_groups[count.index].taints: x.key
+        if x.affinity_label
+      ],
+      [
+        for x in var.managed_node_groups[count.index].taints: x.value 
+        if x.affinity_label
+      ]
+    )
+  )
   tags = local.kubernetes_tags
   dynamic "taint" {
     for_each = var.managed_node_groups[count.index].taints

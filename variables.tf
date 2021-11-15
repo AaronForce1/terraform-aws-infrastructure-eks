@@ -71,6 +71,7 @@ variable "managed_node_groups" {
       key = string
       value = string
       effect = string
+      affinity_label = bool
     }))
     subnet_selections = object({
       public = bool
