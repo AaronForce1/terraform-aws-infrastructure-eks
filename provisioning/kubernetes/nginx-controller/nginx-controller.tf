@@ -20,6 +20,7 @@ resource "helm_release" "nginx-controller" {
 		"externalTrafficPolicy": "Local"
 	  }
 	  "replicaCount": "${var.tfenv == "prod" ? 3 : 1}"
+          "omitClusterIP": true
 	  "autoscaling": {
 	    "enabled": true
 		"minReplicas": 1
@@ -31,5 +32,10 @@ resource "helm_release" "nginx-controller" {
 		"enabled": true
 	  }
 	}
+    "defaultBackend": {
+      "service": {
+        "omitClusterIP": true
+      }
+    }      
   })]
 }
