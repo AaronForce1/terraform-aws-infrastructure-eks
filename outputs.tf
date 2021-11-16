@@ -35,6 +35,10 @@ output "private_subnets_cidr_blocks" {
   }
 }
 
+output "private_route_table_ids" {
+  value = module.eks-vpc.private_route_table_ids
+}
+
 output "public_subnet_ids" {
   value = module.eks-vpc.public_subnets
 }
