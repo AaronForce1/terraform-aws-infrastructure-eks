@@ -5,7 +5,7 @@ resource "helm_release" "nginx-controller" {
   version             = "4.0.6"
   namespace           = "ingress-nginx"
   create_namespace    = true
-  force_update        = true
+  force_update        = false
   recreate_pods       = true
  
   values = [yamlencode({
