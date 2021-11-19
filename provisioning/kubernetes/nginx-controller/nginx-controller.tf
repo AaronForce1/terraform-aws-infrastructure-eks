@@ -29,15 +29,7 @@ resource "helm_release" "nginx-controller" {
 	  }
 	  "metrics": {
 		"enabled": true
-                "service": {
-                  "clusterIP": true
-                }
 	  }
-          "admissionWebhooks": {
-            "service": {
-              "clusterIP": true
-            }
-          }
 	}
   })]
 }
