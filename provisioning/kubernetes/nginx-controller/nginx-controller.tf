@@ -40,10 +40,5 @@ resource "helm_release" "nginx-controller" {
             }
           }
 	}
-    "defaultBackend": {
-      "service": {
-        "omitClusterIP": true
-      }
-    }      
   })]
 }
