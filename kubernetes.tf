@@ -10,33 +10,33 @@ module "nginx-controller-ingress" {
   depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces]
   count      = var.helm_installations.ingress ? 1 : 0
 
-  root_domain_name = var.root_domain_name
-  app_namespace    = var.app_namespace
-  app_name         = var.app_name
-  tfenv            = var.tfenv
+  root_domain_name                     = var.root_domain_name
+  app_namespace                        = var.app_namespace
+  app_name                             = var.app_name
+  tfenv                                = var.tfenv
   infrastructure_eks_terraform_version = local.module_version
-  billingcustomer = var.billingcustomer
+  billingcustomer                      = var.billingcustomer
 }
 
 module "certmanager" {
   source     = "./provisioning/kubernetes/certmanager"
   depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress]
-  
-  count      = var.helm_installations.ingress ? 1 : 0
+
+  count = var.helm_installations.ingress ? 1 : 0
 }
 
 module "aws-support" {
-source                    = "./provisioning/kubernetes/aws-support"
-  depends_on              = [module.eks, module.eks-vpc]
+  source     = "./provisioning/kubernetes/aws-support"
+  depends_on = [module.eks, module.eks-vpc]
 
-  vpc_id                  = module.eks-vpc.vpc_id
-  cidr_blocks             = module.eks-vpc.private_subnets_cidr_blocks
-  oidc_url                = module.eks.cluster_oidc_issuer_url
-  account_id              = data.aws_caller_identity.current.account_id
-  aws_region              = var.aws_region
-  app_name = var.app_name
+  vpc_id        = module.eks-vpc.vpc_id
+  cidr_blocks   = module.eks-vpc.private_subnets_cidr_blocks
+  oidc_url      = module.eks.cluster_oidc_issuer_url
+  account_id    = data.aws_caller_identity.current.account_id
+  aws_region    = var.aws_region
+  app_name      = var.app_name
   app_namespace = var.app_namespace
-  tfenv = var.tfenv
+  tfenv         = var.tfenv
 }
 
 module "aws-cluster-autoscaler" {

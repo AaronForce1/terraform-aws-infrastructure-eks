@@ -6,9 +6,9 @@ resource "helm_release" "aws-cluster-autoscaler" {
   create_namespace = false
 
   set {
-    name = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = module.iam_assumable_role_admin.this_iam_role_arn
-    type = "string"
+    type  = "string"
   }
 
   values = [
@@ -29,11 +29,11 @@ locals {
       "create" : true,
       "serviceAccount" : {
         "name" : "aws-cluster-autoscaler-service-account",
-#        "annotations" : [
-#          {
-#            "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.this_iam_role_arn
-#          }
-#        ]
+        #        "annotations" : [
+        #          {
+        #            "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.this_iam_role_arn
+        #          }
+        #        ]
       }
     },
     "autoDiscovery" = {

@@ -13,4 +13,4 @@ variable "tfenv" {
 variable "billingcustomer" {}
 variable "app_name" {}
 
-variable infrastructure_eks_terraform_version {}
+variable "infrastructure_eks_terraform_version" {}

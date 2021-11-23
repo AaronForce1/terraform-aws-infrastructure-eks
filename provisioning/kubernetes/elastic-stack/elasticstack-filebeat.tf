@@ -18,7 +18,7 @@ resource "helm_release" "elasticstack-filebeat" {
 
 locals {
   filebeat_yml = indent(2, yamlencode({
-  "filebeat.yml": <<-EOF
+    "filebeat.yml" : <<-EOF
       output.file.enabled: false
       setup.ilm.enabled: false
       setup.template.name: 'filebeat'

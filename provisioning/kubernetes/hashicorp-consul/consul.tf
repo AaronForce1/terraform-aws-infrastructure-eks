@@ -1,9 +1,9 @@
 resource "helm_release" "consul" {
-  name = "consul-${var.app_namespace}-${var.tfenv}"
-  repository = "https://helm.releases.hashicorp.com"
-  chart               = "consul"
-  namespace           = "hashicorp"
-  create_namespace    = true
+  name             = "consul-${var.app_namespace}-${var.tfenv}"
+  repository       = "https://helm.releases.hashicorp.com"
+  chart            = "consul"
+  namespace        = "hashicorp"
+  create_namespace = true
 
   values = [<<EOF
 global:

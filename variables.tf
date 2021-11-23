@@ -58,23 +58,23 @@ variable "map_users" {
 variable "managed_node_groups" {
   description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
   type = list(object({
-    name = string
-    desired_capacity = number
-    max_capacity = number
-    min_capacity = number
-    instance_type = string
-    key_name = string
-    public_ip = bool
+    name                   = string
+    desired_capacity       = number
+    max_capacity           = number
+    min_capacity           = number
+    instance_type          = string
+    key_name               = string
+    public_ip              = bool
     create_launch_template = bool
-    disk_size = number
+    disk_size              = number
     taints = list(object({
-      key = string
-      value = string
-      effect = string
+      key            = string
+      value          = string
+      effect         = string
       affinity_label = bool
     }))
     subnet_selections = object({
-      public = bool
+      public  = bool
       private = bool
     })
   }))
@@ -134,12 +134,12 @@ variable "root_vol_size" {
 
 variable "node_key_name" {
   description = "EKS Node Key Name"
-  default = ""
+  default     = ""
 }
 
 variable "node_public_ip" {
   description = "assign public ip on the nodes"
-  default = false
+  default     = false
 }
 
 variable "vpc_flow_logs" {
@@ -149,6 +149,28 @@ variable "vpc_flow_logs" {
   #   enabled = optional(bool)
   # })
   default = {}
+}
+
+variable "nat_gateway_custom_configuration" {
+  description = "Override the default NAT Gateway configuration, which configures a single NAT gateway for non-prod, while one per AZ on tfenv=prod"
+  type = object({
+    enabled                           = bool
+    enable_nat_gateway                = bool
+    enable_dns_hostnames              = bool
+    single_nat_gateway                = bool
+    one_nat_gateway_per_az            = bool
+    enable_vpn_gateway                = bool
+    propagate_public_route_tables_vgw = bool
+  })
+  default = {
+    enable_dns_hostnames              = true
+    enable_nat_gateway                = true
+    enable_vpn_gateway                = false
+    enabled                           = false
+    one_nat_gateway_per_az            = true
+    propagate_public_route_tables_vgw = false
+    single_nat_gateway                = false
+  }
 }
 
 variable "helm_installations" {
@@ -170,15 +192,15 @@ variable "helm_installations" {
 
 variable "vpc_subnet_configuration" {
   type = object({
-    base_cidr = string
+    base_cidr           = string
     subnet_bit_interval = number
-    autogenerate = optional(bool)
+    autogenerate        = optional(bool)
   })
   description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
   default = {
-    base_cidr = "172.%s.0.0/16"
+    base_cidr           = "172.%s.0.0/16"
     subnet_bit_interval = 4
-    autogenerate = true
+    autogenerate        = true
   }
 }
 
@@ -201,16 +223,16 @@ variable "google_authDomain" {
 
 variable "create_launch_template" {
   description = "enable launch template on node group"
-  default = false
+  default     = false
 }
 
 variable "cluster_endpoint_public_access_cidrs" {
   description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
-  default = "AL2_x86_64"
+  default     = "AL2_x86_64"
 }

@@ -1,7 +1,7 @@
 ARG PROJECT="gitlab.com/magnetic-asia/technology/infrastructure-eks-terraform"
 ARG TFSEC_VERSION=v0.39.23
 
-FROM registry.gitlab.com/technology-utilities/kubectl:1.18.0 as kubectl_builder
+FROM registry.gitlab.com/technology-utilities/kubectl:1.21.6 as kubectl_builder
 FROM registry.gitlab.com/gitlab-org/terraform-images/stable:latest as gitlab_bulder
 
 FROM golang:1.15-alpine3.12 AS tfutils_builder
