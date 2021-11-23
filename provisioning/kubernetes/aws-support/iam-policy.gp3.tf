@@ -6,13 +6,13 @@ resource "aws_iam_policy" "amazoneks-ebs-csi-driver-policy" {
 }
 
 resource "aws_iam_role" "amazoneks-ebs-csi-driver-role" {
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-ebs_csi_driver-role"
+  name               = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-ebs_csi_driver-role"
   assume_role_policy = data.aws_iam_policy_document.eks_ebs_csi_driver_trust_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "eks-ebs-csi-driver-attachment" {
-  role        = aws_iam_role.amazoneks-ebs-csi-driver-role.name
-  policy_arn  = aws_iam_policy.amazoneks-ebs-csi-driver-policy.arn
+  role       = aws_iam_role.amazoneks-ebs-csi-driver-role.name
+  policy_arn = aws_iam_policy.amazoneks-ebs-csi-driver-policy.arn
 }
 
 data "aws_iam_policy_document" "ebs_csi_driver" {
@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
       "arn:aws:ec2:*:*:snapshot/*"
     ]
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "ec2:CreateAction"
       values = [
         "CreateVolume",
@@ -64,126 +64,126 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:CreateVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "aws:RequestTag/ebs.csi.aws.com/cluster"
-        values = ["true"]
+    effect = "Allow"
+    actions = [
+      "ec2:CreateVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "aws:RequestTag/ebs.csi.aws.com/cluster"
+      values   = ["true"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:CreateVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "aws:RequestTag/CSIVolumeName"
-        values = ["*"]
+    effect = "Allow"
+    actions = [
+      "ec2:CreateVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "aws:RequestTag/CSIVolumeName"
+      values   = ["*"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:CreateVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "aws:RequestTag/kubernetes.io/cluster/*"
-        values = ["owned"]
+    effect = "Allow"
+    actions = [
+      "ec2:CreateVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "aws:RequestTag/kubernetes.io/cluster/*"
+      values   = ["owned"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:DeleteVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "ec2:ResourceTag/ebs.csi.aws.com/cluster"
-        values = ["true"]
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "ec2:ResourceTag/ebs.csi.aws.com/cluster"
+      values   = ["true"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:DeleteVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "ec2:ResourceTag/CSIVolumeName"
-        values = ["*"]
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "ec2:ResourceTag/CSIVolumeName"
+      values   = ["*"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:DeleteVolume"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "ec2:ResourceTag/kubernetes.io/cluster/*"
-        values = ["owned"]
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteVolume"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "ec2:ResourceTag/kubernetes.io/cluster/*"
+      values   = ["owned"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:DeleteSnapshot"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "ec2:ResourceTag/CSIVolumeSnapshotName"
-        values = ["*"]
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteSnapshot"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "ec2:ResourceTag/CSIVolumeSnapshotName"
+      values   = ["*"]
     }
   }
 
   statement {
-      effect = "Allow"
-      actions = [
-        "ec2:DeleteSnapshot"
-      ]
-      resources = ["*"]
-      condition {
-        test = "StringLike"
-        variable = "ec2:ResourceTag/ebs.csi.aws.com/cluster"
-        values = ["true"]
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteSnapshot"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "ec2:ResourceTag/ebs.csi.aws.com/cluster"
+      values   = ["true"]
     }
   }
 
-  
+
 }
 
 data "aws_iam_policy_document" "eks_ebs_csi_driver_trust_policy" {
   statement {
     effect = "Allow"
     principals {
-        type = "Federated"
-        identifiers = ["arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}"]
+      type        = "Federated"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:oidc-provider/oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}"]
     }
     actions = [
       "sts:AssumeRoleWithWebIdentity"
     ]
     condition {
-        test = "StringEquals"
-        variable = "oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}:sub"
-        values = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+      test     = "StringEquals"
+      variable = "oidc.eks.${var.aws_region}.amazonaws.com/id/${substr(var.oidc_url, -32, -1)}:sub"
+      values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
     }
   }
 }

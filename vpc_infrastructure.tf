@@ -3,7 +3,8 @@ data "aws_availability_zones" "available" {
 }
 
 module "subnet_addrs" {
-  source = "hashicorp/subnets/cidr"
+  source  = "hashicorp/subnets/cidr"
+  version = "1.0.0"
 
   base_cidr_block = local.base_cidr
   networks = [
@@ -59,17 +60,17 @@ module "eks-vpc" {
   ]
 
   # TODO: Configure NAT Gateway setting overrides
-  enable_nat_gateway                  = true
-  enable_dns_hostnames                = true
-  single_nat_gateway                  = var.tfenv == "prod" ? false : true
-  one_nat_gateway_per_az              = false
+  enable_nat_gateway     = local.nat_gateway_configuration.enable_nat_gateway
+  enable_dns_hostnames   = local.nat_gateway_configuration.enable_dns_hostnames
+  single_nat_gateway     = local.nat_gateway_configuration.single_nat_gateway
+  one_nat_gateway_per_az = local.nat_gateway_configuration.one_nat_gateway_per_az
   # reuse_nat_ips                     = true
   # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
-  enable_vpn_gateway                  = false
-  propagate_public_route_tables_vgw   = false
+  enable_vpn_gateway                = local.nat_gateway_configuration.enable_vpn_gateway
+  propagate_public_route_tables_vgw = local.nat_gateway_configuration.propagate_public_route_tables_vgw
 
   # Manage Default VPC
-  manage_default_vpc                = false
+  manage_default_vpc = false
 
   # Default security group - ingress/egress rules cleared to deny all
   manage_default_security_group  = false
@@ -83,22 +84,22 @@ module "eks-vpc" {
   flow_log_max_aggregation_interval    = 60
 
   tags = {
-    Terraform                                                            = "true"
-    Environment                                                          = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}"        = "shared"
-    Namespace                                                            = var.app_namespace
-    Billingcustomer                                                      = var.billingcustomer
-    Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = local.module_version
+    Terraform                                                     = "true"
+    Environment                                                   = var.tfenv
+    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
+    Namespace                                                     = var.app_namespace
+    Billingcustomer                                               = var.billingcustomer
+    Product                                                       = var.app_name
+    infrastructure-eks-terraform                                  = local.module_version
   }
 
   nat_gateway_tags = {
-    Terraform                                                            = "true"
-    "Environment"                                                        = var.tfenv
-    Namespace                                                            = var.app_namespace
-    Billingcustomer                                                      = var.billingcustomer
-    Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = local.module_version
+    Terraform                    = "true"
+    "Environment"                = var.tfenv
+    Namespace                    = var.app_namespace
+    Billingcustomer              = var.billingcustomer
+    Product                      = var.app_name
+    infrastructure-eks-terraform = local.module_version
   }
 
   vpc_tags = {
@@ -129,7 +130,7 @@ module "eks-vpc" {
 }
 
 module "eks-vpc-endpoints" {
-  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 3.1"
 
   vpc_id = module.eks-vpc.vpc_id
@@ -137,19 +138,19 @@ module "eks-vpc-endpoints" {
     module.eks.cluster_primary_security_group_id,
     module.eks.cluster_security_group_id,
     module.eks.worker_security_group_id
-   ]
+  ]
 
   endpoints = {
     s3 = {
       service = "s3"
-      tags    = {
-        "Environment"                                                    = var.tfenv
-        "Terraform"                                                      = "true"
-        "Namespace"                                                      = var.app_namespace
-        "Billingcustomer"                                                = var.billingcustomer
-        "Product"                                                        = var.app_name
-        "infrastructure-eks-terraform"                                   = local.module_version
-        "Name"                                                           = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
+      tags = {
+        "Environment"                  = var.tfenv
+        "Terraform"                    = "true"
+        "Namespace"                    = var.app_namespace
+        "Billingcustomer"              = var.billingcustomer
+        "Product"                      = var.app_name
+        "infrastructure-eks-terraform" = local.module_version
+        "Name"                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
       }
     }
   }
@@ -169,14 +170,14 @@ resource "aws_vpc_endpoint" "rds" {
   ]
 
   tags = {
-    Name                                                                 = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint"
-    Terraform                                                            = "true"
-    Environment                                                          = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}"        = "shared"
-    Namespace                                                            = var.app_namespace
-    Billingcustomer                                                      = var.billingcustomer
-    Product                                                              = var.app_name
-    infrastructure-eks-terraform                                         = local.module_version
+    Name                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint"
+    Terraform                                                     = "true"
+    Environment                                                   = var.tfenv
+    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
+    Namespace                                                     = var.app_namespace
+    Billingcustomer                                               = var.billingcustomer
+    Product                                                       = var.app_name
+    infrastructure-eks-terraform                                  = local.module_version
   }
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)

@@ -1,29 +1,29 @@
 resource "helm_release" "aws-efs-csi-driver" {
-  name       = "aws-efs-csi-driver"
-  repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver"
-  chart               = "aws-efs-csi-driver"
-  namespace           = "kube-system"
+  name         = "aws-efs-csi-driver"
+  repository   = "https://kubernetes-sigs.github.io/aws-efs-csi-driver"
+  chart        = "aws-efs-csi-driver"
+  namespace    = "kube-system"
   force_update = "true"
 
   set {
-      name = "image.repository"
-      value = "602401143452.dkr.ecr.${var.aws_region}.amazonaws.com/eks/aws-efs-csi-driver"
+    name  = "image.repository"
+    value = "602401143452.dkr.ecr.${var.aws_region}.amazonaws.com/eks/aws-efs-csi-driver"
   }
 
   set {
-    name = "controller.serviceAccount.create"
+    name  = "controller.serviceAccount.create"
     value = true
   }
 
   set {
-    name = "controller.serviceAccount.name"
+    name  = "controller.serviceAccount.name"
     value = "efs-csi-controller-sa"
   }
 
   set {
-    name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com\\/role\\-arn"
+    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com\\/role\\-arn"
     value = aws_iam_role.amazoneks-efs-csi-driver-role.arn
-    type = "string"
+    type  = "string"
   }
 
   #set {

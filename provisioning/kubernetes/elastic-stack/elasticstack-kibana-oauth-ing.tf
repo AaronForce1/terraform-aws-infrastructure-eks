@@ -4,9 +4,9 @@ resource "kubernetes_ingress" "kibana_oauth_ingress" {
     namespace = "monitoring"
     annotations = {
       "cert-manager.io/cluster-issuer" = "letsencrypt-prod",
-      "kubernetes.io/ingress.class" = "nginx",
-      "kubernetes.io/tls-acme" = "true",
-      "terraform": "true"
+      "kubernetes.io/ingress.class"    = "nginx",
+      "kubernetes.io/tls-acme"         = "true",
+      "terraform" : "true"
     }
 
   }

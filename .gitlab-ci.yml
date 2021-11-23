@@ -14,114 +14,17 @@ variables:
   GITLAB_USERNAME: gitlab-ci-token
   GITLAB_PASSWORD: $CI_JOB_TOKEN
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   AWS_DEFAULT_REGION: ap-southeast-1
-  TF_VAR_root_domain_name: gitlab-ci.tech.advancedtechnologies.com.hk
-  TF_VAR_app_name: eks
-  TF_VAR_app_namespace: cicd_testing
-  TF_VAR_gitlab_token: $CI_JOB_TOKEN
   GITLAB_TOKEN: $CI_JOB_TOKEN
-  TF_VAR_tfenv: $CI_COMMIT_REF_NAME
-  TF_ROOT: ${CI_PROJECT_DIR}
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}-$CI_COMMIT_REF_NAME
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
     - .terraform
 
-.terraform_init: &terraform_init
-- apk add --update curl jq
-- alias convert_report="jq -r '([.resource_changes[].change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-- curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl
-- install kubectl /usr/local/bin/ && rm kubectl
-- curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/aws-iam-authenticator
-- install aws-iam-authenticator /usr/local/bin/ && rm aws-iam-authenticator
-- terraform --version
-- if [[ $CI_COMMIT_TAG != '' ]]; then export TF_VAR_tfenv=$CI_COMMIT_REF_NAME; else export TF_VAR_tfenv=$CI_COMMIT_REF_SLUG; fi  
-- printenv | grep "TF_VAR"
-- cd ${TF_ROOT}
-# Override standard "local" storage for Gitlab Terraform Testing
-- |
-    cat <<EOF > backend.tf
-    terraform {
-      // Gitlab Terraform State Storage
-      backend "http" {}
-    }
-    EOF
-- gitlab-terraform init
- 
-.docker_login: &docker_login
-  - sleep 3
-  - docker info 
-  - docker login $CI_REGISTRY -u $GITLAB_USERNAME -p $GITLAB_PASSWORD
-
-
 stages:
-  - lint
-  - build
   - validate
   - security review
-  - release
-  - latest
-
-##################################
-#### ------------------------ ####
-####                          ####
-####     CONTAINER LINTING    ####
-####                          ####
-#### ------------------------ ####
-##################################
-
-lint:dockerfiles:
-  stage: lint
-  retry: 1
-  image: hadolint/hadolint:latest-debian
-  before_script:
-      - hadolint --version
-  script:
-      - hadolint --config .hadolint.yml Dockerfile
-  allow_failure: true
-
-##################################
-#### ------------------------ ####
-####                          ####
-####     CONTAINER BUILDS     ####
-####                          ####
-#### ------------------------ ####
-##################################
-
-build:
-  stage: build
-  before_script:
-    - *docker_login
-  script:
-    - docker build --pull -t $CONTAINER_IMAGE .
-    - docker push $CONTAINER_IMAGE
-  except:
-    - tags
-
-release:
-  stage: build
-  before_script:
-    - *docker_login
-  script:
-    - docker build --pull -t $RELEASE_IMAGE .
-    - docker push $RELEASE_IMAGE
-  only:
-    - tags
-
-release-latest:
-  stage: release
-  when: manual
-  before_script:
-    - *docker_login
-  script:
-    - docker pull $RELEASE_IMAGE
-    - docker tag $RELEASE_IMAGE $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:latest
-  only:
-    - tags
 
 ##################################
 #### ------------------------ ####
@@ -132,25 +35,13 @@ release-latest:
 ##################################
 
 ## VALIDATE
-validate build:
+validate:
   stage: validate
-  image: $CONTAINER_IMAGE
+  image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
   before_script:
     - terraform init -backend=false
   script:
     - gitlab-terraform validate
-  except:
-    - tags
-
-validate release:
-  stage: validate
-  image: $RELEASE_IMAGE
-  before_script:
-    - terraform init -backend=false
-  script:
-    - gitlab-terraform validate
-  only:
-    - tags
 
 tfsec:
   image: 

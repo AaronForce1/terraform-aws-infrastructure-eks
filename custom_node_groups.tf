@@ -4,7 +4,7 @@ resource "aws_eks_node_group" "custom_node_group" {
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   node_group_name = var.managed_node_groups[count.index].name
   node_role_arn   = module.eks.worker_iam_role_arn
-  subnet_ids      = concat(
+  subnet_ids = concat(
     var.managed_node_groups[count.index].subnet_selections.public ? module.eks-vpc.public_subnets : [],
     var.managed_node_groups[count.index].subnet_selections.private ? module.eks-vpc.private_subnets : []
   )
@@ -15,18 +15,18 @@ resource "aws_eks_node_group" "custom_node_group" {
     min_size     = var.managed_node_groups[count.index].min_capacity
   }
 
-  disk_size = var.managed_node_groups[count.index].disk_size
+  disk_size      = var.managed_node_groups[count.index].disk_size
   instance_types = [var.managed_node_groups[count.index].instance_type]
 
   labels = merge(
-    {Environment = var.tfenv},
+    { Environment = var.tfenv },
     zipmap(
       [
-        for x in var.managed_node_groups[count.index].taints: x.key
+        for x in var.managed_node_groups[count.index].taints : x.key
         if x.affinity_label
       ],
       [
-        for x in var.managed_node_groups[count.index].taints: x.value 
+        for x in var.managed_node_groups[count.index].taints : x.value
         if x.affinity_label
       ]
     )
@@ -35,8 +35,8 @@ resource "aws_eks_node_group" "custom_node_group" {
   dynamic "taint" {
     for_each = var.managed_node_groups[count.index].taints
     content {
-      key = taint.value["key"]
-      value = taint.value["value"]
+      key    = taint.value["key"]
+      value  = taint.value["value"]
       effect = taint.value["effect"]
     }
   }

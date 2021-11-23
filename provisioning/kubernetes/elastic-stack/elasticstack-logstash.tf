@@ -34,13 +34,13 @@ resource "helm_release" "elasticstack-logstash" {
 
 locals {
   logstash_yml = indent(2, yamlencode({
-"logstash.yml": <<-EOF
+    "logstash.yml" : <<-EOF
   http.host: 0.0.0.0
   monitoring.elasticsearch.hosts: "http://elasticsearch-master:9200"
   EOF
   }))
   logstash_conf = indent(4, yamlencode({
-"logstash.conf": <<-EOF
+    "logstash.conf" : <<-EOF
   input {
     beats {
       port => 5044
