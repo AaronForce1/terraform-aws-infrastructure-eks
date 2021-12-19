@@ -63,6 +63,7 @@ variable "managed_node_groups" {
     max_capacity           = number
     min_capacity           = number
     instance_type          = string
+    ami_type               = optional(string)
     key_name               = string
     public_ip              = bool
     create_launch_template = bool

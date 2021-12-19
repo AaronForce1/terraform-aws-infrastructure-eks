@@ -17,6 +17,7 @@ resource "aws_eks_node_group" "custom_node_group" {
 
   disk_size      = var.managed_node_groups[count.index].disk_size
   instance_types = [var.managed_node_groups[count.index].instance_type]
+  ami_type       = var.managed_node_groups[count.index].ami_type != null ? var.managed_node_groups[count.index].ami_type : var.default_ami_type
 
   labels = merge(
     { Environment = var.tfenv },
