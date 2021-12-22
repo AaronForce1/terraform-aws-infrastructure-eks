@@ -16,7 +16,6 @@ resource "aws_security_group" "efs_security_group" {
         "Namespace"                    = var.app_namespace
         "Billingcustomer"              = var.billingcustomer
         "Product"                      = var.app_name
-        "infrastructure-eks-terraform" = local.module_version
         "Name"                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}-efs"
   }
 }
