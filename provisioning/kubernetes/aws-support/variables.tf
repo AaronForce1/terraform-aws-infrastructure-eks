@@ -6,3 +6,4 @@ variable "aws_region" {}
 variable "app_name" {}
 variable "app_namespace" {}
 variable "tfenv" {}
+variable "base_cidr_block" {}

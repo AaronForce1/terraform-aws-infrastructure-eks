@@ -24,6 +24,10 @@ output "vpc_id" {
   value = module.eks-vpc.vpc_id
 }
 
+output "base_cidr_block" {
+  value = module.eks-vpc.cidr
+}
+
 output "private_subnet_ids" {
   value = module.eks-vpc.private_subnets
 }
