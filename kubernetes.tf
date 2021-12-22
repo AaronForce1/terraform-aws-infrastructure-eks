@@ -37,7 +37,7 @@ module "aws-support" {
   app_name        = var.app_name
   app_namespace   = var.app_namespace
   tfenv           = var.tfenv
-  base_cidr_block = module.eks-vpc.cidr
+  base_cidr_block = module.subnet_addrs.base_cidr_block
 }
 
 module "aws-cluster-autoscaler" {

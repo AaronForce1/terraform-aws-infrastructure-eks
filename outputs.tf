@@ -24,10 +24,6 @@ output "vpc_id" {
   value = module.eks-vpc.vpc_id
 }
 
-output "base_cidr_block" {
-  value = module.eks-vpc.cidr
-}
-
 output "private_subnet_ids" {
   value = module.eks-vpc.private_subnets
 }
@@ -52,4 +48,12 @@ output "public_subnets_cidr_blocks" {
     ipv4 = module.eks-vpc.public_subnets_cidr_blocks
     ipv6 = module.eks-vpc.public_subnets_ipv6_cidr_blocks
   }
+}
+
+## -----------
+## MODULE: subnet_addrs
+## -----------
+
+output "base_cidr_block" {
+  value = module.subnet_addrs.base_cidr_block
 }
