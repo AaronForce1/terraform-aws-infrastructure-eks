@@ -38,6 +38,7 @@ module "aws-support" {
   app_namespace   = var.app_namespace
   tfenv           = var.tfenv
   base_cidr_block = module.subnet_addrs.base_cidr_block
+  billingcustomer = var.billingcustomer
 }
 
 module "aws-cluster-autoscaler" {
