@@ -27,7 +27,7 @@ module "certmanager" {
 
 module "aws-support" {
   source     = "./provisioning/kubernetes/aws-support"
-  depends_on = [module.eks, module.eks-vpc]
+  depends_on = [module.eks, module.eks-vpc, module.subnet_addrs]
 
   vpc_id          = module.eks-vpc.vpc_id
   cidr_blocks     = module.eks-vpc.private_subnets_cidr_blocks
