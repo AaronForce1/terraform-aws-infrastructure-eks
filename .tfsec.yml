@@ -9,4 +9,3 @@ exclude:
   - AWS082 # FALSE POSITIVE | "Default VPC" is actually not used
   - AWS077 # FALSE POSITIVE | No need to version S3 web files
   - AWS098 # TODO:Public Access Block for S3?
-  
