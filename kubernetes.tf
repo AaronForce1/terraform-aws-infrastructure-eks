@@ -63,6 +63,7 @@ module "vault" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
+  vault_nodeselector      = var.vault_nodeselector
   app_namespace           = var.app_namespace
   tfenv                   = var.tfenv
   root_domain_name        = var.root_domain_name

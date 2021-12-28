@@ -233,6 +233,10 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = []
 }
 
+variable "vault_nodeselector" {
+  default = ""
+}
+
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
