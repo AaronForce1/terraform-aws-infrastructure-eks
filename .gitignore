@@ -6,6 +6,7 @@ values.overrides*
 *.tfvars
 *.tfstate*
 .terraform/
+.infracost/
 terraform.tfstate.d/
 
 # Language and Compiler Files

@@ -15,3 +15,6 @@ changelog:
 
 release:
 	$(SEMTAG) final -s $(scope)
+
+costing:
+	infracost breakdown --path $(pwd) --usage-file .infracost-usage.yml
