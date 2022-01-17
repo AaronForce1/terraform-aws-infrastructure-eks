@@ -2,8 +2,9 @@ resource "helm_release" "elasticstack-filebeat" {
   name       = "filebeat"
   repository = "https://helm.elastic.co"
   chart      = "filebeat"
-  version    = "v7.15.0"
+  version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
+  lifecycle { ignore_changes = [ values, version] }
 
   values = [
     <<-EOF

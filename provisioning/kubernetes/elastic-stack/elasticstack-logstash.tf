@@ -4,6 +4,7 @@ resource "helm_release" "elasticstack-logstash" {
   chart      = "logstash"
   version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
+  lifecycle { ignore_changes = [ values, version] }
 
   values = [
     <<-EOF
