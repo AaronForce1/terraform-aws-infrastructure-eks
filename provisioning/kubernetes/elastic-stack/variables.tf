@@ -1,3 +1,7 @@
+locals {
+  elkversion = "7.16.3"
+}
+
 variable "google_clientID" {}
 variable "google_clientSecret" {}
 variable "google_authDomain" {}

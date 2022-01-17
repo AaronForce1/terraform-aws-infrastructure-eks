@@ -2,12 +2,16 @@ resource "helm_release" "elasticstack-elasticsearch" {
   name       = "elasticsearch"
   repository = "https://helm.elastic.co"
   chart      = "elasticsearch"
-  version    = "v7.16.2"
+  version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
 
   values = [
     <<-EOF
-      imagePullPolicy: Always
+      image: 
+      imageTag: ${local.elkversion}
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: 
+      - name: ticketing-v2-elasticsearch-backup-regcred
       replicas: ${var.tfenv == "prod" ? 3 : 2}
       volumeClaimTemplate:
         resources:
