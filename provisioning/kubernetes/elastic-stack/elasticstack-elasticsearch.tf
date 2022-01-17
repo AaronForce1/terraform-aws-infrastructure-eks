@@ -7,9 +7,9 @@ resource "helm_release" "elasticstack-elasticsearch" {
 
   values = [
     <<-EOF
-      image: 
+      image: registry.git.hk.asiaticketing.com/technology/system/utils/elasticsearch
       imageTag: ${local.elkversion}
-      imagePullPolicy: IfNotPresent
+      imagePullPolicy: Always
       imagePullSecrets: 
       - name: ticketing-v2-elasticsearch-backup-regcred
       replicas: ${var.tfenv == "prod" ? 3 : 2}
