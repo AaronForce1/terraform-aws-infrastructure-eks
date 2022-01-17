@@ -2,7 +2,7 @@ resource "helm_release" "elasticstack-kibana" {
   name       = "kibana"
   repository = "https://helm.elastic.co"
   chart      = "kibana"
-  version    = "v7.16.2"
+  version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
 
   values = [<<EOF
