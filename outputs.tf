@@ -49,3 +49,11 @@ output "public_subnets_cidr_blocks" {
     ipv6 = module.eks-vpc.public_subnets_ipv6_cidr_blocks
   }
 }
+
+## -----------
+## MODULE: subnet_addrs
+## -----------
+
+output "base_cidr_block" {
+  value = module.subnet_addrs.base_cidr_block
+}

@@ -27,16 +27,18 @@ module "certmanager" {
 
 module "aws-support" {
   source     = "./provisioning/kubernetes/aws-support"
-  depends_on = [module.eks, module.eks-vpc]
+  depends_on = [module.eks, module.eks-vpc, module.subnet_addrs]
 
-  vpc_id        = module.eks-vpc.vpc_id
-  cidr_blocks   = module.eks-vpc.private_subnets_cidr_blocks
-  oidc_url      = module.eks.cluster_oidc_issuer_url
-  account_id    = data.aws_caller_identity.current.account_id
-  aws_region    = var.aws_region
-  app_name      = var.app_name
-  app_namespace = var.app_namespace
-  tfenv         = var.tfenv
+  vpc_id          = module.eks-vpc.vpc_id
+  cidr_blocks     = module.eks-vpc.private_subnets_cidr_blocks
+  oidc_url        = module.eks.cluster_oidc_issuer_url
+  account_id      = data.aws_caller_identity.current.account_id
+  aws_region      = var.aws_region
+  app_name        = var.app_name
+  app_namespace   = var.app_namespace
+  tfenv           = var.tfenv
+  base_cidr_block = module.subnet_addrs.base_cidr_block
+  billingcustomer = var.billingcustomer
 }
 
 module "aws-cluster-autoscaler" {
