@@ -1,4 +1,5 @@
 resource "aws_eks_node_group" "custom_node_group" {
+  lifecycle { ignore_changes = [ scaling_config.desired_size ] }
   count = length(var.managed_node_groups)
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
