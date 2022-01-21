@@ -36,7 +36,6 @@ module "subnet_addrs" {
 }
 
 module "eks-vpc" {
-  lifecycle { ignore_changes = [ ipv6_netmask_length ] }
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.1"
 
