@@ -80,6 +80,7 @@ variable "app_name" {}
 variable "app_namespace" {}
 variable "tfenv" {}
 variable "aws_region" {}
+variable "gitlab_url" {}
 variable "gitlab_serviceaccount_id" {}
 variable "gitlab_serviceaccount_secret" {}
 variable "gitlab_runner_concurrent_agents" {}

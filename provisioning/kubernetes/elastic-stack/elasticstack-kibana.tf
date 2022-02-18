@@ -4,7 +4,7 @@ resource "helm_release" "elasticstack-kibana" {
   chart      = "kibana"
   version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
-  lifecycle { ignore_changes = [ values, version] }
+  lifecycle { ignore_changes = [values, version] }
 
   values = [<<EOF
 imagePullPolicy: Always

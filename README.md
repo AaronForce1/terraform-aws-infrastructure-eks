@@ -100,7 +100,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.65.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
 
@@ -168,6 +168,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_root_domain_name"></a> [root\_domain\_name](#input\_root\_domain\_name) | Domain root where all kubernetes systems are orchestrating control | `any` | n/a | yes |
 | <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
 | <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
+| <a name="input_vault_nodeselector"></a> [vault\_nodeselector](#input\_vault\_nodeselector) | n/a | `string` | `""` | no |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment | `map` | `{}` | no |
 | <a name="input_vpc_subnet_configuration"></a> [vpc\_subnet\_configuration](#input\_vpc\_subnet\_configuration) | Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated. | <pre>object({<br>    base_cidr           = string<br>    subnet_bit_interval = number<br>    autogenerate        = optional(bool)<br>  })</pre> | <pre>{<br>  "autogenerate": true,<br>  "base_cidr": "172.%s.0.0/16",<br>  "subnet_bit_interval": 4<br>}</pre> | no |
 
@@ -175,6 +176,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Description |
 |------|-------------|
+| <a name="output_base_cidr_block"></a> [base\_cidr\_block](#output\_base\_cidr\_block) | n/a |
 | <a name="output_kubecfg"></a> [kubecfg](#output\_kubecfg) | n/a |
 | <a name="output_kubernetes-cluster-certificate-authority-data"></a> [kubernetes-cluster-certificate-authority-data](#output\_kubernetes-cluster-certificate-authority-data) | n/a |
 | <a name="output_kubernetes-cluster-endpoint"></a> [kubernetes-cluster-endpoint](#output\_kubernetes-cluster-endpoint) | n/a |

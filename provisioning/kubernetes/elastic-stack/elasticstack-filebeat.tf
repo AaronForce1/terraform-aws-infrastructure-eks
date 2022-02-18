@@ -4,7 +4,7 @@ resource "helm_release" "elasticstack-filebeat" {
   chart      = "filebeat"
   version    = format("v%s", local.elkversion)
   namespace  = "monitoring"
-  lifecycle { ignore_changes = [ values, version] }
+  lifecycle { ignore_changes = [values, version] }
 
   values = [
     <<-EOF
