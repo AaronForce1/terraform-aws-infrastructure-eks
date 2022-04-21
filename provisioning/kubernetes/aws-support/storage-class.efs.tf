@@ -28,8 +28,9 @@ resource "helm_release" "aws-efs-csi-driver" {
 
   set {
     name  = "replicaCount"
-    value = var.node_count
-    type  = number
+    value = "${var.node_count}"
+    type  = "string"
+    
   }
 
   #set {
