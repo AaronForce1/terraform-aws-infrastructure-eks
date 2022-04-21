@@ -39,6 +39,7 @@ module "aws-support" {
   tfenv           = var.tfenv
   base_cidr_block = module.subnet_addrs.base_cidr_block
   billingcustomer = var.billingcustomer
+  node_count      = length(var.managed_node_groups) > 0 ? var.managed_node_groups[0].min_capacity : var.instance_min_size
 }
 
 module "aws-cluster-autoscaler" {

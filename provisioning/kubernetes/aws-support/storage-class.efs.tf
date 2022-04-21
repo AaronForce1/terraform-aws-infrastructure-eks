@@ -26,6 +26,12 @@ resource "helm_release" "aws-efs-csi-driver" {
     type  = "string"
   }
 
+  set {
+    name  = "replicaCount"
+    value = var.node_count
+    type  = number
+  }
+
   #set {
   #    name = "controller.serviceAccount.annotations"
   #    value = "eks.amazonaws.com/role-arn: arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:role/${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-EFS_CSI_Driver-role"
