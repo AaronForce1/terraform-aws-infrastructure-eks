@@ -23,14 +23,14 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
     effect = "Allow"
 
     actions = [
-      "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeLaunchConfigurations",
       "autoscaling:SetDesiredCapacity",
-      "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeTags",
       "autoscaling:DescribeLaunchConfigurations",
-      "ec2:DescribeLaunchTemplateVersions"
+      "ec2:DescribeLaunchTemplateVersions",
+      "ec2:DescribeInstanceTypes",
+      "autoscaling:TerminateInstanceInAutoScalingGroup"
     ]
 
     resources = ["*"]
