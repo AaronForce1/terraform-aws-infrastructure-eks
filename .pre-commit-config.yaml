@@ -1,7 +1,7 @@
 exclude: ^examples/
 repos:
-- repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.62.3
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.68.1
   hooks:
     - id: terraform_fmt
     - id: terraform_docs

@@ -1,11 +1,11 @@
 # Create a base domain for EKS Cluster
 # data "aws_route53_zone" "base_domain" {
-#   name = var.root_domain_name
+#   name = var.cluster_root_domain.name
 # }
 
 # resource "aws_route53_record" "eks_domain" {
 #   zone_id = data.aws_route53_zone.base_domain.id
-#   name    = "${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+#   name    = "${var.app_namespace}-${var.tfenv}.${var.cluster_root_domain.name}"
 #   type    = "A"
 
 #   alias {
@@ -36,12 +36,12 @@
 
 
 # resource "aws_acm_certificate" "eks_domain_cert" {
-#   domain_name               = "eks-${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
-#   subject_alternative_names = ["*.eks-${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"]
+#   domain_name               = "eks-${var.app_namespace}-${var.tfenv}.${var.cluster_root_domain.name}"
+#   subject_alternative_names = ["*.eks-${var.app_namespace}-${var.tfenv}.${var.cluster_root_domain.name}"]
 #   validation_method         = "DNS"
 
 #   tags = {
-#     Name                                        = "eks-${var.app_namespace}-${var.tfenv}.${var.root_domain_name}"
+#     Name                                        = "eks-${var.app_namespace}-${var.tfenv}.${var.cluster_root_domain.name}"
 #     Environment                                 = var.tfenv
 #     Terraform                                   = "true"
 #     Namespace                                   = var.app_namespace

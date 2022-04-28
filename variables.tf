@@ -55,34 +55,43 @@ variable "map_users" {
   # ]
 }
 
-variable "managed_node_groups" {
+variable "eks_managed_node_groups" {
   description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
-  type = list(object({
-    name                   = string
-    desired_capacity       = number
-    max_capacity           = number
-    min_capacity           = number
-    instance_type          = string
-    ami_type               = optional(string)
-    key_name               = string
-    public_ip              = bool
-    create_launch_template = bool
-    disk_size              = number
-    taints = list(object({
-      key            = string
-      value          = string
-      effect         = string
-      affinity_label = bool
-    }))
-    subnet_selections = object({
-      public  = bool
-      private = bool
-    })
-  }))
+  default     = null
+  type        = any
+  # type = list(object({
+  #   name                   = string
+  #   desired_capacity       = number
+  #   max_capacity           = number
+  #   min_capacity           = number
+  #   instance_type          = string
+  #   ami_type               = optional(string)
+  #   key_name               = optional(string)
+  #   public_ip              = optional(bool)
+  #   create_launch_template = bool
+  #   disk_size              = number
+  #   disk_encrypted         = optional(bool)
+  #   capacity_type          = optional(string)
+  #   taints = optional(list(object({
+  #     key            = string
+  #     value          = string
+  #     effect         = string
+  #     affinity_label = bool
+  #   })))
+  #   subnet_selections = object({
+  #     public  = bool
+  #     private = bool
+  #   })
+  #   tags = optional(any)
+  # }))
 }
 
-variable "root_domain_name" {
+variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
+  type = object({
+    create = optional(bool)
+    name   = string
+  })
 }
 
 variable "app_name" {
@@ -96,6 +105,11 @@ variable "app_namespace" {
 
 variable "tfenv" {
   description = "Environment"
+}
+
+variable "cluster_name" {
+  description = "Optional override for cluster name instead of standard {name}-{namespace}-{env}"
+  default     = ""
 }
 
 variable "cluster_version" {
@@ -176,19 +190,50 @@ variable "nat_gateway_custom_configuration" {
 
 variable "helm_installations" {
   type = object({
+    dashboard     = bool
     gitlab_runner = bool
     vault_consul  = bool
     ingress       = bool
     elasticstack  = bool
     grafana       = bool
+    argocd        = bool
   })
   default = {
+    dashboard     = true
     gitlab_runner = false
     vault_consul  = true
     ingress       = true
     elasticstack  = false
     grafana       = true
+    argocd        = false
   }
+}
+
+variable "helm_configurations" {
+  type = object({
+    dashboard     = optional(string)
+    gitlab_runner = optional(string)
+    vault_consul  = optional(string)
+    ingress       = optional(string)
+    elasticstack  = optional(string)
+    grafana       = optional(string)
+    argocd        = optional(string)
+  })
+  default = {
+    dashboard     = null
+    gitlab_runner = null
+    vault_consul  = null
+    ingress       = null
+    elasticstack  = null
+    grafana       = null
+    argocd        = null
+  }
+}
+
+variable "custom_namespaces" {
+  description = "Adding namespaces to a default cluster provisioning process"
+  type        = list(string)
+  default     = []
 }
 
 variable "vpc_subnet_configuration" {
@@ -237,7 +282,13 @@ variable "vault_nodeselector" {
   default = ""
 }
 
+## TODO: Merge all the default node_group configurations together
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
+}
+
+variable "default_capacity_type" {
+  description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
+  default     = "ON_DEMAND"
 }

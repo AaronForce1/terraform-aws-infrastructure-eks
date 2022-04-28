@@ -1,4 +1,4 @@
-#Post Provisioning EFS Service Account annotation
+# Post Provisioning EFS Service Account annotation
 
 Because the eks-efs-csi driver has a bug on its annotation and we cannot use kubernetes_service_account terraform resource to apply the annotation because the service account already exists and we cannot apply an update yet thru terraform. We need to manually apply the annotation to the service account that was created by the efs helm_release. To do that:
 

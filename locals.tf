@@ -3,26 +3,24 @@ locals {
 }
 
 locals {
-  kubernetes_tags = {
+  name_prefix = var.cluster_name != "" ? var.cluster_name : "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  base_tags = {
+    Environment                      = var.tfenv
+    Terraform                        = "true"
+    Version                          = local.module_version
+    Namespace                        = var.app_namespace
+    Billingcustomer                  = var.billingcustomer
+    Product                          = var.app_name
+    terraform-aws-infrastructure-eks = local.module_version
+  }
+  kubernetes_tags = merge({
     Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-    Environment                                                                   = var.tfenv
-    billingcustomer                                                               = var.billingcustomer
-    Namespace                                                                     = var.app_namespace
-    Product                                                                       = var.app_name
-    Version                                                                       = local.module_version
-    infrastructure-terraform-eks                                                  = local.module_version
     "k8s.io/cluster-autoscaler/enabled"                                           = true
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
-  }
-  additional_kubernetes_tags = {
-    Name                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-    Environment                  = var.tfenv
-    billingcustomer              = var.billingcustomer
-    Namespace                    = var.app_namespace
-    Product                      = var.app_name
-    infrastructure-terraform-eks = local.module_version
-  }
-
+  }, local.base_tags)
+  additional_kubernetes_tags = merge({
+    Name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  }, local.base_tags)
 
   default_node_group = {
     core = {
@@ -72,6 +70,12 @@ locals {
     propagate_public_route_tables_vgw = false
   }
 
+  namespaces = concat(
+    var.custom_namespaces,
+    ["monitoring"],
+    (var.helm_installations.vault_consul ? ["hashicorp"] : []),
+    (var.helm_installations.argocd ? ["argocd"] : [])
+  )
 }
 
 resource "random_integer" "cidr_vpc" {
