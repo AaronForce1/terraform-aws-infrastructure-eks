@@ -24,13 +24,17 @@ module "nginx-controller-ingress" {
   tfenv                                = var.tfenv
   infrastructure_eks_terraform_version = local.module_version
   billingcustomer                      = var.billingcustomer
+
+  custom_manifest = try(var.helm_configurations.ingress.nginx_values, null)
+  ingress_records = var.cluster_root_domain.ingress_records != null ? var.cluster_root_domain.ingress_records : []
 }
 
 module "certmanager" {
   source     = "./provisioning/kubernetes/certmanager"
   depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, module.nginx-controller-ingress]
+  count      = var.helm_installations.ingress ? 1 : 0
 
-  count = var.helm_installations.ingress ? 1 : 0
+  custom_manifest = try(var.helm_configurations.ingress.certmanager_values, null)
 }
 
 module "kubernetes-dashboard" {
@@ -40,6 +44,8 @@ module "kubernetes-dashboard" {
 
   app_namespace = var.app_namespace
   tfenv         = var.tfenv
+
+  custom_manifest = var.helm_configurations.dashboard
 }
 
 module "consul" {
@@ -57,14 +63,16 @@ module "vault" {
   depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, module.consul]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector      = var.vault_nodeselector
+  vault_nodeselector      = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
   app_namespace           = var.app_namespace
   tfenv                   = var.tfenv
   root_domain_name        = var.cluster_root_domain.name
   app_name                = var.app_name
   billingcustomer         = var.billingcustomer
   aws_region              = var.aws_region
-  enable_aws_vault_unseal = var.enable_aws_vault_unseal
+  enable_aws_vault_unseal = try(var.helm_configurations.vault_consul.enable_aws_vault_unseal, false) != null ? var.helm_configurations.vault_consul.enable_aws_vault_unseal : false
+
+  custom_manifest = var.helm_configurations.vault_consul
 }
 
 module "elastic-stack" {
@@ -94,6 +102,8 @@ module "grafana" {
   google_clientID     = var.google_clientID
   google_clientSecret = var.google_clientSecret
   google_authDomain   = var.google_authDomain
+
+  custom_manifest = var.helm_configurations.grafana
 }
 
 module "argocd" {

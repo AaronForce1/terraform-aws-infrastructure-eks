@@ -57,7 +57,7 @@ variable "map_users" {
 
 variable "eks_managed_node_groups" {
   description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
-  default     = null
+  default     = []
   type        = any
   # type = list(object({
   #   name                   = string
@@ -89,8 +89,9 @@ variable "eks_managed_node_groups" {
 variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
   type = object({
-    create = optional(bool)
-    name   = string
+    create          = optional(bool)
+    name            = string
+    ingress_records = optional(list(string))
   })
 }
 
@@ -120,26 +121,26 @@ variable "cluster_version" {
 variable "instance_type" {
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
-  default     = "c5a.large"
+  default     = "c5a.medium"
 }
 
 variable "instance_desired_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 8
+  default     = 2
 }
 
 variable "instance_min_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 2
+  default     = 1
 }
 
 variable "instance_max_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 12
+  default     = 4
 }
 
 variable "billingcustomer" {
-  description = "Which BILLINGCUSTOMER is setup in AWS"
+  description = "Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning"
 }
 
 variable "root_vol_size" {
@@ -208,16 +209,23 @@ variable "helm_installations" {
     argocd        = false
   }
 }
-
 variable "helm_configurations" {
   type = object({
     dashboard     = optional(string)
     gitlab_runner = optional(string)
-    vault_consul  = optional(string)
-    ingress       = optional(string)
-    elasticstack  = optional(string)
-    grafana       = optional(string)
-    argocd        = optional(string)
+    vault_consul = optional(object({
+      consul_values           = optional(string)
+      vault_values            = optional(string)
+      enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
+      vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file
+    }))
+    ingress = optional(object({
+      nginx_values       = optional(string)
+      certmanager_values = optional(string)
+    }))
+    elasticstack = optional(string)
+    grafana      = optional(string)
+    argocd       = optional(string)
   })
   default = {
     dashboard     = null
@@ -250,11 +258,6 @@ variable "vpc_subnet_configuration" {
   }
 }
 
-variable "enable_aws_vault_unseal" {
-  description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
-  default     = false
-}
-
 variable "google_clientID" {
   description = "Used for Infrastructure OAuth: Google Auth Client ID"
 }
@@ -276,10 +279,6 @@ variable "cluster_endpoint_public_access_cidrs" {
   description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
   type        = list(string)
   default     = []
-}
-
-variable "vault_nodeselector" {
-  default = ""
 }
 
 ## TODO: Merge all the default node_group configurations together

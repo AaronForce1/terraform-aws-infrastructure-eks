@@ -4,7 +4,7 @@ data "aws_ssm_parameter" "argocd_ssh" {
 
 resource "kubernetes_secret" "argocd_ssh" {
   metadata {
-    name = "repository-ssh-key"
+    name      = "repository-ssh-key"
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" = "repo-creds"

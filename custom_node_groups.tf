@@ -1,6 +1,5 @@
 resource "aws_eks_node_group" "custom_node_group" {
   count = length(var.eks_managed_node_groups)
-  # for_each = var.eks_managed_node_groups
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   node_group_name = var.eks_managed_node_groups[count.index].name

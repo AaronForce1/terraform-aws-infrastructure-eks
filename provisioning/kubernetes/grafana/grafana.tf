@@ -4,7 +4,7 @@ resource "helm_release" "grafana" {
   chart      = "grafana"
   namespace  = "monitoring"
 
-  values = [<<EOT
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOT
 ingress:
   enabled: "true"
   annotations:

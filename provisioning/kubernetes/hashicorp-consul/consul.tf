@@ -5,7 +5,7 @@ resource "helm_release" "consul" {
   namespace        = "hashicorp"
   create_namespace = true
 
-  values = [<<EOF
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOF
 global:
   domain: consul.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}
   datacenter: ${var.app_name}-${var.app_namespace}-${var.tfenv}
@@ -29,8 +29,3 @@ controller:
 EOF
   ]
 }
-
-variable "app_namespace" {}
-variable "tfenv" {}
-variable "root_domain_name" {}
-variable "app_name" {}
