@@ -37,7 +37,7 @@ module "subnet_addrs" {
 
 module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.1"
+  version = "~> 3.14"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
@@ -55,13 +55,13 @@ module "eks-vpc" {
     module.subnet_addrs.networks[2].cidr_block,
   ]
 
-  # TODO: Configure NAT Gateway setting overrides
+  # NAT Gateway settings + EIPs
   enable_nat_gateway     = local.nat_gateway_configuration.enable_nat_gateway
   enable_dns_hostnames   = local.nat_gateway_configuration.enable_dns_hostnames
   single_nat_gateway     = local.nat_gateway_configuration.single_nat_gateway
   one_nat_gateway_per_az = local.nat_gateway_configuration.one_nat_gateway_per_az
-  # reuse_nat_ips                     = true
-  # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+  reuse_nat_ips                     = local.nat_gateway_configuration.reuse_nat_ips
+  external_nat_ip_ids               = local.nat_gateway_configuration.external_nat_ip_ids
   enable_vpn_gateway                = local.nat_gateway_configuration.enable_vpn_gateway
   propagate_public_route_tables_vgw = local.nat_gateway_configuration.propagate_public_route_tables_vgw
 

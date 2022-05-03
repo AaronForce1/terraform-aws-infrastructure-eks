@@ -55,8 +55,8 @@ locals {
     "enable_dns_hostnames"   = var.nat_gateway_custom_configuration.enable_dns_hostnames
     "single_nat_gateway"     = var.nat_gateway_custom_configuration.single_nat_gateway
     "one_nat_gateway_per_az" = var.nat_gateway_custom_configuration.one_nat_gateway_per_az
-    # reuse_nat_ips                     = true
-    # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+    "reuse_nat_ips"                    = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.reuse_nat_ips : false
+    "external_nat_ip_ids"               = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.external_nat_ip_ids : []
     "enable_vpn_gateway"                = var.nat_gateway_custom_configuration.enable_vpn_gateway
     "propagate_public_route_tables_vgw" = var.nat_gateway_custom_configuration.enable_vpn_gateway
     } : {
@@ -64,8 +64,8 @@ locals {
     enable_dns_hostnames   = true
     single_nat_gateway     = var.tfenv == "prod" ? false : true
     one_nat_gateway_per_az = false
-    # reuse_nat_ips                     = true
-    # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+    reuse_nat_ips                    = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.reuse_nat_ips : false
+    external_nat_ip_ids               = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.external_nat_ip_ids : []
     enable_vpn_gateway                = false
     propagate_public_route_tables_vgw = false
   }

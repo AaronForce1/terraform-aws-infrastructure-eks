@@ -171,6 +171,20 @@ variable "vpc_flow_logs" {
   default = {}
 }
 
+variable "elastic_ip_custom_configuration" {
+  description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
+  type = object({
+    enabled = bool
+    reuse_nat_ips = bool
+    external_nat_ip_ids = list(string)
+  })
+  default = {
+    enabled = false
+    external_nat_ip_ids = []
+    reuse_nat_ips = false
+  }
+}
+
 variable "nat_gateway_custom_configuration" {
   description = "Override the default NAT Gateway configuration, which configures a single NAT gateway for non-prod, while one per AZ on tfenv=prod"
   type = object({
@@ -246,6 +260,17 @@ variable "custom_namespaces" {
   description = "Adding namespaces to a default cluster provisioning process"
   type        = list(string)
   default     = []
+}
+
+variable "custom_aws_s3_support_infra" {
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name = string
+    bucket_acl = string
+    aws_kms_key = string
+    lifecycle_rules = list(any)
+  }))
+  default = []
 }
 
 variable "vpc_subnet_configuration" {
