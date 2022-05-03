@@ -1,6 +1,10 @@
 ## GLOBAL VAR CONFIGURATION
 variable "aws_region" {
-  description = "Region for the VPC"
+  description = "AWS Region for all primary configurations"
+}
+
+variable "aws_secondary_region" {
+  description = "Secondary Region for certain redundant AWS components"
 }
 
 variable "map_accounts" {
