@@ -252,7 +252,7 @@ variable "gitlab_kubernetes_agent_config" {
   })
   sensitive = true
   default = {
-    gitlab_agent_url    = "wss://kas.gitlab.com"
+    gitlab_agent_url    = ""
     gitlab_agent_secret = ""
   }
 }
