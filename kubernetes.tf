@@ -125,7 +125,6 @@ module "gitlab-k8s-agent" {
   tfenv                  = var.tfenv
   gitlab_agent_url       = var.gitlab_kubernetes_agent_config.gitlab_agent_url
   gitlab_agent_secret    = var.gitlab_kubernetes_agent_config.gitlab_agent_secret
-  cluster_ca_certificate = module.eks.cluster_certificate_authority_data
 }
 
 # module "gitlab_runner" {

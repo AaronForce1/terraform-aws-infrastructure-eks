@@ -9,10 +9,9 @@ resource "helm_release" "gitlab-k8s-agent" {
   values = [
     <<-EOF
       config:
-      kasAddress: ${var.gitlab_agent_url}
-      token: ${var.gitlab_agent_secret}
-      secretName: "gitlab-agent-token"
-      caCert: ${var.cluster_ca_certificate}
+        kasAddress: ${var.gitlab_agent_url}
+        token: ${var.gitlab_agent_secret}
+        secretName: "gitlab-agent-token"
     EOF
   ]
 }
@@ -21,4 +20,3 @@ variable "app_namespace" {}
 variable "tfenv" {}
 variable "gitlab_agent_url" {}
 variable "gitlab_agent_secret" {}
-variable "cluster_ca_certificate" {}
