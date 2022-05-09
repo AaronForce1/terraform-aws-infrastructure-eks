@@ -116,6 +116,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 3.1 |
 | <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.1 |
 | <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack | n/a |
+| <a name="module_gitlab-k8s-agent"></a> [gitlab-k8s-agent](#module\_gitlab-k8s-agent) | ./provisioning/kubernetes/gitlab-kubernetes-agent | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
 | <a name="module_namespaces"></a> [namespaces](#module\_namespaces) | ./provisioning/kubernetes/namespaces | n/a |
@@ -150,10 +151,11 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_create_launch_template"></a> [create\_launch\_template](#input\_create\_launch\_template) | enable launch template on node group | `bool` | `false` | no |
 | <a name="input_default_ami_type"></a> [default\_ami\_type](#input\_default\_ami\_type) | Default AMI used for node provisioning | `string` | `"AL2_x86_64"` | no |
 | <a name="input_enable_aws_vault_unseal"></a> [enable\_aws\_vault\_unseal](#input\_enable\_aws\_vault\_unseal) | If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS | `bool` | `false` | no |
+| <a name="input_gitlab_kubernetes_agent_config"></a> [gitlab\_kubernetes\_agent\_config](#input\_gitlab\_kubernetes\_agent\_config) | Configuration for Gitlab Kubernetes Agent | <pre>object({<br>    gitlab_agent_url    = string<br>    gitlab_agent_secret = string<br>  })</pre> | <pre>{<br>  "gitlab_agent_secret": "",<br>  "gitlab_agent_url": "wss://kas.gitlab.com"<br>}</pre> | no |
 | <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
-| <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>    elasticstack  = bool<br>    grafana       = bool<br>  })</pre> | <pre>{<br>  "elasticstack": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
+| <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    gitlab_runner    = bool<br>    gitlab_k8s_agent = bool<br>    vault_consul     = bool<br>    ingress          = bool<br>    elasticstack     = bool<br>    grafana          = bool<br>  })</pre> | <pre>{<br>  "elasticstack": false,<br>  "gitlab_k8s_agent": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
 | <a name="input_instance_desired_size"></a> [instance\_desired\_size](#input\_instance\_desired\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `8` | no |
 | <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `12` | no |
 | <a name="input_instance_min_size"></a> [instance\_min\_size](#input\_instance\_min\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |

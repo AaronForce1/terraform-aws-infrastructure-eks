@@ -20,6 +20,6 @@ resource "helm_release" "aws-cluster-autoscaler" {
       clusterName : "${var.app_name}-${var.app_namespace}-${var.tfenv}",
       enabled : true
     }
-  })
+    })
   ]
 }

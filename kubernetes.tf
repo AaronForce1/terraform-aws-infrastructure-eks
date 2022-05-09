@@ -116,6 +116,18 @@ module "grafana" {
   google_authDomain   = var.google_authDomain
 }
 
+module "gitlab-k8s-agent" {
+  source     = "./provisioning/kubernetes/gitlab-kubernetes-agent"
+  depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces]
+  count      = var.helm_installations.gitlab_k8s_agent ? 1 : 0
+
+  app_namespace          = var.app_namespace
+  tfenv                  = var.tfenv
+  gitlab_agent_url       = var.gitlab_kubernetes_agent_config.gitlab_agent_url
+  gitlab_agent_secret    = var.gitlab_kubernetes_agent_config.gitlab_agent_secret
+  cluster_ca_certificate = module.eks.cluster_certificate_authority_data
+}
+
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
 #   depends_on = [module.namespaces, module.eks, module.eks-vpc]

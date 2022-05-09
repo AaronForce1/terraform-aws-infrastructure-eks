@@ -176,18 +176,20 @@ variable "nat_gateway_custom_configuration" {
 
 variable "helm_installations" {
   type = object({
-    gitlab_runner = bool
-    vault_consul  = bool
-    ingress       = bool
-    elasticstack  = bool
-    grafana       = bool
+    gitlab_runner    = bool
+    gitlab_k8s_agent = bool
+    vault_consul     = bool
+    ingress          = bool
+    elasticstack     = bool
+    grafana          = bool
   })
   default = {
-    gitlab_runner = false
-    vault_consul  = true
-    ingress       = true
-    elasticstack  = false
-    grafana       = true
+    gitlab_runner    = false
+    gitlab_k8s_agent = false
+    vault_consul     = true
+    ingress          = true
+    elasticstack     = false
+    grafana          = true
   }
 }
 
@@ -240,4 +242,17 @@ variable "vault_nodeselector" {
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
+}
+
+variable "gitlab_kubernetes_agent_config" {
+  description = "Configuration for Gitlab Kubernetes Agent"
+  type = object({
+    gitlab_agent_url    = string
+    gitlab_agent_secret = string
+  })
+  sensitive = true
+  default = {
+    gitlab_agent_url    = "wss://kas.gitlab.com"
+    gitlab_agent_secret = ""
+  }
 }
