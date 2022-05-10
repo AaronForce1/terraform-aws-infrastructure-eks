@@ -124,7 +124,7 @@ module "eks-vpc-endpoints" {
 resource "aws_vpc_endpoint" "rds" {
   lifecycle { ignore_changes = [dns_entry] }
   vpc_id              = module.eks-vpc.vpc_id
-  depends_on          = [module.eks-vpc]
+  
   service_name        = "com.amazonaws.${var.aws_region}.rds"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true

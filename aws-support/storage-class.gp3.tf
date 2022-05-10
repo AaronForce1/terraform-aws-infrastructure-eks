@@ -1,4 +1,6 @@
 resource "helm_release" "gp3-storage-class" {
+  count = var.aws_installations.storage_ebs.gb3 ? 1 : 0
+
   name       = "aws-ebs-csi-driver"
   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
   chart      = "aws-ebs-csi-driver"
@@ -21,11 +23,12 @@ resource "helm_release" "gp3-storage-class" {
 
   set {
     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.amazoneks-ebs-csi-driver-role.arn
+    value = module.aws_csi_irsa_role[0].iam_role_arn
   }
 }
 
 resource "kubernetes_storage_class" "gp3-storage-class" {
+  count = var.aws_installations.storage_ebs.gb3 ? 1 : 0
   metadata {
     name = "gp3"
     annotations = {

@@ -1,4 +1,6 @@
 resource "helm_release" "aws-efs-csi-driver" {
+  count = var.aws_installations.storage_efs.efs ? 1 : 0
+
   name         = "aws-efs-csi-driver"
   repository   = "https://kubernetes-sigs.github.io/aws-efs-csi-driver"
   chart        = "aws-efs-csi-driver"
@@ -22,7 +24,7 @@ resource "helm_release" "aws-efs-csi-driver" {
 
   set {
     name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com\\/role\\-arn"
-    value = aws_iam_role.amazoneks-efs-csi-driver-role.arn
+    value = module.aws_csi_irsa_role[0].iam_role_arn
     type  = "string"
   }
 
@@ -32,14 +34,11 @@ resource "helm_release" "aws-efs-csi-driver" {
     type  = "string"
 
   }
-
-  #set {
-  #    name = "controller.serviceAccount.annotations"
-  #    value = "eks.amazonaws.com/role-arn: arn:aws:iam::${data.aws_caller_identity.aws-support.account_id}:role/${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-EFS_CSI_Driver-role"
-  #}
 }
 
 resource "kubernetes_storage_class" "efs-storage-class" {
+  count = var.aws_installations.storage_efs.efs ? 1 : 0
+  
   metadata {
     name = "efs"
   }

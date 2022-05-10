@@ -1,4 +1,6 @@
 resource "aws_security_group" "efs_security_group" {
+  count = var.aws_installations.storage_efs.eks_security_groups ? 1 : 0
+
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-efs"
   description = "${var.app_name}-${var.app_namespace}-${var.tfenv}-efs"
   vpc_id      = var.vpc_id

@@ -207,6 +207,44 @@ variable "nat_gateway_custom_configuration" {
   }
 }
 
+variable "aws_installations" {
+  description = "AWS Support Components including Cluster Autoscaler, EBS/EFS Storage Classes, etc."
+  type = object({
+    storage_ebs = optional(object({
+      eks_irsa_role = bool
+      gp2 = bool
+      gp3 = bool
+      st1 = bool
+    }))
+    storage_efs = optional(object({
+      eks_irsa_role = bool
+      eks_security_groups = bool
+      efs = bool
+    }))
+    cluster_autoscaler = optional(bool)
+    route53_external_dns = optional(bool)
+    kms_secrets_access = optional(bool)
+    cert_manager = optional(bool)
+  })
+  default = {
+    cluster_autoscaler = true
+    kms_secrets_access = true
+    route53_external_dns = true
+    cert_manager = true
+    storage_ebs = {
+      eks_irsa_role = true
+      gp2 = true
+      gp3 = true
+      st1 = true
+    }
+    storage_efs = {
+      efs = true
+      eks_irsa_role = true
+      eks_security_groups = true
+    }
+  }
+}
+
 variable "helm_installations" {
   type = object({
     dashboard     = bool

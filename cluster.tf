@@ -1,7 +1,15 @@
 module "eks" {
   source     = "terraform-aws-modules/eks/aws"
   version    = "~> 17.15.0"
-  depends_on = [module.eks-vpc]
+  depends_on = [
+    ## VPC COMPONENTS
+    module.eks-vpc,
+
+    ## KMS
+    resource.aws_kms_key.eks,
+    resource.aws_kms_alias.eks,
+    resource.aws_kms_replica_key.eks
+  ]
 
   cluster_name    = local.name_prefix
   cluster_version = var.cluster_version

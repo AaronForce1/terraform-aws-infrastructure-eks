@@ -12,9 +12,10 @@ module "iam_assumable_role_admin" {
 
 resource "aws_iam_policy" "cluster_autoscaler_policy" {
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cluster-autoscaler-policy"
-  path        = "/"
-  description = "EKS cluster-autoscaler policy for cluster ${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  path        = "/${var.app_namespace}/${var.tfenv}"
+  description = "EKS cluster-autoscaler policy: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
+  tags = var.tags
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {

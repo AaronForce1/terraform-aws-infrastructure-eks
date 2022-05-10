@@ -1,4 +1,10 @@
 resource "aws_eks_node_group" "custom_node_group" {
+  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
+  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
+  depends_on = [
+    module.eks
+  ]
+  
   count = length(var.eks_managed_node_groups)
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -37,6 +43,7 @@ resource "aws_eks_node_group" "custom_node_group" {
   )
   tags = merge(
     local.kubernetes_tags,
+    {"Name": var.eks_managed_node_groups[count.index].name}
     # var.eks_managed_node_groups[count.index].tags != null ? var.eks_managed_node_groups[count.index].tags : []
   )
   dynamic "taint" {
@@ -47,10 +54,4 @@ resource "aws_eks_node_group" "custom_node_group" {
       effect = taint.value["effect"]
     }
   }
-
-  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
-  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
-  depends_on = [
-    module.eks-vpc, module.eks
-  ]
 }
