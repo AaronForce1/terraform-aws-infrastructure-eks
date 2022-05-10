@@ -1,5 +1,5 @@
 resource "helm_release" "gp3-storage-class" {
-  count = var.aws_installations.storage_ebs.gb3 ? 1 : 0
+  count = try(var.aws_installations.storage_ebs.gp3, false) ? 1 : 0
 
   name       = "aws-ebs-csi-driver"
   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
@@ -28,7 +28,7 @@ resource "helm_release" "gp3-storage-class" {
 }
 
 resource "kubernetes_storage_class" "gp3-storage-class" {
-  count = var.aws_installations.storage_ebs.gb3 ? 1 : 0
+  count = try(var.aws_installations.storage_ebs.gp3, false) ? 1 : 0
   metadata {
     name = "gp3"
     annotations = {

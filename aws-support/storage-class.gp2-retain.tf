@@ -1,5 +1,5 @@
 resource "kubernetes_storage_class" "gp2-storage-class" {
-  count = var.aws_installations.storage_ebs.gb2 ? 1 : 0
+  count = try(var.aws_installations.storage_ebs.gp2, false) ? 1 : 0
   metadata {
     name = "gp2-retain"
   }
