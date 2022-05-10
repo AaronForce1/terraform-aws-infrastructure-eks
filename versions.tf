@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source                = "hashicorp/aws"
-      version               = "~> 3.58"
+      version               = "~> 4.5"
       configuration_aliases = [aws.secondary]
     }
     gitlab = {

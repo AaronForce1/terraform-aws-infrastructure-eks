@@ -2,7 +2,7 @@
 data "aws_iam_policy_document" "external_secrets" {
   count = var.aws_installations.kms_secrets_access ? 1 : 0
   statement {
-    effect    = "Allow"
+    effect = "Allow"
     actions = [
       "kms:GetPublicKey",
       "kms:Decrypt",
@@ -36,11 +36,11 @@ data "aws_iam_policy_document" "external_secrets" {
 resource "aws_iam_policy" "external_secrets" {
   count = var.aws_installations.kms_secrets_access ? 1 : 0
 
-  name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-external-secrets-policy"
+  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-external-secrets-policy"
   path        = "/${var.app_namespace}/${var.tfenv}"
   description = "EKS External Secrets Policy allowing SSM and KMS access: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.external_secrets[0].json
-  tags = var.tags
+  tags        = var.tags
 }
 
 
@@ -48,7 +48,7 @@ module "external_secrets_irsa_role" {
   count = var.aws_installations.kms_secrets_access ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.13.0"
+  version = "4.24"
 
   role_name = "external_secrets"
 

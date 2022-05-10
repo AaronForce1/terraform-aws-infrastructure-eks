@@ -4,7 +4,7 @@ resource "aws_eks_node_group" "custom_node_group" {
   depends_on = [
     module.eks
   ]
-  
+
   count = length(var.eks_managed_node_groups)
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
@@ -43,7 +43,7 @@ resource "aws_eks_node_group" "custom_node_group" {
   )
   tags = merge(
     local.kubernetes_tags,
-    {"Name": var.eks_managed_node_groups[count.index].name}
+    { "Name" : var.eks_managed_node_groups[count.index].name }
     # var.eks_managed_node_groups[count.index].tags != null ? var.eks_managed_node_groups[count.index].tags : []
   )
   dynamic "taint" {

@@ -1,6 +1,6 @@
 module "eks" {
-  source     = "terraform-aws-modules/eks/aws"
-  version    = "~> 17.15.0"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 17.15.0"
   depends_on = [
     ## VPC COMPONENTS
     module.eks-vpc,

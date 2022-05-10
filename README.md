@@ -91,7 +91,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.58 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.5 |
 | <a name="requirement_gitlab"></a> [gitlab](#requirement\_gitlab) | ~> 3.4 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
@@ -100,11 +100,11 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.0 |
-| <a name="provider_aws.secondary"></a> [aws.secondary](#provider\_aws.secondary) | 3.74.0 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.7.1 |
-| <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.13.0 |
+| <a name="provider_aws.secondary"></a> [aws.secondary](#provider\_aws.secondary) | 4.13.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.11.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.2.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.1.3 |
 
 ## Modules
 
@@ -116,8 +116,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_certmanager"></a> [certmanager](#module\_certmanager) | ./provisioning/kubernetes/certmanager | n/a |
 | <a name="module_consul"></a> [consul](#module\_consul) | ./provisioning/kubernetes/hashicorp-consul | n/a |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 17.15.0 |
-| <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 3.1 |
-| <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.1 |
+| <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 3.14 |
+| <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.14 |
 | <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
@@ -149,17 +149,21 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application Name | `string` | `"eks"` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Tagged App Namespace | `any` | n/a | yes |
-| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region for the VPC | `any` | n/a | yes |
+| <a name="input_aws_installations"></a> [aws\_installations](#input\_aws\_installations) | AWS Support Components including Cluster Autoscaler, EBS/EFS Storage Classes, etc. | <pre>object({<br>    storage_ebs = optional(object({<br>      eks_irsa_role = bool<br>      gp2           = bool<br>      gp3           = bool<br>      st1           = bool<br>    }))<br>    storage_efs = optional(object({<br>      eks_irsa_role       = bool<br>      eks_security_groups = bool<br>      efs                 = bool<br>    }))<br>    cluster_autoscaler   = optional(bool)<br>    route53_external_dns = optional(bool)<br>    kms_secrets_access   = optional(bool)<br>    cert_manager         = optional(bool)<br>  })</pre> | <pre>{<br>  "cert_manager": true,<br>  "cluster_autoscaler": true,<br>  "kms_secrets_access": true,<br>  "route53_external_dns": true,<br>  "storage_ebs": {<br>    "eks_irsa_role": true,<br>    "gp2": true,<br>    "gp3": true,<br>    "st1": true<br>  },<br>  "storage_efs": {<br>    "efs": true,<br>    "eks_irsa_role": true,<br>    "eks_security_groups": true<br>  }<br>}</pre> | no |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS Region for all primary configurations | `any` | n/a | yes |
+| <a name="input_aws_secondary_region"></a> [aws\_secondary\_region](#input\_aws\_secondary\_region) | Secondary Region for certain redundant AWS components | `any` | n/a | yes |
 | <a name="input_billingcustomer"></a> [billingcustomer](#input\_billingcustomer) | Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning | `any` | n/a | yes |
 | <a name="input_cluster_endpoint_public_access_cidrs"></a> [cluster\_endpoint\_public\_access\_cidrs](#input\_cluster\_endpoint\_public\_access\_cidrs) | If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to | `list(string)` | `[]` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Optional override for cluster name instead of standard {name}-{namespace}-{env} | `string` | `""` | no |
 | <a name="input_cluster_root_domain"></a> [cluster\_root\_domain](#input\_cluster\_root\_domain) | Domain root where all kubernetes systems are orchestrating control | <pre>object({<br>    create          = optional(bool)<br>    name            = string<br>    ingress_records = optional(list(string))<br>  })</pre> | n/a | yes |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Cluster Version | `string` | `"1.21"` | no |
 | <a name="input_create_launch_template"></a> [create\_launch\_template](#input\_create\_launch\_template) | enable launch template on node group | `bool` | `false` | no |
+| <a name="input_custom_aws_s3_support_infra"></a> [custom\_aws\_s3\_support\_infra](#input\_custom\_aws\_s3\_support\_infra) | Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components | <pre>list(object({<br>    name            = string<br>    bucket_acl      = string<br>    aws_kms_key     = string<br>    lifecycle_rules = list(any)<br>  }))</pre> | `[]` | no |
 | <a name="input_custom_namespaces"></a> [custom\_namespaces](#input\_custom\_namespaces) | Adding namespaces to a default cluster provisioning process | `list(string)` | `[]` | no |
 | <a name="input_default_ami_type"></a> [default\_ami\_type](#input\_default\_ami\_type) | Default AMI used for node provisioning | `string` | `"AL2_x86_64"` | no |
 | <a name="input_default_capacity_type"></a> [default\_capacity\_type](#input\_default\_capacity\_type) | Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT` | `string` | `"ON_DEMAND"` | no |
 | <a name="input_eks_managed_node_groups"></a> [eks\_managed\_node\_groups](#input\_eks\_managed\_node\_groups) | Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes | `any` | `[]` | no |
+| <a name="input_elastic_ip_custom_configuration"></a> [elastic\_ip\_custom\_configuration](#input\_elastic\_ip\_custom\_configuration) | By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created. | <pre>object({<br>    enabled             = bool<br>    reuse_nat_ips       = bool<br>    external_nat_ip_ids = list(string)<br>  })</pre> | <pre>{<br>  "enabled": false,<br>  "external_nat_ip_ids": [],<br>  "reuse_nat_ips": false<br>}</pre> | no |
 | <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |

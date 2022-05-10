@@ -1,4 +1,4 @@
-exclude: ^examples/
+exclude: (^examples/|archive/)
 repos:
 - repo: https://github.com/antonbabenko/pre-commit-terraform
   rev: v1.68.1

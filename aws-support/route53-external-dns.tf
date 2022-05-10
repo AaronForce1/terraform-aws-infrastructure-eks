@@ -1,6 +1,6 @@
 module "external_dns_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.13.0"
+  version = "4.24"
 
   count = var.aws_installations.route53_external_dns ? 1 : 0
 

@@ -56,10 +56,10 @@ module "eks-vpc" {
   ]
 
   # NAT Gateway settings + EIPs
-  enable_nat_gateway     = local.nat_gateway_configuration.enable_nat_gateway
-  enable_dns_hostnames   = local.nat_gateway_configuration.enable_dns_hostnames
-  single_nat_gateway     = local.nat_gateway_configuration.single_nat_gateway
-  one_nat_gateway_per_az = local.nat_gateway_configuration.one_nat_gateway_per_az
+  enable_nat_gateway                = local.nat_gateway_configuration.enable_nat_gateway
+  enable_dns_hostnames              = local.nat_gateway_configuration.enable_dns_hostnames
+  single_nat_gateway                = local.nat_gateway_configuration.single_nat_gateway
+  one_nat_gateway_per_az            = local.nat_gateway_configuration.one_nat_gateway_per_az
   reuse_nat_ips                     = local.nat_gateway_configuration.reuse_nat_ips
   external_nat_ip_ids               = local.nat_gateway_configuration.external_nat_ip_ids
   enable_vpn_gateway                = local.nat_gateway_configuration.enable_vpn_gateway
@@ -102,7 +102,7 @@ module "eks-vpc" {
 
 module "eks-vpc-endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 3.1"
+  version = "~> 3.14"
 
   vpc_id = module.eks-vpc.vpc_id
   security_group_ids = [
@@ -123,8 +123,8 @@ module "eks-vpc-endpoints" {
 
 resource "aws_vpc_endpoint" "rds" {
   lifecycle { ignore_changes = [dns_entry] }
-  vpc_id              = module.eks-vpc.vpc_id
-  
+  vpc_id = module.eks-vpc.vpc_id
+
   service_name        = "com.amazonaws.${var.aws_region}.rds"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true

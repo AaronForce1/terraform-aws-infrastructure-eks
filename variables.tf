@@ -174,14 +174,14 @@ variable "vpc_flow_logs" {
 variable "elastic_ip_custom_configuration" {
   description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
   type = object({
-    enabled = bool
-    reuse_nat_ips = bool
+    enabled             = bool
+    reuse_nat_ips       = bool
     external_nat_ip_ids = list(string)
   })
   default = {
-    enabled = false
+    enabled             = false
     external_nat_ip_ids = []
-    reuse_nat_ips = false
+    reuse_nat_ips       = false
   }
 }
 
@@ -212,34 +212,34 @@ variable "aws_installations" {
   type = object({
     storage_ebs = optional(object({
       eks_irsa_role = bool
-      gp2 = bool
-      gp3 = bool
-      st1 = bool
+      gp2           = bool
+      gp3           = bool
+      st1           = bool
     }))
     storage_efs = optional(object({
-      eks_irsa_role = bool
+      eks_irsa_role       = bool
       eks_security_groups = bool
-      efs = bool
+      efs                 = bool
     }))
-    cluster_autoscaler = optional(bool)
+    cluster_autoscaler   = optional(bool)
     route53_external_dns = optional(bool)
-    kms_secrets_access = optional(bool)
-    cert_manager = optional(bool)
+    kms_secrets_access   = optional(bool)
+    cert_manager         = optional(bool)
   })
   default = {
-    cluster_autoscaler = true
-    kms_secrets_access = true
+    cluster_autoscaler   = true
+    kms_secrets_access   = true
     route53_external_dns = true
-    cert_manager = true
+    cert_manager         = true
     storage_ebs = {
       eks_irsa_role = true
-      gp2 = true
-      gp3 = true
-      st1 = true
+      gp2           = true
+      gp3           = true
+      st1           = true
     }
     storage_efs = {
-      efs = true
-      eks_irsa_role = true
+      efs                 = true
+      eks_irsa_role       = true
       eks_security_groups = true
     }
   }
@@ -303,9 +303,9 @@ variable "custom_namespaces" {
 variable "custom_aws_s3_support_infra" {
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({
-    name = string
-    bucket_acl = string
-    aws_kms_key = string
+    name            = string
+    bucket_acl      = string
+    aws_kms_key     = string
     lifecycle_rules = list(any)
   }))
   default = []

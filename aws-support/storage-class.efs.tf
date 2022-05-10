@@ -38,7 +38,7 @@ resource "helm_release" "aws-efs-csi-driver" {
 
 resource "kubernetes_storage_class" "efs-storage-class" {
   count = var.aws_installations.storage_efs.efs ? 1 : 0
-  
+
   metadata {
     name = "efs"
   }

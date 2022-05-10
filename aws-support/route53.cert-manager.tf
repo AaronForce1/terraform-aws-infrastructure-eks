@@ -18,18 +18,18 @@ data "aws_iam_policy_document" "cert_manager" {
 resource "aws_iam_policy" "cert_manager" {
   count = var.aws_installations.cert_manager && var.aws_installations.route53_external_dns ? 1 : 0
 
-  name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cert-manager-policy"
+  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cert-manager-policy"
   path        = "/${var.app_namespace}/${var.tfenv}"
   description = "CertManager policy for managing Route53 records: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.cert_manager[0].json
-  tags = var.tags
+  tags        = var.tags
 }
 
 # BUG: https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest#%E2%84%B9%EF%B8%8F-error-invalid-for_each-argument-
 # WORKAROUND: terraform apply -target=aws_iam_policy.cert_manager
 module "cert_manager_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.13.0"
+  version = "4.24"
 
   count = var.aws_installations.cert_manager && var.aws_installations.route53_external_dns ? 1 : 0
 

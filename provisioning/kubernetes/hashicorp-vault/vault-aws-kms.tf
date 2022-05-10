@@ -30,7 +30,7 @@ module "iam_user" {
   count = var.enable_aws_vault_unseal ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 3.0"
+  version = "~> 4.24"
 
   name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-eks-serviceaccount-user"
   path = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "kms_policy_data" {
 resource "aws_iam_user_policy_attachment" "kms_policy_attach" {
   count = var.enable_aws_vault_unseal ? 1 : 0
 
-  user       = module.iam_user[0].this_iam_user_name
+  user       = module.iam_user[0].iam_user_name
   policy_arn = aws_iam_policy.kms_access_policy[0].arn
 }
 
@@ -91,8 +91,8 @@ resource "kubernetes_secret" "kms_iam_user" {
   }
 
   data = {
-    AWS_ACCESS_KEY_ID     = module.iam_user[0].this_iam_access_key_id
-    AWS_SECRET_ACCESS_KEY = module.iam_user[0].this_iam_access_key_secret
+    AWS_ACCESS_KEY_ID     = module.iam_user[0].iam_access_key_id
+    AWS_SECRET_ACCESS_KEY = module.iam_user[0].iam_access_key_secret
   }
 
   type = "generic"

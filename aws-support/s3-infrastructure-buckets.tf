@@ -43,7 +43,7 @@
 # }
 
 # module "s3_elasticstack_bucket" {
-  
+
 
 #   logging = {
 #     target_bucket = module.log_bucket.s3_bucket_id
