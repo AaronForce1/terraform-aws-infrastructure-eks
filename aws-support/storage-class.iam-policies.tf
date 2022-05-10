@@ -1,6 +1,6 @@
 module "aws_csi_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.22.0"
+  version = "4.24"
 
   count = var.aws_installations.storage_efs.eks_irsa_role || var.aws_installations.storage_ebs.eks_irsa_role ? 1 : 0
 

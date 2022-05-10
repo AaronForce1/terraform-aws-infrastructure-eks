@@ -1,6 +1,6 @@
 module "aws_s3_infra_support_buckets" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.1"
+  version = "~> 3.2"
 
   count = length(var.eks_infrastructure_support_buckets)
 
@@ -66,7 +66,7 @@ resource "aws_iam_policy" "aws_s3_infra_support_bucket_iam_policies" {
 
 module "aws_s3_infra_support_bucket_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.13.0"
+  version = "4.24"
 
   count = length(var.eks_infrastructure_support_buckets)
 
