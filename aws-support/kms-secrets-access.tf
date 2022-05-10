@@ -51,6 +51,7 @@ module "external_secrets_irsa_role" {
   version = "4.24"
 
   role_name = "external_secrets"
+  role_path = "/${var.app_namespace}/${var.tfenv}"
 
   oidc_providers = {
     main = {

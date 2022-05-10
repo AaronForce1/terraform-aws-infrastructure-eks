@@ -303,10 +303,12 @@ variable "custom_namespaces" {
 variable "custom_aws_s3_support_infra" {
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({
-    name            = string
-    bucket_acl      = string
-    aws_kms_key     = string
-    lifecycle_rules = list(any)
+    name                                 = string
+    bucket_acl                           = string
+    aws_kms_key_id                       = optional(string)
+    lifecycle_rules                      = list(any)
+    versioning                           = bool
+    k8s_namespace_service_account_access = list(string)
   }))
   default = []
 }

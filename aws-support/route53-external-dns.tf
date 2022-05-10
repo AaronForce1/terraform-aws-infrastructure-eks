@@ -4,7 +4,9 @@ module "external_dns_irsa_role" {
 
   count = var.aws_installations.route53_external_dns ? 1 : 0
 
-  role_name                     = "external-dns"
+  role_name = "external-dns"
+  role_path = "/${var.app_namespace}/${var.tfenv}"
+
   attach_external_dns_policy    = true
   external_dns_hosted_zone_arns = [var.route53_hosted_zone_arn]
 

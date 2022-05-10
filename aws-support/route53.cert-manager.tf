@@ -31,9 +31,14 @@ module "cert_manager_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "4.24"
 
+  depends_on = [
+    resource.aws_iam_policy.cert_manager
+  ]
+
   count = var.aws_installations.cert_manager && var.aws_installations.route53_external_dns ? 1 : 0
 
   role_name = "cert-manager"
+  role_path = "/${var.app_namespace}/${var.tfenv}"
 
   oidc_providers = {
     main = {

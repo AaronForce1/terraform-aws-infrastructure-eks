@@ -1,10 +1,12 @@
 module "aws_csi_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.24"
+  version = "4.22.0"
 
   count = var.aws_installations.storage_efs.eks_irsa_role || var.aws_installations.storage_ebs.eks_irsa_role ? 1 : 0
 
-  role_name             = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-CSI_Driver-role"
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-CSI_Driver-role"
+  role_path = "/${var.app_namespace}/${var.tfenv}"
+
   attach_ebs_csi_policy = var.aws_installations.storage_ebs.eks_irsa_role
   attach_efs_csi_policy = var.aws_installations.storage_efs.eks_irsa_role
 
