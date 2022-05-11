@@ -19,7 +19,7 @@
 #   count = try(var.aws_installations.cert_manager, false) && var.aws_installations.route53_external_dns ? 1 : 0
 
 #   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cert-manager-policy"
-#   path        = "/${var.app_namespace}/${var.tfenv}"
+#   path        = "/${var.app_namespace}/${var.tfenv}/"
 #   description = "CertManager policy for managing Route53 records: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
 #   policy      = data.aws_iam_policy_document.cert_manager[0].json
 #   tags        = var.tags
@@ -38,7 +38,7 @@ module "cert_manager_irsa_role" {
   count = try(var.aws_installations.cert_manager, false) && var.aws_installations.route53_external_dns ? 1 : 0
 
   role_name = "cert-manager"
-  role_path = "/${var.app_namespace}/${var.tfenv}"
+  role_path = "/${var.app_namespace}/${var.tfenv}/"
 
   attach_cert_manager_policy = true
   cert_manager_hosted_zone_arns = [var.route53_hosted_zone_arn]

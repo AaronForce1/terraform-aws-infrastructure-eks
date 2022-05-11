@@ -13,7 +13,7 @@ module "aws-support" {
   name_prefix                        = local.name_prefix
   aws_installations                  = var.aws_installations
   eks_infrastructure_support_buckets = var.custom_aws_s3_support_infra
-  eks_infrastructure_kms_arn         = resource.aws_kms_key.eks
+  eks_infrastructure_kms_arn         = aws_kms_key.eks.arn
   oidc_provider_arn                  = module.eks.oidc_provider_arn
   base_cidr_block                    = module.subnet_addrs.base_cidr_block
   billingcustomer                    = var.billingcustomer

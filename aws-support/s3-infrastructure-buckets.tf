@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "aws_s3_infra_support_bucket_iam_policy_document"
       "kms:Decrypt"
     ]
     resources = [
-      "${try(var.eks_infrastructure_support_buckets[count.index].aws_kms_key_id, var.eks_infrastructure_kms_arn)}"
+      var.eks_infrastructure_support_buckets[count.index].aws_kms_key_id != null ? var.eks_infrastructure_support_buckets[count.index].aws_kms_key_id : var.eks_infrastructure_kms_arn
     ]
   }
 }
@@ -58,7 +58,7 @@ resource "aws_iam_policy" "aws_s3_infra_support_bucket_iam_policies" {
   count = length(var.eks_infrastructure_support_buckets)
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-custom-policy-${var.eks_infrastructure_support_buckets[count.index].name}"
-  path        = "/${var.app_namespace}/${var.tfenv}"
+  path        = "/${var.app_namespace}/${var.tfenv}/"
   description = "EKS S3-custom-policy-${var.eks_infrastructure_support_buckets[count.index].name} policy: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.aws_s3_infra_support_bucket_iam_policy_document[count.index].json
   tags        = var.tags
@@ -71,7 +71,7 @@ module "aws_s3_infra_support_bucket_irsa_role" {
   count = length(var.eks_infrastructure_support_buckets)
 
   role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-custom-role-${var.eks_infrastructure_support_buckets[count.index].name}"
-  role_path = "/${var.app_namespace}/${var.tfenv}"
+  role_path = "/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
     main = {
