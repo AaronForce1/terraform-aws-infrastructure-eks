@@ -36,8 +36,8 @@ data "aws_iam_policy_document" "external_secrets" {
 resource "aws_iam_policy" "external_secrets" {
   count = var.aws_installations.kms_secrets_access ? 1 : 0
 
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-external-secrets-policy"
-  path        = "/${var.app_namespace}/${var.tfenv}/"
+  name        = "external-secrets-policy"
+  path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   description = "EKS External Secrets Policy allowing SSM and KMS access: ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.external_secrets[0].json
   tags        = var.tags
@@ -51,7 +51,7 @@ module "external_secrets_irsa_role" {
   version = "4.24"
 
   role_name = "external_secrets"
-  role_path = "/${var.app_namespace}/${var.tfenv}/"
+  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
     main = {
