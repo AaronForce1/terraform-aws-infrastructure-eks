@@ -23,6 +23,7 @@ module "certmanager" {
   depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress]
 
   count = var.helm_installations.ingress ? 1 : 0
+  letsencrypt_email = var.letsencrypt_email
 }
 
 module "aws-support" {
@@ -46,11 +47,16 @@ module "aws-cluster-autoscaler" {
   source     = "./provisioning/kubernetes/cluster-autoscaler"
   depends_on = [module.eks, aws_eks_node_group.custom_node_group]
 
-  app_name                = var.app_name
-  app_namespace           = var.app_namespace
-  tfenv                   = var.tfenv
-  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-  aws_region              = var.aws_region
+  app_name                      = var.app_name
+  app_namespace                 = var.app_namespace
+  tfenv                         = var.tfenv
+  cluster_oidc_issuer_url       = module.eks.cluster_oidc_issuer_url
+  aws_region                    = var.aws_region
+  scale_down_util_threshold     = var.aws_autoscaler_scale_down_util_threshold
+  skip_nodes_with_local_storage = var.aws_autoscaler_skip_nodes_with_local_storage
+  skip_nodes_with_system_pods   = var.aws_autoscaler_skip_nodes_with_system_pods
+  cordon_node_before_term       = var.aws_autoscaler_cordon_node_before_term
+
 }
 
 module "kubernetes-dashboard" {
@@ -67,6 +73,7 @@ module "vault" {
   count      = var.helm_installations.vault_consul ? 1 : 0
 
   vault_nodeselector      = var.vault_nodeselector
+  vault_tolerations       = var.vault_tolerations
   app_namespace           = var.app_namespace
   tfenv                   = var.tfenv
   root_domain_name        = var.root_domain_name
@@ -76,11 +83,35 @@ module "vault" {
   enable_aws_vault_unseal = var.enable_aws_vault_unseal
 }
 
+module "vault-secrets-webhook" {
+  source     = "./provisioning/kubernetes/bonzai-vault-secrets-webhook"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.vault_consul ? 1 : 0
+
+  vault_nodeselector      = var.vault_nodeselector
+  vault_tolerations       = var.vault_tolerations
+  app_namespace           = var.app_namespace
+  tfenv                   = var.tfenv
+}
+
+module "vault-operator" {
+  source     = "./provisioning/kubernetes/bonzai-vault-operator"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.vault_consul ? 1 : 0
+
+  vault_nodeselector      = var.vault_nodeselector
+  vault_tolerations       = var.vault_tolerations
+  app_namespace           = var.app_namespace
+  tfenv                   = var.tfenv
+}
+
 module "consul" {
   source     = "./provisioning/kubernetes/hashicorp-consul"
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
+  vault_nodeselector      = var.vault_nodeselector
+  vault_tolerations       = var.vault_tolerations
   app_namespace    = var.app_namespace
   tfenv            = var.tfenv
   root_domain_name = var.root_domain_name
