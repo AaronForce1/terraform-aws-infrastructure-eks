@@ -51,6 +51,7 @@ tfsec:
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/go/bin'
   stage: security review
   before_script:
+    - terraform init -backend=false -upgrade # Temporary until Gitlab Cache is enacted.
     - tfsec -v
   script: tfsec --config-file .tfsec.yml . -f json | tee gl-sast-report.json
   artifacts:
