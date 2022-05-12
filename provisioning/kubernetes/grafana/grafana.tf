@@ -42,8 +42,8 @@ grafana.ini:
     client_id: ${var.google_clientID}
     client_secret: ${var.google_clientSecret}
     scopes: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
-    token_url: "https://kibana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}/oauth2/token"
-    auth_url: "https://kibana.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}/oauth2/auth"
+    token_url: "https://accounts.google.com/o/oauth2/token"
+    auth_url: "https://accounts.google.com/o/oauth2/auth"
     api_url: "https://www.googleapis.com/oauth2/v1/userinfo"
     allowed_domains: "${var.google_authDomain}"
 dashboardProviders:

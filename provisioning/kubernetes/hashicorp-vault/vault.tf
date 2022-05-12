@@ -8,8 +8,12 @@ resource "helm_release" "vault" {
   values = [<<EOT
 metrics:
   enabled: true
+client:
+  ${local.nodeSelector}
+  ${local.tolerations}
 server:
   ${local.nodeSelector}
+  ${local.tolerations}
   extraSecretEnvironmentVars: 
   ${local.extraSecretEnvironmentVars}
   ingress:
@@ -31,6 +35,7 @@ EOT
 
 locals {
   nodeSelector = var.vault_nodeselector != "" ? format("nodeSelector: |\n    %s", var.vault_nodeselector) : ""
+  tolerations = var.vault_tolerations != "" ? format("tolerations: \n  - \"key\": \"%s\"\n    \"operator\": \"Equal\"\n    \"value\": \"%s\"\n    \"effect\": \"%s\"", split(":", var.vault_tolerations)[1], split(":", var.vault_tolerations)[2], split(":", var.vault_tolerations)[0]) : ""
   ## False positive regarding exposing secrets via local values in terraform; no secrets are exposed as they are managed via k8s secrets
   #tfsec:ignore:GEN002 
   extraSecretEnvironmentVars = var.enable_aws_vault_unseal ? indent(2, yamlencode([
@@ -101,5 +106,6 @@ variable "app_name" {}
 variable "enable_aws_vault_unseal" {}
 variable "billingcustomer" {}
 variable "vault_nodeselector" {}
+variable "vault_tolerations" {}
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}
