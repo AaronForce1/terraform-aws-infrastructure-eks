@@ -1,4 +1,4 @@
-data "aws_availability_zones" "available" {
+data "aws_availability_zones" "available_azs" {
   state = "available"
 }
 
@@ -37,17 +37,13 @@ module "subnet_addrs" {
 
 module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.1"
+  version = "~> 3.14"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
-
+  azs  = data.aws_availability_zones.available_azs.names
   # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
-  azs = [
-    data.aws_availability_zones.available.names[0],
-    data.aws_availability_zones.available.names[1],
-    data.aws_availability_zones.available.names[2]
-  ]
+
   private_subnets = [
     module.subnet_addrs.networks[3].cidr_block,
     module.subnet_addrs.networks[4].cidr_block,
@@ -59,13 +55,13 @@ module "eks-vpc" {
     module.subnet_addrs.networks[2].cidr_block,
   ]
 
-  # TODO: Configure NAT Gateway setting overrides
-  enable_nat_gateway     = local.nat_gateway_configuration.enable_nat_gateway
-  enable_dns_hostnames   = local.nat_gateway_configuration.enable_dns_hostnames
-  single_nat_gateway     = local.nat_gateway_configuration.single_nat_gateway
-  one_nat_gateway_per_az = local.nat_gateway_configuration.one_nat_gateway_per_az
-  # reuse_nat_ips                     = true
-  # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+  # NAT Gateway settings + EIPs
+  enable_nat_gateway                = local.nat_gateway_configuration.enable_nat_gateway
+  enable_dns_hostnames              = local.nat_gateway_configuration.enable_dns_hostnames
+  single_nat_gateway                = local.nat_gateway_configuration.single_nat_gateway
+  one_nat_gateway_per_az            = local.nat_gateway_configuration.one_nat_gateway_per_az
+  reuse_nat_ips                     = local.nat_gateway_configuration.reuse_nat_ips
+  external_nat_ip_ids               = local.nat_gateway_configuration.external_nat_ip_ids
   enable_vpn_gateway                = local.nat_gateway_configuration.enable_vpn_gateway
   propagate_public_route_tables_vgw = local.nat_gateway_configuration.propagate_public_route_tables_vgw
 
@@ -83,55 +79,30 @@ module "eks-vpc" {
   create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
-  tags = {
-    Terraform                                                     = "true"
-    Environment                                                   = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  tags = merge({
+    "kubernetes.io/cluster/${local.name_prefix}" = "shared"
+  }, local.base_tags)
 
-  nat_gateway_tags = {
-    Terraform                    = "true"
-    "Environment"                = var.tfenv
-    Namespace                    = var.app_namespace
-    Billingcustomer              = var.billingcustomer
-    Product                      = var.app_name
-    infrastructure-eks-terraform = local.module_version
-  }
+  nat_gateway_tags = local.base_tags
 
-  vpc_tags = {
-    Name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
+  vpc_tags = merge({
+    Name = "${local.name_prefix}-vpc"
+  }, local.base_tags)
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    "kubernetes.io/role/elb"                                      = "1"
-    "Environment"                                                 = var.tfenv
-    Terraform                                                     = "true"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  public_subnet_tags = merge({
+    "kubernetes.io/cluster/${local.name_prefix}" = "shared"
+    "kubernetes.io/role/elb"                     = "1"
+  }, local.base_tags)
 
-  private_subnet_tags = {
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    "kubernetes.io/role/internal-elb"                             = "1"
-    "Environment"                                                 = var.tfenv
-    Terraform                                                     = "true"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  private_subnet_tags = merge({
+    "kubernetes.io/cluster/${local.name_prefix}" = "shared"
+    "kubernetes.io/role/internal-elb"            = "1"
+  }, local.base_tags)
 }
 
 module "eks-vpc-endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 3.1"
+  version = "~> 3.14"
 
   vpc_id = module.eks-vpc.vpc_id
   security_group_ids = [
@@ -143,23 +114,17 @@ module "eks-vpc-endpoints" {
   endpoints = {
     s3 = {
       service = "s3"
-      tags = {
-        "Environment"                  = var.tfenv
-        "Terraform"                    = "true"
-        "Namespace"                    = var.app_namespace
-        "Billingcustomer"              = var.billingcustomer
-        "Product"                      = var.app_name
-        "infrastructure-eks-terraform" = local.module_version
-        "Name"                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
-      }
+      tags = merge({
+        "Name" = "${local.name_prefix}-s3-vpc-endpoint"
+      }, local.base_tags)
     }
   }
 }
 
 resource "aws_vpc_endpoint" "rds" {
   lifecycle { ignore_changes = [dns_entry] }
-  vpc_id              = module.eks-vpc.vpc_id
-  depends_on          = [module.eks-vpc]
+  vpc_id = module.eks-vpc.vpc_id
+
   service_name        = "com.amazonaws.${var.aws_region}.rds"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
@@ -170,16 +135,10 @@ resource "aws_vpc_endpoint" "rds" {
     module.eks.worker_security_group_id
   ]
 
-  tags = {
-    Name                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint"
-    Terraform                                                     = "true"
-    Environment                                                   = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  tags = merge({
+    Name                                         = "${local.name_prefix}-rds-endpoint"
+    "kubernetes.io/cluster/${local.name_prefix}" = "shared"
+  }, local.base_tags)
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)
 }

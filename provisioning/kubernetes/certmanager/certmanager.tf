@@ -6,8 +6,12 @@ resource "helm_release" "certmanager" {
   namespace        = "cert-manager"
   create_namespace = true
 
-  set {
-    name  = "installCRDs"
-    value = true
-  }
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOT
+installCRDs: true  
+EOT
+  ]
+}
+
+variable "custom_manifest" {
+  default = null
 }

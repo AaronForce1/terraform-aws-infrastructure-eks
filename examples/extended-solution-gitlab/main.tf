@@ -15,7 +15,7 @@ module "gitlab-management" {
   app_namespace             = var.app_namespace
   tfenv                     = var.tfenv
   eks                       = module.infrastructure-terraform-eks
-  root_domain_name          = var.root_domain_name
+  root_domain_name          = var.cluster_root_domain.name
   cluster_environment_scope = var.cluster_environment_scope
 }
 

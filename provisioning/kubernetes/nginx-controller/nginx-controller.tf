@@ -8,7 +8,7 @@ resource "helm_release" "nginx-controller" {
   force_update     = false
   recreate_pods    = true
 
-  values = [yamlencode({
+  values = var.custom_manifest != null ? [var.custom_manifest] : [yamlencode({
     "controller" : {
       "service" : {
         "annotations" : {

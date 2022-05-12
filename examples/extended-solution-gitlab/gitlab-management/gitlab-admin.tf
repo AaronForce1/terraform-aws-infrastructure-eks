@@ -53,7 +53,7 @@ data "gitlab_group" "gitops_namespace" {
 resource "gitlab_group_cluster" "aws_cluster" {
   group              = data.gitlab_group.gitops_namespace.id
   name               = var.eks.cluster_id
-  domain             = "${var.tfenv}.${var.root_domain_name}"
+  domain             = "${var.tfenv}.${var.cluster_root_domain.name}"
   environment_scope  = var.tfenv == "prod" ? "production" : var.cluster_environment_scope
   kubernetes_api_url = var.eks.cluster_endpoint
   kubernetes_token   = data.kubernetes_secret.gitlab-admin-token.data.token

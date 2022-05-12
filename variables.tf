@@ -1,6 +1,10 @@
 ## GLOBAL VAR CONFIGURATION
 variable "aws_region" {
-  description = "Region for the VPC"
+  description = "AWS Region for all primary configurations"
+}
+
+variable "aws_secondary_region" {
+  description = "Secondary Region for certain redundant AWS components"
 }
 
 variable "map_accounts" {
@@ -55,34 +59,44 @@ variable "map_users" {
   # ]
 }
 
-variable "managed_node_groups" {
+variable "eks_managed_node_groups" {
   description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
-  type = list(object({
-    name                   = string
-    desired_capacity       = number
-    max_capacity           = number
-    min_capacity           = number
-    instance_type          = string
-    ami_type               = optional(string)
-    key_name               = string
-    public_ip              = bool
-    create_launch_template = bool
-    disk_size              = number
-    taints = list(object({
-      key            = string
-      value          = string
-      effect         = string
-      affinity_label = bool
-    }))
-    subnet_selections = object({
-      public  = bool
-      private = bool
-    })
-  }))
+  default     = []
+  type        = any
+  # type = list(object({
+  #   name                   = string
+  #   desired_capacity       = number
+  #   max_capacity           = number
+  #   min_capacity           = number
+  #   instance_type          = string
+  #   ami_type               = optional(string)
+  #   key_name               = optional(string)
+  #   public_ip              = optional(bool)
+  #   create_launch_template = bool
+  #   disk_size              = number
+  #   disk_encrypted         = optional(bool)
+  #   capacity_type          = optional(string)
+  #   taints = optional(list(object({
+  #     key            = string
+  #     value          = string
+  #     effect         = string
+  #     affinity_label = bool
+  #   })))
+  #   subnet_selections = object({
+  #     public  = bool
+  #     private = bool
+  #   })
+  #   tags = optional(any)
+  # }))
 }
 
-variable "root_domain_name" {
+variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
+  type = object({
+    create          = optional(bool)
+    name            = string
+    ingress_records = optional(list(string))
+  })
 }
 
 variable "app_name" {
@@ -98,6 +112,11 @@ variable "tfenv" {
   description = "Environment"
 }
 
+variable "cluster_name" {
+  description = "Optional override for cluster name instead of standard {name}-{namespace}-{env}"
+  default     = ""
+}
+
 variable "cluster_version" {
   description = "Kubernetes Cluster Version"
   default     = "1.21"
@@ -106,26 +125,26 @@ variable "cluster_version" {
 variable "instance_type" {
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
-  default     = "c5a.large"
+  default     = "c5a.medium"
 }
 
 variable "instance_desired_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 8
+  default     = 2
 }
 
 variable "instance_min_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 2
+  default     = 1
 }
 
 variable "instance_max_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 12
+  default     = 4
 }
 
 variable "billingcustomer" {
-  description = "Which BILLINGCUSTOMER is setup in AWS"
+  description = "Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning"
 }
 
 variable "root_vol_size" {
@@ -152,6 +171,20 @@ variable "vpc_flow_logs" {
   default = {}
 }
 
+variable "elastic_ip_custom_configuration" {
+  description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
+  type = object({
+    enabled             = bool
+    reuse_nat_ips       = bool
+    external_nat_ip_ids = list(string)
+  })
+  default = {
+    enabled             = false
+    external_nat_ip_ids = []
+    reuse_nat_ips       = false
+  }
+}
+
 variable "nat_gateway_custom_configuration" {
   description = "Override the default NAT Gateway configuration, which configures a single NAT gateway for non-prod, while one per AZ on tfenv=prod"
   type = object({
@@ -174,21 +207,110 @@ variable "nat_gateway_custom_configuration" {
   }
 }
 
+variable "aws_installations" {
+  description = "AWS Support Components including Cluster Autoscaler, EBS/EFS Storage Classes, etc."
+  type = object({
+    storage_ebs = optional(object({
+      eks_irsa_role = bool
+      gp2           = bool
+      gp3           = bool
+      st1           = bool
+    }))
+    storage_efs = optional(object({
+      eks_irsa_role       = bool
+      eks_security_groups = bool
+      efs                 = bool
+    }))
+    cluster_autoscaler   = optional(bool)
+    route53_external_dns = optional(bool)
+    kms_secrets_access   = optional(bool)
+    cert_manager         = optional(bool)
+  })
+  default = {
+    cluster_autoscaler   = true
+    kms_secrets_access   = true
+    route53_external_dns = true
+    cert_manager         = true
+    storage_ebs = {
+      eks_irsa_role = true
+      gp2           = true
+      gp3           = true
+      st1           = true
+    }
+    storage_efs = {
+      efs                 = true
+      eks_irsa_role       = true
+      eks_security_groups = true
+    }
+  }
+}
+
 variable "helm_installations" {
   type = object({
+    dashboard     = bool
     gitlab_runner = bool
     vault_consul  = bool
     ingress       = bool
     elasticstack  = bool
     grafana       = bool
+    argocd        = bool
   })
   default = {
+    dashboard     = true
     gitlab_runner = false
     vault_consul  = true
     ingress       = true
     elasticstack  = false
     grafana       = true
+    argocd        = false
   }
+}
+variable "helm_configurations" {
+  type = object({
+    dashboard     = optional(string)
+    gitlab_runner = optional(string)
+    vault_consul = optional(object({
+      consul_values           = optional(string)
+      vault_values            = optional(string)
+      enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
+      vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file
+    }))
+    ingress = optional(object({
+      nginx_values       = optional(string)
+      certmanager_values = optional(string)
+    }))
+    elasticstack = optional(string)
+    grafana      = optional(string)
+    argocd       = optional(string)
+  })
+  default = {
+    dashboard     = null
+    gitlab_runner = null
+    vault_consul  = null
+    ingress       = null
+    elasticstack  = null
+    grafana       = null
+    argocd        = null
+  }
+}
+
+variable "custom_namespaces" {
+  description = "Adding namespaces to a default cluster provisioning process"
+  type        = list(string)
+  default     = []
+}
+
+variable "custom_aws_s3_support_infra" {
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name                                 = string
+    bucket_acl                           = string
+    aws_kms_key_id                       = optional(string)
+    lifecycle_rules                      = any
+    versioning                           = bool
+    k8s_namespace_service_account_access = string
+  }))
+  default = []
 }
 
 variable "vpc_subnet_configuration" {
@@ -203,11 +325,6 @@ variable "vpc_subnet_configuration" {
     subnet_bit_interval = 4
     autogenerate        = true
   }
-}
-
-variable "enable_aws_vault_unseal" {
-  description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
-  default     = false
 }
 
 variable "google_clientID" {
@@ -233,11 +350,13 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = []
 }
 
-variable "vault_nodeselector" {
-  default = ""
-}
-
+## TODO: Merge all the default node_group configurations together
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
+}
+
+variable "default_capacity_type" {
+  description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
+  default     = "ON_DEMAND"
 }

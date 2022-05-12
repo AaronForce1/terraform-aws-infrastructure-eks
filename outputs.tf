@@ -2,9 +2,9 @@
 ## MODULE: EKS
 ## -----------
 
-output "kubecfg" {
-  value = module.eks.kubeconfig
-}
+// output "kubecfg" {
+//   value = module.eks.kubeconfig
+// }
 output "kubernetes-cluster-certificate-authority-data" {
   value = module.eks.cluster_certificate_authority_data
 }
@@ -15,6 +15,11 @@ output "kubernetes-cluster-id" {
 
 output "kubernetes-cluster-endpoint" {
   value = module.eks.cluster_endpoint
+}
+
+output "kubernetes-cluster-auth" {
+  value     = data.aws_eks_cluster_auth.cluster
+  sensitive = true
 }
 
 ## -----------
