@@ -292,6 +292,11 @@ variable "aws_autoscaler_cordon_node_before_term" {
   default     = "true"
 }
 
+variable "extra_tags" {
+  type = map
+  default = {}
+}
+
 variable "ipv6" {
   type = object({
     enable = bool
