@@ -15,7 +15,7 @@ resource "helm_release" "certmanager" {
 resource "helm_release" "cert-manager-issuers-letsencrypt" {
   name             = "cert-manager-issuers-letsencrypt"
   repository       = "https://charts.loft.sh"
-  chart            = "cert-issuer
+  chart            = "cert-issuer"
 
   set {
     name  = "certIssuer.email"
