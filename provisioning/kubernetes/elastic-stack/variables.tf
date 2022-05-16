@@ -12,3 +12,4 @@ variable "app_namespace" {}
 variable "root_domain_name" {}
 variable "billingcustomer" {}
 variable "aws_region" {}
+variable "tags" {}
