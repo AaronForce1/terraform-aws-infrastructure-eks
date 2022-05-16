@@ -3,8 +3,7 @@ locals {
 }
 
 locals {
-  #additional_kubernetes_tags = tags
-  tags = {
+  base_tags = {
     Environment                  = var.tfenv
     Terraform                    = "true"
     Namespace                    = var.app_namespace
@@ -18,6 +17,8 @@ locals {
     "k8s.io/cluster-autoscaler/enabled"                                           = true
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
   }
+
+  tags = merge (local.base_tags, var.extra_tags)
 
 
   default_node_group = {
