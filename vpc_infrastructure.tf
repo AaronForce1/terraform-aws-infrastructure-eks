@@ -85,8 +85,6 @@ module "eks-vpc" {
 
   #IPv6 section
   enable_ipv6                     = var.enable_ipv6
-  #assign_ipv6_address_on_creation = true
-  #private_subnet_assign_ipv6_address_on_creation = false
   public_subnet_ipv6_prefixes   = [0, 1, 2]
   private_subnet_ipv6_prefixes  = [3, 4, 5]
 

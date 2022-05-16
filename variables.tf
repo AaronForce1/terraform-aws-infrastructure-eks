@@ -267,6 +267,10 @@ variable "letsencrypt_email" {
  description = "email used for the clusterissuer email definition (spec.acme.email)"
 }
 
+variable "enable_ipv6" {
+  default = false
+}
+
 ### AWS Cluster Autoscaling 
 variable "aws_autoscaler_scale_down_util_threshold" {
   description = "AWS Autoscaling, scale_down_util_threshold (AWS defaults to 0.5, but raising that to 0.7 to be a tad more aggressive with scaling back)"
