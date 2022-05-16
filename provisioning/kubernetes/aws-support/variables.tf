@@ -9,3 +9,4 @@ variable "tfenv" {}
 variable "base_cidr_block" {}
 variable "billingcustomer" {}
 variable "node_count" {}
+variable "tags" {}

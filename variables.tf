@@ -176,20 +176,24 @@ variable "nat_gateway_custom_configuration" {
 
 variable "helm_installations" {
   type = object({
-    gitlab_runner    = bool
-    gitlab_k8s_agent = bool
-    vault_consul     = bool
-    ingress          = bool
-    elasticstack     = bool
-    grafana          = bool
+    gitlab_runner     = bool
+    gitlab_k8s_agent  = bool
+    vault_consul      = bool
+    ingress           = bool
+    elasticstack      = bool
+    grafana           = bool
+    stakater_reloader = bool
+    metrics_server    = bool
   })
   default = {
-    gitlab_runner    = false
-    gitlab_k8s_agent = false
-    vault_consul     = true
-    ingress          = true
-    elasticstack     = false
-    grafana          = true
+    gitlab_runner     = false
+    gitlab_k8s_agent  = false
+    vault_consul      = true
+    ingress           = true
+    elasticstack      = false
+    grafana           = true
+    stakater_reloader = true
+    metrics_server    = true
   }
 }
 

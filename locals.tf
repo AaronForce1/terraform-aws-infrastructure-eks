@@ -3,24 +3,20 @@ locals {
 }
 
 locals {
+  #additional_kubernetes_tags = tags
+  tags = {
+    Environment                  = var.tfenv
+    Terraform                    = "true"
+    Namespace                    = var.app_namespace
+    Billingcustomer              = var.billingcustomer
+    Product                      = var.app_name
+    infrastructure-eks-terraform = local.module_version
+    Version                      = local.module_version
+    Name                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  }
   kubernetes_tags = {
-    Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-    Environment                                                                   = var.tfenv
-    billingcustomer                                                               = var.billingcustomer
-    Namespace                                                                     = var.app_namespace
-    Product                                                                       = var.app_name
-    Version                                                                       = local.module_version
-    infrastructure-terraform-eks                                                  = local.module_version
     "k8s.io/cluster-autoscaler/enabled"                                           = true
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
-  }
-  additional_kubernetes_tags = {
-    Name                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-    Environment                  = var.tfenv
-    billingcustomer              = var.billingcustomer
-    Namespace                    = var.app_namespace
-    Product                      = var.app_name
-    infrastructure-terraform-eks = local.module_version
   }
 
 
@@ -37,8 +33,8 @@ locals {
       k8s_labels = {
         Environment = var.tfenv
       }
-      tags            = local.kubernetes_tags
-      additional_tags = local.additional_kubernetes_tags
+      tags            = merge (local.kubernetes_tags,local.tags)
+      additional_tags = local.tags
     }
   }
 
