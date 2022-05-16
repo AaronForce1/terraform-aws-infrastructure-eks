@@ -134,6 +134,7 @@ module "elastic-stack" {
   billingcustomer     = var.billingcustomer
   app_name            = var.app_name
   aws_region          = var.aws_region
+  tags                = local.tags
 }
 
 module "stakater-reloader" {
