@@ -83,6 +83,13 @@ module "eks-vpc" {
   create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
+  #IPv6 section
+  enable_ipv6                     = var.enable_ipv6
+  #assign_ipv6_address_on_creation = true
+  #private_subnet_assign_ipv6_address_on_creation = false
+  public_subnet_ipv6_prefixes   = [0, 1, 2]
+  private_subnet_ipv6_prefixes  = [3, 4, 5]
+
   tags = {
     Terraform                                                     = "true"
     Environment                                                   = var.tfenv
