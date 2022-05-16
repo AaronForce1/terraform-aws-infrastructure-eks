@@ -123,6 +123,10 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_nginx-controller-ingress"></a> [nginx-controller-ingress](#module\_nginx-controller-ingress) | ./provisioning/kubernetes/nginx-controller | n/a |
 | <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | hashicorp/subnets/cidr | 1.0.0 |
 | <a name="module_vault"></a> [vault](#module\_vault) | ./provisioning/kubernetes/hashicorp-vault | n/a |
+| <a name="module_bonzai-vault-secrets-webhook"></a> [vault](#module\_bonzai_vault_secrets_webhook) | ./provisioning/kubernetes/bonzai-vault-secrets-webhook | n/a |
+| <a name="module_bonzai-vault-operator"></a> [vault](#module\_bonzai_vault_operator) | ./provisioning/kubernetes/bonzai-vault-operator | n/a |
+| <a name="module_stakater_reloader"></a> [vault](#module\_stakater\_reloader) | ./provisioning/kubernetes/stakater-reloader | n/a |
+| <a name="module_metrics_server"></a> [vault](#module\_metrics\_server) | ./provisioning/kubernetes/metrics-server | n/a |
 
 ## Resources
 
@@ -170,6 +174,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_root_domain_name"></a> [root\_domain\_name](#input\_root\_domain\_name) | Domain root where all kubernetes systems are orchestrating control | `any` | n/a | yes |
 | <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
 | <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
+| <a name="input_vault_nodeselector"></a> [vault\_nodeselector](#input\_vault\_nodeselector) | n/a | `string` | `""` | no |
 | <a name="input_vault_nodeselector"></a> [vault\_nodeselector](#input\_vault\_nodeselector) | n/a | `string` | `""` | no |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment | `map` | `{}` | no |
 | <a name="input_vpc_subnet_configuration"></a> [vpc\_subnet\_configuration](#input\_vpc\_subnet\_configuration) | Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated. | <pre>object({<br>    base_cidr           = string<br>    subnet_bit_interval = number<br>    autogenerate        = optional(bool)<br>  })</pre> | <pre>{<br>  "autogenerate": true,<br>  "base_cidr": "172.%s.0.0/16",<br>  "subnet_bit_interval": 4<br>}</pre> | no |
