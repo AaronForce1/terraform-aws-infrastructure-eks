@@ -107,5 +107,6 @@ variable "enable_aws_vault_unseal" {}
 variable "billingcustomer" {}
 variable "vault_nodeselector" {}
 variable "vault_tolerations" {}
+variable "tags" {}
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}

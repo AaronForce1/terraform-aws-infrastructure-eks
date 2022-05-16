@@ -41,6 +41,7 @@ module "aws-support" {
   base_cidr_block = module.subnet_addrs.base_cidr_block
   billingcustomer = var.billingcustomer
   node_count      = length(var.managed_node_groups) > 0 ? var.managed_node_groups[0].min_capacity : var.instance_min_size
+  tags            = local.tags
 }
 
 module "aws-cluster-autoscaler" {
@@ -56,7 +57,7 @@ module "aws-cluster-autoscaler" {
   skip_nodes_with_local_storage = var.aws_autoscaler_skip_nodes_with_local_storage
   skip_nodes_with_system_pods   = var.aws_autoscaler_skip_nodes_with_system_pods
   cordon_node_before_term       = var.aws_autoscaler_cordon_node_before_term
-
+  tags                          = local.tags
 }
 
 module "kubernetes-dashboard" {
@@ -81,6 +82,7 @@ module "vault" {
   billingcustomer         = var.billingcustomer
   aws_region              = var.aws_region
   enable_aws_vault_unseal = var.enable_aws_vault_unseal
+  tags                    = local.tags
 }
 
 module "vault-secrets-webhook" {
@@ -132,6 +134,24 @@ module "elastic-stack" {
   billingcustomer     = var.billingcustomer
   app_name            = var.app_name
   aws_region          = var.aws_region
+}
+
+module "stakater-reloader" {
+  source     = "./provisioning/kubernetes/stakater-reloader"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.stakater_reloader ? 1 : 0
+
+  app_namespace    = var.app_namespace
+  tfenv            = var.tfenv
+}
+
+module "metrics-server" {
+  source     = "./provisioning/kubernetes/metrics-server"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.metrics_server ? 1 : 0
+
+  app_namespace    = var.app_namespace
+  tfenv            = var.tfenv
 }
 
 module "grafana" {
