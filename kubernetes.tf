@@ -22,7 +22,7 @@ module "certmanager" {
   source     = "./provisioning/kubernetes/certmanager"
   depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress]
 
-  count = var.helm_installations.ingress ? 1 : 0
+  count             = var.helm_installations.ingress ? 1 : 0
   letsencrypt_email = var.letsencrypt_email
 }
 
@@ -90,10 +90,10 @@ module "vault-secrets-webhook" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector      = var.vault_nodeselector
-  vault_tolerations       = var.vault_tolerations
-  app_namespace           = var.app_namespace
-  tfenv                   = var.tfenv
+  vault_nodeselector = var.vault_nodeselector
+  vault_tolerations  = var.vault_tolerations
+  app_namespace      = var.app_namespace
+  tfenv              = var.tfenv
 }
 
 module "vault-operator" {
@@ -101,10 +101,10 @@ module "vault-operator" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector      = var.vault_nodeselector
-  vault_tolerations       = var.vault_tolerations
-  app_namespace           = var.app_namespace
-  tfenv                   = var.tfenv
+  vault_nodeselector = var.vault_nodeselector
+  vault_tolerations  = var.vault_tolerations
+  app_namespace      = var.app_namespace
+  tfenv              = var.tfenv
 }
 
 module "consul" {
@@ -112,12 +112,12 @@ module "consul" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector      = var.vault_nodeselector
-  vault_tolerations       = var.vault_tolerations
-  app_namespace    = var.app_namespace
-  tfenv            = var.tfenv
-  root_domain_name = var.root_domain_name
-  app_name         = var.app_name
+  vault_nodeselector = var.vault_nodeselector
+  vault_tolerations  = var.vault_tolerations
+  app_namespace      = var.app_namespace
+  tfenv              = var.tfenv
+  root_domain_name   = var.root_domain_name
+  app_name           = var.app_name
 }
 
 module "elastic-stack" {
@@ -142,8 +142,8 @@ module "stakater-reloader" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.stakater_reloader ? 1 : 0
 
-  app_namespace    = var.app_namespace
-  tfenv            = var.tfenv
+  app_namespace = var.app_namespace
+  tfenv         = var.tfenv
 }
 
 module "metrics-server" {
@@ -151,8 +151,8 @@ module "metrics-server" {
   depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.metrics_server ? 1 : 0
 
-  app_namespace    = var.app_namespace
-  tfenv            = var.tfenv
+  app_namespace = var.app_namespace
+  tfenv         = var.tfenv
 }
 
 module "grafana" {
@@ -173,10 +173,10 @@ module "gitlab-k8s-agent" {
   depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces]
   count      = var.helm_installations.gitlab_k8s_agent ? 1 : 0
 
-  app_namespace          = var.app_namespace
-  tfenv                  = var.tfenv
-  gitlab_agent_url       = var.gitlab_kubernetes_agent_config.gitlab_agent_url
-  gitlab_agent_secret    = var.gitlab_kubernetes_agent_config.gitlab_agent_secret
+  app_namespace       = var.app_namespace
+  tfenv               = var.tfenv
+  gitlab_agent_url    = var.gitlab_kubernetes_agent_config.gitlab_agent_url
+  gitlab_agent_secret = var.gitlab_kubernetes_agent_config.gitlab_agent_secret
 }
 
 # module "gitlab_runner" {

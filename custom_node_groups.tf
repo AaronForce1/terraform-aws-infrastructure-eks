@@ -32,7 +32,7 @@ resource "aws_eks_node_group" "custom_node_group" {
       ]
     )
   )
-  tags = merge (local.kubernetes_tags,local.tags)
+  tags = merge(local.kubernetes_tags, local.tags)
   dynamic "taint" {
     for_each = var.managed_node_groups[count.index].taints
     content {

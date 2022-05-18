@@ -84,13 +84,13 @@ module "eks-vpc" {
   flow_log_max_aggregation_interval    = 60
 
   #IPv6 section
-  enable_ipv6                     = var.ipv6.enable
-  assign_ipv6_address_on_creation = var.ipv6.assign_ipv6_address_on_creation
+  enable_ipv6                                    = var.ipv6.enable
+  assign_ipv6_address_on_creation                = var.ipv6.assign_ipv6_address_on_creation
   private_subnet_assign_ipv6_address_on_creation = var.ipv6.private_subnet_assign_ipv6_address_on_creation
-  public_subnet_assign_ipv6_address_on_creation = var.ipv6.public_subnet_assign_ipv6_address_on_creation
+  public_subnet_assign_ipv6_address_on_creation  = var.ipv6.public_subnet_assign_ipv6_address_on_creation
 
-  public_subnet_ipv6_prefixes   = [0, 1, 2]
-  private_subnet_ipv6_prefixes  = [3, 4, 5]
+  public_subnet_ipv6_prefixes  = [0, 1, 2]
+  private_subnet_ipv6_prefixes = [3, 4, 5]
 
   tags = {
     Terraform                                                     = "true"

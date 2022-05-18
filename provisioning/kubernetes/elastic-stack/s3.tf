@@ -1,7 +1,7 @@
 resource "aws_kms_key" "eks_logging" {
   enable_key_rotation = true
   description         = "${var.app_name}-${var.app_namespace}-${var.tfenv} LOGGING EKS Secret Encryption Key"
-  tags = merge(var.tags, tomap({"Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-s3-key"}))
+  tags                = merge(var.tags, tomap({ "Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-s3-key" }))
 }
 
 module "log_bucket" {
@@ -14,7 +14,7 @@ module "log_bucket" {
 
   acl           = "log-delivery-write"
   force_destroy = var.tfenv == "prod" ? false : true
- 
+
   tags = var.tags
 
   block_public_policy     = true
@@ -47,7 +47,7 @@ module "s3_elasticstack_bucket" {
   block_public_acls       = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-  tags = merge(var.tags, tomap({"Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-logs", "Description" = "Elasticstack Cluster-Application Logging", "Product" = "Elasticstack", "Namespace" = var.app_namespace}))
+  tags                    = merge(var.tags, tomap({ "Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-logs", "Description" = "Elasticstack Cluster-Application Logging", "Product" = "Elasticstack", "Namespace" = var.app_namespace }))
 
   server_side_encryption_configuration = {
     rule = {
@@ -113,7 +113,7 @@ module "iam_user" {
 
   create_iam_access_key         = true
   create_iam_user_login_profile = false
-  tags = var.tags
+  tags                          = var.tags
 
   force_destroy = var.tfenv == "prod" ? true : false
 
@@ -127,7 +127,7 @@ module "iam_user" {
 resource "aws_iam_policy" "s3_access_policy" {
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-s3-policy"
   description = "Terraform Generated : ${var.app_name}-${var.app_namespace}-${var.tfenv}"
-  tags_all = var.tags
+  tags_all    = var.tags
 
   path   = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
   policy = data.aws_iam_policy_document.s3_policy_data.json
@@ -242,7 +242,7 @@ resource "aws_iam_user_policy_attachment" "s3_attach" {
 resource "aws_iam_policy" "kms_access_policy" {
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-kms-s3-policy"
   description = "Terraform Generated : ${var.app_name}-${var.app_namespace}-${var.tfenv}"
-  tags_all = var.tags
+  tags_all    = var.tags
 
   path   = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
   policy = data.aws_iam_policy_document.kms_policy_data.json
