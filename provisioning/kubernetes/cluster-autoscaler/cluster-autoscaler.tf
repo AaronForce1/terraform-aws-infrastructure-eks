@@ -24,7 +24,7 @@ resource "helm_release" "aws-cluster-autoscaler" {
       "scale-down-utilization-threshold" : var.scale_down_util_threshold,
       "skip-nodes-with-local-storage" : var.skip_nodes_with_local_storage,
       "skip-nodes-with-system-pods" : var.skip_nodes_with_system_pods,
-      "cordon-node-before-terminating"  : var.cordon_node_before_term,
+      "cordon-node-before-terminating" : var.cordon_node_before_term,
     }
     })
   ]

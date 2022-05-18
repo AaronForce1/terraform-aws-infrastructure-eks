@@ -3,13 +3,13 @@ resource "aws_iam_policy" "amazoneks-ebs-csi-driver-policy" {
   path        = "/"
   description = "EKS ebs CSI Driver policy for cluster ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.ebs_csi_driver.json
-  tags = var.tags
+  tags        = var.tags
 }
 
 resource "aws_iam_role" "amazoneks-ebs-csi-driver-role" {
   name               = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-ebs_csi_driver-role"
   assume_role_policy = data.aws_iam_policy_document.eks_ebs_csi_driver_trust_policy.json
-  tags = var.tags
+  tags               = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "eks-ebs-csi-driver-attachment" {

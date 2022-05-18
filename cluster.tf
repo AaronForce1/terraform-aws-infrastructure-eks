@@ -9,8 +9,8 @@ module "eks" {
   subnets                = concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
   write_kubeconfig       = "true"
   kubeconfig_output_path = "./.kubeconfig.${var.app_name}_${var.app_namespace}_${var.tfenv}"
-  tags = local.tags
-  vpc_id = module.eks-vpc.vpc_id
+  tags                   = local.tags
+  vpc_id                 = module.eks-vpc.vpc_id
 
   cluster_endpoint_private_access       = true
   cluster_endpoint_private_access_cidrs = module.eks-vpc.private_subnets_cidr_blocks
@@ -45,7 +45,7 @@ module "eks" {
 resource "aws_kms_key" "eks" {
   enable_key_rotation = true
   description         = "${var.app_name}-${var.app_namespace}-${var.tfenv} EKS Secret Encryption Key"
-  tags = local.tags
+  tags                = local.tags
 }
 
 

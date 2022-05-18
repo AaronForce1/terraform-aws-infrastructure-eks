@@ -17,7 +17,7 @@ locals {
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
   }
 
-  tags = merge (local.base_tags, var.extra_tags)
+  tags = merge(local.base_tags, var.extra_tags)
 
 
   default_node_group = {
@@ -33,7 +33,7 @@ locals {
       k8s_labels = {
         Environment = var.tfenv
       }
-      tags            = merge (local.kubernetes_tags,local.tags)
+      tags            = merge(local.kubernetes_tags, local.tags)
       additional_tags = local.tags
     }
   }
