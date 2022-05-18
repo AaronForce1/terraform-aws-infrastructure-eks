@@ -139,7 +139,7 @@ module "eks-vpc" {
 }
 
 module "eks-vpc-endpoints" {
-  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  source  = "terraform-aws-modules/vpc/aws/modules/vpc-endpoints"
   version = "~> 3.1"
 
   vpc_id = module.eks-vpc.vpc_id
