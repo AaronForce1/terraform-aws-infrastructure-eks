@@ -92,50 +92,15 @@ module "eks-vpc" {
   public_subnet_ipv6_prefixes  = [0, 1, 2]
   private_subnet_ipv6_prefixes = [3, 4, 5]
 
-  tags = {
-    Terraform                                                     = "true"
-    Environment                                                   = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  tags = local.vpc_tags
 
-  nat_gateway_tags = {
-    Terraform                    = "true"
-    "Environment"                = var.tfenv
-    Namespace                    = var.app_namespace
-    Billingcustomer              = var.billingcustomer
-    Product                      = var.app_name
-    infrastructure-eks-terraform = local.module_version
-  }
+  nat_gateway_tags = local.vpc_tags
 
-  vpc_tags = {
-    Name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  }
+  vpc_tags = merge(local.vpc_tags, tomap({ "Name" = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc" }))
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    "kubernetes.io/role/elb"                                      = "1"
-    "Environment"                                                 = var.tfenv
-    Terraform                                                     = "true"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  public_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
 
-  private_subnet_tags = {
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    "kubernetes.io/role/internal-elb"                             = "1"
-    "Environment"                                                 = var.tfenv
-    Terraform                                                     = "true"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  private_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
 }
 
 module "eks-vpc-endpoints" {
@@ -152,15 +117,7 @@ module "eks-vpc-endpoints" {
   endpoints = {
     s3 = {
       service = "s3"
-      tags = {
-        "Environment"                  = var.tfenv
-        "Terraform"                    = "true"
-        "Namespace"                    = var.app_namespace
-        "Billingcustomer"              = var.billingcustomer
-        "Product"                      = var.app_name
-        "infrastructure-eks-terraform" = local.module_version
-        "Name"                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint"
-      }
+      tags    = merge(local.vpc_tags, tomap({ "Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-vpc-endpoint" }))
     }
   }
 }
@@ -179,16 +136,7 @@ resource "aws_vpc_endpoint" "rds" {
     module.eks.worker_security_group_id
   ]
 
-  tags = {
-    Name                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint"
-    Terraform                                                     = "true"
-    Environment                                                   = var.tfenv
-    "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared"
-    Namespace                                                     = var.app_namespace
-    Billingcustomer                                               = var.billingcustomer
-    Product                                                       = var.app_name
-    infrastructure-eks-terraform                                  = local.module_version
-  }
+  tags = merge(local.vpc_tags, tomap({ "Name" = "${var.app_name}-${var.app_namespace}-${var.tfenv}-rds-endpoint" }))
 
   subnet_ids = flatten(module.eks-vpc.private_subnets)
 }

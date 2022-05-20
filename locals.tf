@@ -10,15 +10,17 @@ locals {
     Billingcustomer              = var.billingcustomer
     Product                      = var.app_name
     infrastructure-eks-terraform = local.module_version
-    Name                         = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  }
+  non_vpc_tags = {
+    Name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   }
   kubernetes_tags = {
     "k8s.io/cluster-autoscaler/enabled"                                           = true
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
   }
 
-  tags = merge(local.base_tags, var.extra_tags)
-
+  tags     = merge(local.base_tags, local.non_vpc_tags, var.extra_tags)
+  vpc_tags = merge(local.base_tags, var.extra_tags)
 
   default_node_group = {
     core = {
