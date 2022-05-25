@@ -2,7 +2,7 @@ style: gitlab
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks
+  repository_url: https://github.com/AaronForce1/terraform-aws-infrastructure-eks
 options:
   commits:
     sort_by: Type
