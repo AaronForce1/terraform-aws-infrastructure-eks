@@ -67,23 +67,24 @@ And install `terraform-docs` with `go get github.com/segmentio/terraform-docs` o
 
 ## Contributing
 
-Report issues/questions/feature requests on in the [issues](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/issues/new) section.
+Report issues/questions/feature requests on in the [issues](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/issues/new) section.
 
-Full contributing [guidelines are covered here](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/blob/master/.github/CONTRIBUTING.md).
+Full contributing [guidelines are covered here](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/.gitlab/CONTRIBUTING.md).
 
 ## Change log
 
-- The [changelog](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/tree/master/CHANGELOG.md) captures all important release notes from 1.1.17
+- The [changelog](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/CHANGELOG.md) captures all important release notes from 2.0.2
 
 ## Authors
 
-Created by [Aaron Baideme](https://gitlab.com/aaronforce1) - aaron.baideme@magneticasia.com
+Created by [Aaron Baideme](https://github.com/aaronforce1) - aaron.baideme@advancedtechnologies.com.hk
 
 Supported by Ronel Cartas - ronel.cartas@magneticasia.com
+Supported by Diederik Damen - diederik.damen@magneticasia.com
 
 ## License
 
-MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/tree/master/LICENSE) for full details.
+MIT Licensed. See [LICENSE](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/LICENSE) for full details.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
