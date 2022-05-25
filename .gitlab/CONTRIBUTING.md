@@ -15,7 +15,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 - [ ] Add [semantics prefix](#semantic-pull-requests) to your PR or Commits (at least one of your commit groups)
 - [ ] CI tests are passing
-- [ ] README.md has been updated after any changes to variables and outputs. See https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks#doc-generation
+- [ ] README.md has been updated after any changes to variables and outputs. See https://github.com/AaronForce1/terraform-aws-infrastructure-eks#doc-generation
 
 ## Semantic Pull Requests
 

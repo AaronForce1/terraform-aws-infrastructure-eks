@@ -67,23 +67,24 @@ And install `terraform-docs` with `go get github.com/segmentio/terraform-docs` o
 
 ## Contributing
 
-Report issues/questions/feature requests on in the [issues](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/issues/new) section.
+Report issues/questions/feature requests on in the [issues](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/issues/new) section.
 
-Full contributing [guidelines are covered here](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/blob/master/.github/CONTRIBUTING.md).
+Full contributing [guidelines are covered here](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/.gitlab/CONTRIBUTING.md).
 
 ## Change log
 
-- The [changelog](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/tree/master/CHANGELOG.md) captures all important release notes from 1.1.17
+- The [changelog](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/CHANGELOG.md) captures all important release notes from 2.0.2
 
 ## Authors
 
-Created by [Aaron Baideme](https://gitlab.com/aaronforce1) - aaron.baideme@magneticasia.com
+Created by [Aaron Baideme](https://github.com/aaronforce1) - aaron.baideme@advancedtechnologies.com.hk
 
 Supported by Ronel Cartas - ronel.cartas@magneticasia.com
+Supported by Diederik Damen - diederik.damen@magneticasia.com
 
 ## License
 
-MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-code/infrastructure-terraform-eks/tree/master/LICENSE) for full details.
+MIT Licensed. See [LICENSE](https://github.com/AaronForce1/terraform-aws-infrastructure-eks/blob/main/LICENSE) for full details.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -119,10 +120,14 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_gitlab-k8s-agent"></a> [gitlab-k8s-agent](#module\_gitlab-k8s-agent) | ./provisioning/kubernetes/gitlab-kubernetes-agent | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
+| <a name="module_metrics-server"></a> [metrics-server](#module\_metrics-server) | ./provisioning/kubernetes/metrics-server | n/a |
 | <a name="module_namespaces"></a> [namespaces](#module\_namespaces) | ./provisioning/kubernetes/namespaces | n/a |
 | <a name="module_nginx-controller-ingress"></a> [nginx-controller-ingress](#module\_nginx-controller-ingress) | ./provisioning/kubernetes/nginx-controller | n/a |
+| <a name="module_stakater-reloader"></a> [stakater-reloader](#module\_stakater-reloader) | ./provisioning/kubernetes/stakater-reloader | n/a |
 | <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | hashicorp/subnets/cidr | 1.0.0 |
 | <a name="module_vault"></a> [vault](#module\_vault) | ./provisioning/kubernetes/hashicorp-vault | n/a |
+| <a name="module_vault-operator"></a> [vault-operator](#module\_vault-operator) | ./provisioning/kubernetes/bonzai-vault-operator | n/a |
+| <a name="module_vault-secrets-webhook"></a> [vault-secrets-webhook](#module\_vault-secrets-webhook) | ./provisioning/kubernetes/bonzai-vault-secrets-webhook | n/a |
 
 ## Resources
 
@@ -144,6 +149,10 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application Name | `string` | `"eks"` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Tagged App Namespace | `any` | n/a | yes |
+| <a name="input_aws_autoscaler_cordon_node_before_term"></a> [aws\_autoscaler\_cordon\_node\_before\_term](#input\_aws\_autoscaler\_cordon\_node\_before\_term) | AWS Autoscaling, cordon\_node\_before\_term (AWS defaults to false, but setting it to true migth give a more friendly removal process) | `string` | `"true"` | no |
+| <a name="input_aws_autoscaler_scale_down_util_threshold"></a> [aws\_autoscaler\_scale\_down\_util\_threshold](#input\_aws\_autoscaler\_scale\_down\_util\_threshold) | AWS Autoscaling, scale\_down\_util\_threshold (AWS defaults to 0.5, but raising that to 0.7 to be a tad more aggressive with scaling back) | `number` | `0.7` | no |
+| <a name="input_aws_autoscaler_skip_nodes_with_local_storage"></a> [aws\_autoscaler\_skip\_nodes\_with\_local\_storage](#input\_aws\_autoscaler\_skip\_nodes\_with\_local\_storage) | AWS Autoscaling, skip\_nodes\_with\_local\_storage (AWS defaults to true, also modifying to false for more scaling back) | `string` | `"false"` | no |
+| <a name="input_aws_autoscaler_skip_nodes_with_system_pods"></a> [aws\_autoscaler\_skip\_nodes\_with\_system\_pods](#input\_aws\_autoscaler\_skip\_nodes\_with\_system\_pods) | AWS Autoscaling, skip\_nodes\_with\_system\_pods (AWS defaults to true, but here default to false, again to be a little bit more aggressive with scaling back) | `string` | `"false"` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region for the VPC | `any` | n/a | yes |
 | <a name="input_billingcustomer"></a> [billingcustomer](#input\_billingcustomer) | Which BILLINGCUSTOMER is setup in AWS | `any` | n/a | yes |
 | <a name="input_cluster_endpoint_public_access_cidrs"></a> [cluster\_endpoint\_public\_access\_cidrs](#input\_cluster\_endpoint\_public\_access\_cidrs) | If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to | `list(string)` | `[]` | no |
@@ -151,15 +160,18 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_create_launch_template"></a> [create\_launch\_template](#input\_create\_launch\_template) | enable launch template on node group | `bool` | `false` | no |
 | <a name="input_default_ami_type"></a> [default\_ami\_type](#input\_default\_ami\_type) | Default AMI used for node provisioning | `string` | `"AL2_x86_64"` | no |
 | <a name="input_enable_aws_vault_unseal"></a> [enable\_aws\_vault\_unseal](#input\_enable\_aws\_vault\_unseal) | If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS | `bool` | `false` | no |
-| <a name="input_gitlab_kubernetes_agent_config"></a> [gitlab\_kubernetes\_agent\_config](#input\_gitlab\_kubernetes\_agent\_config) | Configuration for Gitlab Kubernetes Agent | <pre>object({<br>    gitlab_agent_url    = string<br>    gitlab_agent_secret = string<br>  })</pre> | <pre>{<br>  "gitlab_agent_secret": "",<br>  "gitlab_agent_url": "wss://kas.gitlab.com"<br>}</pre> | no |
+| <a name="input_extra_tags"></a> [extra\_tags](#input\_extra\_tags) | n/a | `map(any)` | `{}` | no |
+| <a name="input_gitlab_kubernetes_agent_config"></a> [gitlab\_kubernetes\_agent\_config](#input\_gitlab\_kubernetes\_agent\_config) | Configuration for Gitlab Kubernetes Agent | <pre>object({<br>    gitlab_agent_url    = string<br>    gitlab_agent_secret = string<br>  })</pre> | <pre>{<br>  "gitlab_agent_secret": "",<br>  "gitlab_agent_url": ""<br>}</pre> | no |
 | <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
-| <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    gitlab_runner    = bool<br>    gitlab_k8s_agent = bool<br>    vault_consul     = bool<br>    ingress          = bool<br>    elasticstack     = bool<br>    grafana          = bool<br>  })</pre> | <pre>{<br>  "elasticstack": false,<br>  "gitlab_k8s_agent": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
+| <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    gitlab_runner     = bool<br>    gitlab_k8s_agent  = bool<br>    vault_consul      = bool<br>    ingress           = bool<br>    elasticstack      = bool<br>    grafana           = bool<br>    stakater_reloader = bool<br>    metrics_server    = bool<br>  })</pre> | <pre>{<br>  "elasticstack": false,<br>  "gitlab_k8s_agent": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "metrics_server": true,<br>  "stakater_reloader": true,<br>  "vault_consul": true<br>}</pre> | no |
 | <a name="input_instance_desired_size"></a> [instance\_desired\_size](#input\_instance\_desired\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `8` | no |
 | <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `12` | no |
 | <a name="input_instance_min_size"></a> [instance\_min\_size](#input\_instance\_min\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | AWS Instance Type for provisioning | `string` | `"c5a.large"` | no |
+| <a name="input_ipv6"></a> [ipv6](#input\_ipv6) | n/a | <pre>object({<br>    enable                                         = bool<br>    assign_ipv6_address_on_creation                = bool<br>    private_subnet_assign_ipv6_address_on_creation = bool<br>    public_subnet_assign_ipv6_address_on_creation  = bool<br>  })</pre> | <pre>{<br>  "assign_ipv6_address_on_creation": true,<br>  "enable": false,<br>  "private_subnet_assign_ipv6_address_on_creation": true,<br>  "public_subnet_assign_ipv6_address_on_creation": true<br>}</pre> | no |
+| <a name="input_letsencrypt_email"></a> [letsencrypt\_email](#input\_letsencrypt\_email) | email used for the clusterissuer email definition (spec.acme.email) | `any` | n/a | yes |
 | <a name="input_managed_node_groups"></a> [managed\_node\_groups](#input\_managed\_node\_groups) | Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes | <pre>list(object({<br>    name                   = string<br>    desired_capacity       = number<br>    max_capacity           = number<br>    min_capacity           = number<br>    instance_type          = string<br>    ami_type               = optional(string)<br>    key_name               = string<br>    public_ip              = bool<br>    create_launch_template = bool<br>    disk_size              = number<br>    taints = list(object({<br>      key            = string<br>      value          = string<br>      effect         = string<br>      affinity_label = bool<br>    }))<br>    subnet_selections = object({<br>      public  = bool<br>      private = bool<br>    })<br>  }))</pre> | n/a | yes |
 | <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
 | <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
@@ -170,7 +182,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_root_domain_name"></a> [root\_domain\_name](#input\_root\_domain\_name) | Domain root where all kubernetes systems are orchestrating control | `any` | n/a | yes |
 | <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
 | <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
-| <a name="input_vault_nodeselector"></a> [vault\_nodeselector](#input\_vault\_nodeselector) | n/a | `string` | `""` | no |
+| <a name="input_vault_nodeselector"></a> [vault\_nodeselector](#input\_vault\_nodeselector) | for placing node/consul on specific nodes, example usage, string:'eks.amazonaws.com/nodegroup: vaultconsul\_group' | `string` | `""` | no |
+| <a name="input_vault_tolerations"></a> [vault\_tolerations](#input\_vault\_tolerations) | for tolerating certain taint on nodes, example usage, string:'NoExecute:we\_love\_hashicorp:true' | `string` | `""` | no |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment | `map` | `{}` | no |
 | <a name="input_vpc_subnet_configuration"></a> [vpc\_subnet\_configuration](#input\_vpc\_subnet\_configuration) | Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated. | <pre>object({<br>    base_cidr           = string<br>    subnet_bit_interval = number<br>    autogenerate        = optional(bool)<br>  })</pre> | <pre>{<br>  "autogenerate": true,<br>  "base_cidr": "172.%s.0.0/16",<br>  "subnet_bit_interval": 4<br>}</pre> | no |
 
