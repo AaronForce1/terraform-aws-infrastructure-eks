@@ -63,9 +63,9 @@ For oauth configuration:
 #    client_id: <Google Client ID>
 #    client_secret: <Google Client Secret>
 #    scope: read_api
-#    auth_url: https://git.hk.asiaticketing.com/oauth/authorize
-#    token_url: https://git.hk.asiaticketing.com/oauth/token
-#    api_url: https://git.hk.asiaticketing.com/api/v4
+#    auth_url: https://gitlab.com/oauth/authorize
+#    token_url: https://gitlab.com/oauth/token
+#    api_url: https://gitlab.com/api/v4
 #    allowed_groups: whitelabels 
   auth.google:
     enabled: true
