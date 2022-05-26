@@ -2,7 +2,7 @@ resource "helm_release" "elasticstack-elasticsearch" {
   name       = "elasticsearch"
   repository = "https://helm.elastic.co"
   chart      = "elasticsearch"
-  version    = format("v%s", local.elkversion)
+  version    = local.elkversion
   namespace  = "monitoring"
   lifecycle { ignore_changes = [values, version] }
 

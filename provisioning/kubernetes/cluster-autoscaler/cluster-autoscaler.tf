@@ -3,6 +3,7 @@ resource "helm_release" "aws-cluster-autoscaler" {
   repository       = "https://kubernetes.github.io/autoscaler"
   chart            = "cluster-autoscaler"
   namespace        = "kube-system"
+  version          = var.chart_version
   create_namespace = false
 
   values = [yamlencode({

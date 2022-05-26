@@ -2,7 +2,7 @@ resource "helm_release" "elasticstack-oauth2-proxy" {
   name       = "elasticstack-oauth2-proxy"
   repository = "https://charts.helm.sh/stable"
   chart      = "oauth2-proxy"
-  version    = "3.2.5"
+  version    = var.oauth_chart_version
   namespace  = "monitoring"
 
   values = [<<EOT
@@ -36,4 +36,7 @@ locals {
 resource "random_string" "random" {
   length  = 16
   special = true
+}
+variable "oauth_chart_version" {
+  default = "3.2.5"
 }

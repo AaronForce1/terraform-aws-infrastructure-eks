@@ -5,3 +5,6 @@ variable "google_authDomain" {}
 variable "app_namespace" {}
 variable "tfenv" {}
 variable "root_domain_name" {}
+variable "chart_version" {
+  default = null
+}

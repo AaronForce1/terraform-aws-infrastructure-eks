@@ -3,6 +3,7 @@ resource "helm_release" "vault" {
   repository       = "https://helm.releases.hashicorp.com"
   chart            = "vault"
   namespace        = "hashicorp"
+  version          = var.chart_version
   create_namespace = false
 
   values = [<<EOT
@@ -108,5 +109,7 @@ variable "billingcustomer" {}
 variable "vault_nodeselector" {}
 variable "vault_tolerations" {}
 variable "tags" {}
-
+variable "chart_version" {
+  default = null
+}
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}

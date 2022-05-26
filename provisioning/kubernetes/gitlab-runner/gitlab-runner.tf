@@ -3,7 +3,7 @@ resource "helm_release" "gitlab-runner" {
   depends_on       = [kubernetes_secret.AWS]
   repository       = "https://charts.gitlab.io"
   chart            = "gitlab-runner"
-  version          = "0.33.1"
+  version          = var.chart_version
   namespace        = "gitlab-runner"
   create_namespace = false
 
@@ -88,4 +88,7 @@ variable "gitlab_runner_registration_token" {}
 variable "sys_arch" {}
 variable "runner_config" {
   default = ""
+}
+variable "chart_version" {
+  default = null
 }

@@ -8,3 +8,6 @@ variable "skip_nodes_with_local_storage" {}
 variable "skip_nodes_with_system_pods" {}
 variable "cordon_node_before_term" {}
 variable "tags" {}
+variable "chart_version" {
+  default = null
+}

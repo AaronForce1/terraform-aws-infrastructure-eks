@@ -2,7 +2,7 @@ resource "helm_release" "elasticstack-kibana" {
   name       = "kibana"
   repository = "https://helm.elastic.co"
   chart      = "kibana"
-  version    = format("v%s", local.elkversion)
+  version    = local.elkversion
   namespace  = "monitoring"
   lifecycle { ignore_changes = [values, version] }
 

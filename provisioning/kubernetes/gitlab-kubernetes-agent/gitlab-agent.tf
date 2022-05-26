@@ -2,7 +2,7 @@ resource "helm_release" "gitlab-k8s-agent" {
   name             = "gitlab-kubernetes-agent-${var.app_namespace}-${var.tfenv}"
   repository       = "https://charts.gitlab.io"
   chart            = "gitlab-agent"
-  version          = "v0.6.1"
+  version          = var.chart_version
   namespace        = "gitlab-agent"
   create_namespace = true
 
@@ -20,3 +20,6 @@ variable "app_namespace" {}
 variable "tfenv" {}
 variable "gitlab_agent_url" {}
 variable "gitlab_agent_secret" {}
+variable "chart_version" {
+  default = null
+}

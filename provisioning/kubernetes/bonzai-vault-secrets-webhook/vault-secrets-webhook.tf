@@ -4,6 +4,7 @@ resource "helm_release" "vault-secrets-webhook" {
   chart            = "vault-secrets-webhook"
   namespace        = "hashicorp"
   create_namespace = false
+  version          = var.chart_version
   values = [<<EOT
 ${local.nodeSelector}
 ${local.tolerations}
@@ -21,3 +22,6 @@ variable "app_namespace" {}
 variable "tfenv" {}
 variable "vault_nodeselector" {}
 variable "vault_tolerations" {}
+variable "chart_version" {
+  default = null
+}

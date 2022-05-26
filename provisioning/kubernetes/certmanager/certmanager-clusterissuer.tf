@@ -21,5 +21,3 @@ resource "helm_release" "cert-manager-issuers-letsencrypt" {
   ]
 
 }
-
-variable "letsencrypt_email" {}

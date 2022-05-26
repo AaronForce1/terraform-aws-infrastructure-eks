@@ -4,6 +4,7 @@ resource "helm_release" "consul" {
   chart            = "consul"
   namespace        = "hashicorp"
   create_namespace = true
+  version          = var.chart_version
 
   values = [<<EOF
 global:
@@ -51,3 +52,6 @@ variable "root_domain_name" {}
 variable "app_name" {}
 variable "vault_nodeselector" {}
 variable "vault_tolerations" {}
+variable "chart_version" {
+  default = null
+}

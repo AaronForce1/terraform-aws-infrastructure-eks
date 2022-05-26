@@ -2,7 +2,7 @@ resource "helm_release" "elasticstack-logstash" {
   name       = "logstash"
   repository = "https://helm.elastic.co"
   chart      = "logstash"
-  version    = format("v%s", local.elkversion)
+  version    = local.elkversion
   namespace  = "monitoring"
   lifecycle { ignore_changes = [values, version] }
 

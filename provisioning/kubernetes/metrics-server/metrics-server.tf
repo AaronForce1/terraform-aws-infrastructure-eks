@@ -3,8 +3,12 @@ resource "helm_release" "metrics-server" {
   repository       = "https://kubernetes-sigs.github.io/metrics-server/"
   chart            = "metrics-server"
   namespace        = "monitoring"
+  version          = var.chart_version
   create_namespace = false
 }
 
 variable "app_namespace" {}
 variable "tfenv" {}
+variable "chart_version" {
+  default = null
+}
