@@ -50,7 +50,7 @@ module "external_secrets_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "4.24"
 
-  role_name = "external_secrets"
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-external_secrets"
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
