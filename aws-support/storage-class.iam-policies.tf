@@ -4,7 +4,7 @@ module "aws_csi_irsa_role" {
 
   count = var.aws_installations.storage_efs.eks_irsa_role || var.aws_installations.storage_ebs.eks_irsa_role ? 1 : 0
 
-  role_name = "AmazonEKS-CSI_Driver-role"
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-AmazonEKS-CSI_Driver-role"
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   attach_ebs_csi_policy = var.aws_installations.storage_ebs.eks_irsa_role

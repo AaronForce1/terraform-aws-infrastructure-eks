@@ -1,6 +1,6 @@
 module "aws-support" {
   source     = "./aws-support"
-  depends_on = [module.eks, module.eks-vpc, module.subnet_addrs]
+  depends_on = [module.eks]
 
   vpc_id                             = module.eks-vpc.vpc_id
   cidr_blocks                        = module.eks-vpc.private_subnets_cidr_blocks
