@@ -2,6 +2,10 @@ data "aws_ssm_parameter" "argocd_infrastructure_ssh" {
   name = "/repository/kubernetes-infrastructure/ssh"
 }
 
+data "aws_ssm_parameter" "argocd_kubernetes_infrastructure_ssh" {
+  name = "/repository/argocd-kubernetes-infrastructure/ssh"
+}
+
 data "aws_ssm_parameter" "argocd_application_ssh" {
   name = "/repository/kubernetes-application/ssh"
 }
@@ -25,6 +29,20 @@ resource "kubernetes_secret" "argocd_infrastructure_ssh" {
 
   data = {
     sshPrivateKey = data.aws_ssm_parameter.argocd_infrastructure_ssh.value
+  }
+}
+
+resource "kubernetes_secret" "argocd-kubernetes-infrastructure_ssh" {
+  metadata {
+    name      = "repository-argocd-kubernetes-infrastructure-ssh-key"
+    namespace = "argocd"
+    labels = {
+      "argocd.argoproj.io/secret-type" = "repo-creds"
+    }
+  }
+
+  data = {
+    sshPrivateKey = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_ssh.value
   }
 }
 
