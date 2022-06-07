@@ -1,6 +1,6 @@
 module "nginx-controller-ingress" {
   source     = "./provisioning/kubernetes/nginx-controller"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group]
+  depends_on = [resource.aws_eks_node_group.custom_node_group]
   count      = var.helm_installations.ingress ? 1 : 0
 
   root_domain_name                     = var.cluster_root_domain.name
@@ -16,7 +16,7 @@ module "nginx-controller-ingress" {
 
 module "certmanager" {
   source     = "./provisioning/kubernetes/certmanager"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, module.nginx-controller-ingress]
+  depends_on = [resource.aws_eks_node_group.custom_node_group, module.nginx-controller-ingress]
   count      = var.helm_installations.ingress ? 1 : 0
 
   custom_manifest = try(var.helm_configurations.ingress.certmanager_values, null)
@@ -24,7 +24,7 @@ module "certmanager" {
 
 module "kubernetes-dashboard" {
   source     = "./provisioning/kubernetes/kubernetes-dashboard"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group]
+  depends_on = [resource.aws_eks_node_group.custom_node_group]
   count      = var.helm_installations.dashboard ? 1 : 0
 
   app_namespace = var.app_namespace
@@ -35,7 +35,7 @@ module "kubernetes-dashboard" {
 
 module "consul" {
   source     = "./provisioning/kubernetes/hashicorp-consul"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster]
+  depends_on = [resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
   app_namespace    = var.app_namespace
@@ -45,7 +45,7 @@ module "consul" {
 }
 module "vault" {
   source     = "./provisioning/kubernetes/hashicorp-vault"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, module.consul]
+  depends_on = [resource.aws_eks_node_group.custom_node_group, module.consul]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
   vault_nodeselector      = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
@@ -62,7 +62,7 @@ module "vault" {
 
 module "elastic-stack" {
   source     = "./provisioning/kubernetes/elastic-stack"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.elasticstack ? 1 : 0
 
   app_namespace       = var.app_namespace
@@ -78,7 +78,7 @@ module "elastic-stack" {
 
 module "grafana" {
   source     = "./provisioning/kubernetes/grafana"
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [resource.aws_eks_node_group.custom_node_group, resource.kubernetes_namespace.cluster, module.nginx-controller-ingress, module.certmanager]
   count      = var.helm_installations.grafana ? 1 : 0
 
   app_namespace       = var.app_namespace
@@ -94,7 +94,7 @@ module "grafana" {
 module "argocd" {
   source     = "./provisioning/kubernetes/argocd"
   count      = var.helm_installations.argocd ? 1 : 0
-  depends_on = [module.eks, resource.aws_eks_node_group.custom_node_group]
+  depends_on = [resource.aws_eks_node_group.custom_node_group]
 
   custom_manifest  = var.helm_configurations.argocd
   root_domain_name = var.cluster_root_domain.name
@@ -102,7 +102,7 @@ module "argocd" {
 
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
-#   depends_on = [module.namespaces, module.eks, module.eks-vpc]
+#   depends_on = [module.namespaces, module.eks-vpc]
 #   count      = var.helm_installations.gitlab_runner ? 1 : 0
 
 #   app_name                         = var.app_name
