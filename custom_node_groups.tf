@@ -9,7 +9,8 @@ resource "aws_eks_node_group" "custom_node_group" {
 
   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   node_group_name = var.eks_managed_node_groups[count.index].name
-  node_role_arn   = module.eks.worker_iam_role_arn
+  # node_role_arn   = module.eks.worker_iam_role_arn
+  node_role_arn   = module.eks.self_managed_node_groups[0].iam_role.arn
   subnet_ids = concat(
     var.eks_managed_node_groups[count.index].subnet_selections.public ? module.eks-vpc.public_subnets : [],
     var.eks_managed_node_groups[count.index].subnet_selections.private ? module.eks-vpc.private_subnets : []

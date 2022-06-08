@@ -43,7 +43,8 @@ locals {
   default_aws_auth_roles = [
     {
       "groups" : ["system:bootstrappers", "system:nodes"],
-      "rolearn" : module.eks.worker_iam_role_arn,
+      # "rolearn" : module.eks.worker_iam_role_arn,
+      "rolearn" : module.eks.self_managed_node_groups[0].iam_role.arn,
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]
