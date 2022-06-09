@@ -306,9 +306,15 @@ variable "custom_aws_s3_support_infra" {
     name                                 = string
     bucket_acl                           = string
     aws_kms_key_id                       = optional(string)
+<<<<<<< Updated upstream
     lifecycle_rules                      = any
     versioning                           = bool
     k8s_namespace_service_account_access = string
+=======
+    lifecycle_rules                      = list(any)
+    versioning                           = bool
+    k8s_namespace_service_account_access = list(string)
+>>>>>>> Stashed changes
   }))
   default = []
 }
