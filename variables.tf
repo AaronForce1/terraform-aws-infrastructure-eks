@@ -308,7 +308,7 @@ variable "custom_aws_s3_support_infra" {
     aws_kms_key_id                       = optional(string)
     lifecycle_rules                      = any
     versioning                           = bool
-    k8s_namespace_service_account_access = string
+    k8s_namespace_service_account_access = any
   }))
   default = []
 }

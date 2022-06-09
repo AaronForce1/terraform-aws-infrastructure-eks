@@ -1,15 +1,17 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.23.0"
-  depends_on = [
-    ## VPC COMPONENTS
-    module.eks-vpc,
 
-    ## KMS
-    resource.aws_kms_key.eks,
-    resource.aws_kms_alias.eks,
-    resource.aws_kms_replica_key.eks,
-  ]
+  ### This causes the issue!!!
+  # depends_on = [
+  #   ## VPC COMPONENTS
+    # module.eks-vpc,
+
+  #   ## KMS
+    # resource.aws_kms_key.eks,
+    # resource.aws_kms_alias.eks,
+    # resource.aws_kms_replica_key.eks,
+  # ]
 
   cluster_name    = local.name_prefix
   cluster_version = var.cluster_version
@@ -27,23 +29,9 @@ module "eks" {
     resources        = ["secrets"]
   }]
   
-  # Self Managed Node Group(s)
-  self_managed_node_group_defaults = {}
+  eks_managed_node_groups = var.eks_managed_node_groups
   
-  # EKS Managed Node Group(s)
-  eks_managed_node_group_defaults = {
-    create_iam_role = true
-    # iam_role_arn = iam_role_arn.aadasd.arn
-  }
-
-  eks_managed_node_groups = {
-    ami_type  = var.default_ami_type
-    disk_size = var.root_vol_size
-  }
-
   cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
-
-  # node_groups = length(var.eks_managed_node_groups) > 0 ? {} : local.default_node_group # != null ? var.eks_managed_node_groups : local.default_node_group
 
   enable_irsa = true
 
@@ -59,11 +47,6 @@ module "eks" {
     Product                      = var.app_name
     infrastructure-eks-terraform = local.module_version
   }
-
-  prefix_separator                   = ""
-  iam_role_name                      = local.name_prefix
-  cluster_security_group_name        = local.name_prefix
-  cluster_security_group_description = "EKS cluster security group."
 }
 
 resource "aws_iam_policy" "node_additional" {
