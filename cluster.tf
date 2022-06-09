@@ -8,7 +8,7 @@ module "eks" {
     ## KMS
     resource.aws_kms_key.eks,
     resource.aws_kms_alias.eks,
-    resource.aws_kms_replica_key.eks
+    resource.aws_kms_replica_key.eks,
   ]
 
   cluster_name    = local.name_prefix
@@ -26,6 +26,15 @@ module "eks" {
     provider_key_arn = aws_kms_key.eks.arn
     resources        = ["secrets"]
   }]
+  
+  # Self Managed Node Group(s)
+  self_managed_node_group_defaults = {}
+  
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    create_iam_role = true
+    # iam_role_arn = iam_role_arn.aadasd.arn
+  }
 
   eks_managed_node_groups = {
     ami_type  = var.default_ami_type
@@ -55,6 +64,28 @@ module "eks" {
   iam_role_name                      = local.name_prefix
   cluster_security_group_name        = local.name_prefix
   cluster_security_group_description = "EKS cluster security group."
+}
+
+resource "aws_iam_policy" "node_additional" {
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "additional" {
+  for_each = module.eks.eks_managed_node_groups
+
+  policy_arn = aws_iam_policy.node_additional.arn
+  role       = each.value.iam_role_arn
 }
 
 resource "aws_kms_key" "eks" {

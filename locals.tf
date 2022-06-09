@@ -44,7 +44,7 @@ locals {
     {
       "groups" : ["system:bootstrappers", "system:nodes"],
       # "rolearn" : module.eks.worker_iam_role_arn,
-      "rolearn" : module.eks.self_managed_node_groups[0].iam_role.arn,
+      "rolearn": module.eks.eks_managed_node_groups.iam_role_arn
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]

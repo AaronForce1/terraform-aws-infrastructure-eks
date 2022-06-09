@@ -109,7 +109,7 @@ module "eks-vpc-endpoints" {
     module.eks.cluster_primary_security_group_id,
     module.eks.cluster_security_group_id,
     # module.eks.worker_security_group_id
-    module.eks.self_managed_node_groups[0].security_group_id
+    module.eks.node_security_group_id
   ]
 
   endpoints = {
@@ -134,7 +134,7 @@ resource "aws_vpc_endpoint" "rds" {
     module.eks.cluster_primary_security_group_id,
     module.eks.cluster_security_group_id,
     # module.eks.worker_security_group_id
-    module.eks.self_managed_node_groups[0].security_group_id
+    module.eks.node_security_group_id
   ]
 
   tags = merge({
