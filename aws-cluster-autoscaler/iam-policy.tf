@@ -5,11 +5,7 @@ module "iam_assumable_role_admin" {
   version                       = "4.24"
   create_role                   = true
   role_name                     = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cluster-autoscaler-role"
-<<<<<<< Updated upstream
   role_path                     = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-=======
-  role_path                     = "/${var.app_namespace}/${var.tfenv}"
->>>>>>> Stashed changes
   provider_url                  = replace(var.cluster_oidc_issuer_url, "https://", "")
   role_policy_arns              = [aws_iam_policy.cluster_autoscaler_policy.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]

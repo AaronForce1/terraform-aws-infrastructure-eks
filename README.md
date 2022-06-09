@@ -117,11 +117,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_consul"></a> [consul](#module\_consul) | ./provisioning/kubernetes/hashicorp-consul | n/a |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 17.15.0 |
 | <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 3.14 |
-<<<<<<< Updated upstream
 | <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.14 |
-=======
-| <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.1 |
->>>>>>> Stashed changes
 | <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
@@ -162,20 +158,12 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_cluster_root_domain"></a> [cluster\_root\_domain](#input\_cluster\_root\_domain) | Domain root where all kubernetes systems are orchestrating control | <pre>object({<br>    create          = optional(bool)<br>    name            = string<br>    ingress_records = optional(list(string))<br>  })</pre> | n/a | yes |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Cluster Version | `string` | `"1.21"` | no |
 | <a name="input_create_launch_template"></a> [create\_launch\_template](#input\_create\_launch\_template) | enable launch template on node group | `bool` | `false` | no |
-<<<<<<< Updated upstream
 | <a name="input_custom_aws_s3_support_infra"></a> [custom\_aws\_s3\_support\_infra](#input\_custom\_aws\_s3\_support\_infra) | Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components | <pre>list(object({<br>    name                                 = string<br>    bucket_acl                           = string<br>    aws_kms_key_id                       = optional(string)<br>    lifecycle_rules                      = any<br>    versioning                           = bool<br>    k8s_namespace_service_account_access = string<br>  }))</pre> | `[]` | no |
-=======
-| <a name="input_custom_aws_s3_support_infra"></a> [custom\_aws\_s3\_support\_infra](#input\_custom\_aws\_s3\_support\_infra) | Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components | <pre>list(object({<br>    name                                 = string<br>    bucket_acl                           = string<br>    aws_kms_key_id                       = optional(string)<br>    lifecycle_rules                      = list(any)<br>    versioning                           = bool<br>    k8s_namespace_service_account_access = list(string)<br>  }))</pre> | `[]` | no |
->>>>>>> Stashed changes
 | <a name="input_custom_namespaces"></a> [custom\_namespaces](#input\_custom\_namespaces) | Adding namespaces to a default cluster provisioning process | `list(string)` | `[]` | no |
 | <a name="input_default_ami_type"></a> [default\_ami\_type](#input\_default\_ami\_type) | Default AMI used for node provisioning | `string` | `"AL2_x86_64"` | no |
 | <a name="input_default_capacity_type"></a> [default\_capacity\_type](#input\_default\_capacity\_type) | Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT` | `string` | `"ON_DEMAND"` | no |
 | <a name="input_eks_managed_node_groups"></a> [eks\_managed\_node\_groups](#input\_eks\_managed\_node\_groups) | Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes | `any` | `[]` | no |
-<<<<<<< Updated upstream
 | <a name="input_elastic_ip_custom_configuration"></a> [elastic\_ip\_custom\_configuration](#input\_elastic\_ip\_custom\_configuration) | By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created. | <pre>object({<br>    enabled             = bool<br>    reuse_nat_ips       = optional(bool)<br>    external_nat_ip_ids = optional(list(string))<br>  })</pre> | <pre>{<br>  "enabled": false,<br>  "external_nat_ip_ids": [],<br>  "reuse_nat_ips": false<br>}</pre> | no |
-=======
-| <a name="input_elastic_ip_custom_configuration"></a> [elastic\_ip\_custom\_configuration](#input\_elastic\_ip\_custom\_configuration) | By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created. | <pre>object({<br>    enabled             = bool<br>    reuse_nat_ips       = bool<br>    external_nat_ip_ids = list(string)<br>  })</pre> | <pre>{<br>  "enabled": false,<br>  "external_nat_ip_ids": [],<br>  "reuse_nat_ips": false<br>}</pre> | no |
->>>>>>> Stashed changes
 | <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
