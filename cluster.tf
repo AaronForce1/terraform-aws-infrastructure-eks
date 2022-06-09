@@ -5,12 +5,12 @@ module "eks" {
   ### This causes the issue!!!
   # depends_on = [
   #   ## VPC COMPONENTS
-    # module.eks-vpc,
+  #   module.eks-vpc,
 
   #   ## KMS
-    # resource.aws_kms_key.eks,
-    # resource.aws_kms_alias.eks,
-    # resource.aws_kms_replica_key.eks,
+  #   resource.aws_kms_key.eks,
+  #   resource.aws_kms_alias.eks,
+  #   resource.aws_kms_replica_key.eks,
   # ]
 
   cluster_name    = local.name_prefix
@@ -28,10 +28,10 @@ module "eks" {
     provider_key_arn = aws_kms_key.eks.arn
     resources        = ["secrets"]
   }]
+
+  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
   
   eks_managed_node_groups = var.eks_managed_node_groups
-  
-  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
 
   enable_irsa = true
 
@@ -46,6 +46,26 @@ module "eks" {
     Billingcustomer              = var.billingcustomer
     Product                      = var.app_name
     infrastructure-eks-terraform = local.module_version
+  }
+}
+
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+    labels = {
+      "app.kubernetes.io/managed-by" : "terraform"
+    }
+  }
+
+  data = {
+    mapRoles : yamlencode(concat(var.map_roles, [for group in module.eks.eks_managed_node_groups : {
+      "groups" : ["system:bootstrappers", "system:nodes"],
+      "rolearn": group.iam_role_arn
+      "username" : "system:node:{{EC2PrivateDNSName}}"
+    }]))
+    mapAccounts : yamlencode(var.map_accounts)
+    mapUsers : yamlencode(var.map_users)
   }
 }
 

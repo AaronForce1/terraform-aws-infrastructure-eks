@@ -1,5 +1,5 @@
 resource "kubernetes_namespace" "cluster" {
-  depends_on = [resource.aws_eks_node_group.custom_node_group]
+  depends_on = [module.eks]
   for_each   = toset(local.namespaces)
 
   metadata {
