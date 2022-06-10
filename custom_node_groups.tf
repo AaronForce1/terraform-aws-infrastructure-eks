@@ -8,47 +8,47 @@
 #   count = length(var.eks_managed_node_groups)
 
 #   cluster_name    = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-#   node_group_name = var.eks_managed_node_groups[count.index].name
+#   node_group_name = var.eks_managed_node_groups.name
 #   # node_role_arn   = module.eks.worker_iam_role_arn
 #   node_role_arn   = module.eks.eks_managed_node_groups.iam_role.arn
 #   subnet_ids = concat(
-#     var.eks_managed_node_groups[count.index].subnet_selections.public ? module.eks-vpc.public_subnets : [],
-#     var.eks_managed_node_groups[count.index].subnet_selections.private ? module.eks-vpc.private_subnets : []
+#     var.eks_managed_node_groups.subnet_selections.public ? module.eks-vpc.public_subnets : [],
+#     var.eks_managed_node_groups.subnet_selections.private ? module.eks-vpc.private_subnets : []
 #   )
 
 #   scaling_config {
-#     desired_size = var.eks_managed_node_groups[count.index].desired_capacity
-#     max_size     = var.eks_managed_node_groups[count.index].max_capacity
-#     min_size     = var.eks_managed_node_groups[count.index].min_capacity
+#     desired_size = var.eks_managed_node_groups.desired_capacity
+#     max_size     = var.eks_managed_node_groups.max_capacity
+#     min_size     = var.eks_managed_node_groups.min_capacity
 #   }
 
-#   disk_size = var.eks_managed_node_groups[count.index].disk_size
+#   disk_size = var.eks_managed_node_groups.disk_size
 #   # disk_encrypted = var.eks_managed_node_groups[count.index].disk_encrypted != null ? var.eks_managed_node_groups[count.index].disk_encrypted : true
-#   instance_types = var.eks_managed_node_groups[count.index].instance_types
-#   ami_type       = var.eks_managed_node_groups[count.index].ami_type != null ? var.eks_managed_node_groups[count.index].ami_type : var.default_ami_type
+#   instance_types = var.eks_managed_node_groups.instance_types
+#   ami_type       = var.eks_managed_node_groups.ami_type != null ? var.eks_managed_node_groups[count.index].ami_type : var.default_ami_type
 
-#   capacity_type = var.eks_managed_node_groups[count.index].capacity_type != null ? var.eks_managed_node_groups[count.index].capacity_type : var.default_capacity_type
+#   capacity_type = var.eks_managed_node_groups.capacity_type != null ? var.eks_managed_node_groups[count.index].capacity_type : var.default_capacity_type
 
 #   labels = merge(
 #     { Environment = var.tfenv },
 #     zipmap(
 #       [
-#         for x in var.eks_managed_node_groups[count.index].taints : x.key
+#         for x in var.eks_managed_node_groups.taints : x.key
 #         if x.affinity_label
 #       ],
 #       [
-#         for x in var.eks_managed_node_groups[count.index].taints : x.value
+#         for x in var.eks_managed_node_groups.taints : x.value
 #         if x.affinity_label
 #       ]
 #     )
 #   )
 #   tags = merge(
 #     local.kubernetes_tags,
-#     { "Name" : var.eks_managed_node_groups[count.index].name }
+#     { "Name" : var.eks_managed_node_groups.name }
 #     # var.eks_managed_node_groups[count.index].tags != null ? var.eks_managed_node_groups[count.index].tags : []
 #   )
 #   dynamic "taint" {
-#     for_each = var.eks_managed_node_groups[count.index].taints
+#     for_each = var.eks_managed_node_groups.taints
 #     content {
 #       key    = taint.value["key"]
 #       value  = taint.value["value"]
