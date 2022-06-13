@@ -71,7 +71,7 @@ resource "kubernetes_secret" "argocd_helm_chart_registry" {
 
   data = {
     name     = "generic-helm-chart"
-    url      = "https://gitlab.int.hextech.io/api/v4/projects/645/packages/helm/alpha"
+    url      = "https://gitlab.int.hextech.io/api/v4/projects/645/packages/helm/stable"
     type     = "helm"
     username = data.aws_ssm_parameter.argocd_generic_helm_chart_registry_username.value
     password = data.aws_ssm_parameter.argocd_generic_helm_chart_registry_password.value
