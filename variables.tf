@@ -175,8 +175,8 @@ variable "elastic_ip_custom_configuration" {
   description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
   type = object({
     enabled             = bool
-    reuse_nat_ips       = bool
-    external_nat_ip_ids = list(string)
+    reuse_nat_ips       = optional(bool)
+    external_nat_ip_ids = optional(list(string))
   })
   default = {
     enabled             = false
