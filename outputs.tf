@@ -62,3 +62,7 @@ output "public_subnets_cidr_blocks" {
 output "base_cidr_block" {
   value = module.subnet_addrs.base_cidr_block
 }
+
+output "eks_managed_node_groups" {
+  value = module.eks.eks_managed_node_groups
+}
