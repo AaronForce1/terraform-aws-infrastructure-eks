@@ -24,21 +24,59 @@ module "eks" {
   cluster_endpoint_public_access        = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
   cluster_endpoint_public_access_cidrs  = var.cluster_endpoint_public_access_cidrs
 
+  # IPV6
+  # cluster_ip_family = "ipv6" # NOT READY YET
+
+  # We are using the IRSA created below for permissions
+  # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
+  # and then turn this off after the cluster/node group is created. Without this initial policy,
+  # the VPC CNI fails to assign IPs and nodes cannot join the cluster
+  # See https://github.com/aws/containers-roadmap/issues/1666 for more context
+  # TODO - remove this policy once AWS releases a managed version similar to AmazonEKS_CNI_Policy (IPv4)
+  # create_cni_ipv6_iam_policy = true
+  cluster_addons = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
+  }
+  
   cluster_encryption_config = [{
     provider_key_arn = aws_kms_key.eks.arn
     resources        = ["secrets"]
   }]
   
-  eks_managed_node_groups = var.eks_managed_node_groups
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    ami_type       = var.default_ami_type
+
+    attach_cluster_primary_security_group = true
+
+    # We are using the IRSA created below for permissions
+    # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
+    # and then turn this off after the cluster/node group is created. Without this initial policy,
+    # the VPC CNI fails to assign IPs and nodes cannot join the cluster
+    # See https://github.com/aws/containers-roadmap/issues/1666 for more context
+    iam_role_attach_cni_policy = true
+  }
+
+  eks_managed_node_groups = length(var.eks_managed_node_groups) > 0 ? {} : local.default_node_group 
   
   cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
 
   enable_irsa = true
 
-  # map_roles    = concat(var.map_roles, local.default_aws_auth_roles)
-  # map_users    = var.map_users
-  # map_accounts = var.map_accounts
+  create_aws_auth_configmap = true
+  manage_aws_auth_configmap = true
 
+  aws_auth_roles = var.map_roles
+  aws_auth_users = var.map_users
+  aws_auth_accounts = var.map_accounts
+
+  cluster_tags = local.base_tags
   tags = {
     Environment                  = var.tfenv
     Terraform                    = "true"
