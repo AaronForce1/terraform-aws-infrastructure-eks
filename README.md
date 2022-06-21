@@ -115,9 +115,10 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_aws-support"></a> [aws-support](#module\_aws-support) | ./aws-support | n/a |
 | <a name="module_certmanager"></a> [certmanager](#module\_certmanager) | ./provisioning/kubernetes/certmanager | n/a |
 | <a name="module_consul"></a> [consul](#module\_consul) | ./provisioning/kubernetes/hashicorp-consul | n/a |
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 17.15.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 18.23.0 |
 | <a name="module_eks-vpc"></a> [eks-vpc](#module\_eks-vpc) | terraform-aws-modules/vpc/aws | ~> 3.14 |
 | <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.14 |
+| <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | ~> 18.23.0 |
 | <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
@@ -129,7 +130,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 
 | Name | Type |
 |------|------|
-| [aws_eks_node_group.custom_node_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group) | resource |
+| [aws_iam_policy.node_additional](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role_policy_attachment.additional](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_kms_alias.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
 | [aws_kms_key.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_replica_key.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_replica_key) | resource |
@@ -158,7 +160,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_cluster_root_domain"></a> [cluster\_root\_domain](#input\_cluster\_root\_domain) | Domain root where all kubernetes systems are orchestrating control | <pre>object({<br>    create          = optional(bool)<br>    name            = string<br>    ingress_records = optional(list(string))<br>  })</pre> | n/a | yes |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes Cluster Version | `string` | `"1.21"` | no |
 | <a name="input_create_launch_template"></a> [create\_launch\_template](#input\_create\_launch\_template) | enable launch template on node group | `bool` | `false` | no |
-| <a name="input_custom_aws_s3_support_infra"></a> [custom\_aws\_s3\_support\_infra](#input\_custom\_aws\_s3\_support\_infra) | Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components | <pre>list(object({<br>    name                                 = string<br>    bucket_acl                           = string<br>    aws_kms_key_id                       = optional(string)<br>    lifecycle_rules                      = any<br>    versioning                           = bool<br>    k8s_namespace_service_account_access = string<br>  }))</pre> | `[]` | no |
+| <a name="input_custom_aws_s3_support_infra"></a> [custom\_aws\_s3\_support\_infra](#input\_custom\_aws\_s3\_support\_infra) | Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components | <pre>list(object({<br>    name                                 = string<br>    bucket_acl                           = string<br>    aws_kms_key_id                       = optional(string)<br>    lifecycle_rules                      = any<br>    versioning                           = bool<br>    k8s_namespace_service_account_access = any<br>  }))</pre> | `[]` | no |
 | <a name="input_custom_namespaces"></a> [custom\_namespaces](#input\_custom\_namespaces) | Adding namespaces to a default cluster provisioning process | `list(string)` | `[]` | no |
 | <a name="input_default_ami_type"></a> [default\_ami\_type](#input\_default\_ami\_type) | Default AMI used for node provisioning | `string` | `"AL2_x86_64"` | no |
 | <a name="input_default_capacity_type"></a> [default\_capacity\_type](#input\_default\_capacity\_type) | Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT` | `string` | `"ON_DEMAND"` | no |
@@ -189,6 +191,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | Name | Description |
 |------|-------------|
 | <a name="output_base_cidr_block"></a> [base\_cidr\_block](#output\_base\_cidr\_block) | n/a |
+| <a name="output_eks_managed_node_groups"></a> [eks\_managed\_node\_groups](#output\_eks\_managed\_node\_groups) | n/a |
 | <a name="output_kubernetes-cluster-auth"></a> [kubernetes-cluster-auth](#output\_kubernetes-cluster-auth) | n/a |
 | <a name="output_kubernetes-cluster-certificate-authority-data"></a> [kubernetes-cluster-certificate-authority-data](#output\_kubernetes-cluster-certificate-authority-data) | output "kubecfg" { value = module.eks.kubeconfig } |
 | <a name="output_kubernetes-cluster-endpoint"></a> [kubernetes-cluster-endpoint](#output\_kubernetes-cluster-endpoint) | n/a |
