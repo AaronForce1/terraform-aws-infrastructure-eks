@@ -97,25 +97,8 @@ module "argocd" {
   depends_on = [module.eks]
 
   root_domain_name = var.cluster_root_domain.name
-  hostzone_id      = aws_route53_zone.hosted_zone[0].arn
+  hosted_zone_id   = aws_route53_zone.hosted_zone[0].zone_id
   custom_manifest  = var.helm_configurations.argocd
-}
-
-# data "template_file" "applicationset" {
-#   template = "${file("${path.module}/${var.helm_configurations.argocd.application_set}")}"
-#   vars = {
-#     domain = "testing"
-#   }
-# }
-
-output "template" {
-  value = yamldecode(templatefile(
-    "${var.helm_configurations.argocd.application_set[0]}", 
-    {
-      root_domain_name = "testing",
-      hostzone_id = "test2"
-    }
-  ))
 }
 
 # module "gitlab_runner" {

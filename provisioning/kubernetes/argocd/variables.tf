@@ -2,4 +2,4 @@ variable "custom_manifest" {
   default = null
 }
 variable "root_domain_name" {}
-variable "hostzone_id" {}
+variable "hosted_zone_id" {}

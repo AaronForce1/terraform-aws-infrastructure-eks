@@ -72,7 +72,7 @@ module "eks" {
   create_aws_auth_configmap = true
   manage_aws_auth_configmap = true
 
-  aws_auth_roles    = var.map_roles
+  aws_auth_roles    = local.default_aws_auth_roles
   aws_auth_users    = var.map_users
   aws_auth_accounts = var.map_accounts
 

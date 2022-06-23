@@ -1,7 +1,3 @@
-data "aws_ssm_parameter" "argocd_kubernetes_infrastructure_ssh" {
-  name = "/repository/argocd-kubernetes-infrastructure/ssh"
-}
-
 data "aws_ssm_parameter" "argocd_kubernetes_infrastructure_username" {
   name = "/repository/argocd-kubernetes-infrastructure/username"
 }
@@ -38,22 +34,6 @@ resource "kubernetes_secret" "argocd_application_credential_template" {
   }
 }
 
-resource "kubernetes_secret" "argocd_infrastructure_credential_template" {
-  metadata {
-    name      = "repository-infrastructure-template"
-    namespace = "argocd"
-    labels = {
-      "argocd.argoproj.io/secret-type" = "repo-creds"
-    }
-  }
-
-  data = {
-    url = "git@gitlab.int.hextech.io:technology/infra/argocd-kubernetes-infrastructure.git"
-    type = "git"
-    sshPrivateKey = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_ssh.value
-  }
-}
-
 resource "kubernetes_secret" "argocd_helm_chart_registry" {
   metadata {
     name      = "repository-generic-helm-chart"
@@ -72,22 +52,22 @@ resource "kubernetes_secret" "argocd_helm_chart_registry" {
   }
 }
 
-# resource "kubernetes_secret" "argocd_infrastructure_repository" {
-#   metadata {
-#     name      = "repository-infrastructure-repository"
-#     namespace = "argocd"
-#     labels = {
-#       "argocd.argoproj.io/secret-type" = "repository"
-#     }
-#   }
+resource "kubernetes_secret" "argocd_infrastructure_repository" {
+  metadata {
+    name      = "repository-infrastructure-repository"
+    namespace = "argocd"
+    labels = {
+      "argocd.argoproj.io/secret-type" = "repository"
+    }
+  }
 
-#   data = {
-#     url = "https://gitlab.int.hextech.io/technology/infra/argocd-kubernetes-infrastructure.git"
-#     type = "git"
-#     username = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_username.value
-#     password = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_password.value
-#   }
-# }
+  data = {
+    url = "https://gitlab.int.hextech.io/technology/infra/argocd-kubernetes-infrastructure.git"
+    type = "git"
+    username = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_username.value
+    password = data.aws_ssm_parameter.argocd_kubernetes_infrastructure_password.value
+  }
+}
 
 # resource "kubernetes_secret" "argocd_metazen_develop_cluster" {
 #   metadata {

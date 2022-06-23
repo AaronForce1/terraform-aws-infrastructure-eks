@@ -24,23 +24,12 @@ EOT
   ]
 }
 
-# resource "kubernetes_manifest" "applicationset" {
-#   # for_each = toset(var.custom_manifest.application_set)
-#   manifest = yamldecode(templatefile(
-#     "${var.custom_manifest.application_set[0]}", 
-#     {
-#       domain = "testing",
-#       hostzone_id = "test2"
-#     }
-#   ))
-# }
-
-# resource "kubectl_manifest" "applicationset" {
-#   yaml_body = templatefile(
-#     "${var.custom_manifest.application_set[0]}", 
-#     {
-#       root_domain_name = var.root_domain_name,
-#       hostzone_id = var.hostzone_id
-#     }
-#   )
-# }
+resource "kubectl_manifest" "applicationset" {
+  yaml_body = templatefile(
+    "${var.custom_manifest.application_set[0]}", 
+    {
+      root_domain_name = var.root_domain_name,
+      hosted_zone_id = var.hosted_zone_id
+    }
+  )
+}
