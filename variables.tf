@@ -281,7 +281,10 @@ variable "helm_configurations" {
     }))
     elasticstack = optional(string)
     grafana      = optional(string)
-    argocd       = optional(string)
+    argocd       = optional(object({
+      value_file      = optional(string)
+      application_set = optional(list(string))
+    }))
   })
   default = {
     dashboard     = null
