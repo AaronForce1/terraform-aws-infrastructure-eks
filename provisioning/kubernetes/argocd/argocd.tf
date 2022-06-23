@@ -26,6 +26,9 @@ EOT
 
 resource "kubectl_manifest" "applicationset" {
   count = try(length(var.custom_manifest.application_set), 0)
+  depends_on = [
+    helm_release.argocd
+  ]
   
   yaml_body = templatefile(
     "${var.custom_manifest.application_set[count.index]}", 
