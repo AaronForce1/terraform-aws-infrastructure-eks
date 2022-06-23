@@ -70,11 +70,11 @@ module "eks" {
   enable_irsa = true
 
   create_aws_auth_configmap = false
-  manage_aws_auth_configmap = true
+  manage_aws_auth_configmap = false
 
-  aws_auth_roles    = local.default_aws_auth_roles
-  aws_auth_users    = var.map_users
-  aws_auth_accounts = var.map_accounts
+  # aws_auth_roles    = local.default_aws_auth_roles
+  # aws_auth_users    = var.map_users
+  # aws_auth_accounts = var.map_accounts
 
   cluster_tags = local.base_tags
   tags = {

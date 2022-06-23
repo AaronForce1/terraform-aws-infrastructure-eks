@@ -40,13 +40,14 @@ locals {
     }
   }
 
-  default_aws_auth_roles = []
-  #   {
-  #     "groups" : ["system:bootstrappers", "system:nodes"],
-  #     "rolearn": "arn:aws:iam::026821059905:role/application-eks-node-group-20220622075152043700000003"
-  #     "username" : "system:node:{{EC2PrivateDNSName}}"
-  #   }
-  # ]
+  aws_auth_roles = [
+    for x in module.eks_managed_node_group : 
+    {
+      "groups" : ["system:bootstrappers", "system:nodes"]
+      "rolearn": "${x.iam_role_arn}"
+      "username" : "system:node:{{EC2PrivateDNSName}}"
+    }
+  ]
 
   base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0].result) : var.vpc_subnet_configuration.base_cidr
 
