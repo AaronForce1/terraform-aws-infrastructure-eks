@@ -76,7 +76,7 @@ module "aws_s3_infra_support_bucket_irsa_role" {
   oidc_providers = {
     main = {
       provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = "${var.eks_infrastructure_support_buckets[count.index].k8s_namespace_service_account_access}"
+      namespace_service_accounts = ["${var.eks_infrastructure_support_buckets[count.index].k8s_namespace_service_account_access}"]
     }
   }
 

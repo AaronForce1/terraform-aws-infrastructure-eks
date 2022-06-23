@@ -25,8 +25,10 @@ EOT
 }
 
 resource "kubectl_manifest" "applicationset" {
+  count = try(length(var.custom_manifest.application_set), 0)
+  
   yaml_body = templatefile(
-    "${var.custom_manifest.application_set[0]}", 
+    "${var.custom_manifest.application_set[count.index]}", 
     {
       root_domain_name = var.root_domain_name,
       hosted_zone_id = var.hosted_zone_id
