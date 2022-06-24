@@ -25,7 +25,7 @@ ingress:
   path: /
   hosts:
     #- chart-example.local
-    - <domainyouwant>.totalticketing.com
+    - <domainyouwant>.mydomain.com
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
   # - path: /*
@@ -35,7 +35,7 @@ ingress:
   tls: #[]
    - secretName: chart-ets-shared-uat1-tls
      hosts:
-       - <domainyouwant>.totalticketing.com
+       - <domainyouwant>.mydomain.com
 ```
 
 For Datasources:
@@ -55,7 +55,7 @@ For oauth configuration:
 
 ```
   server:
-    root_url: https://grafana.<cluster>.tech.totalticketing.com
+    root_url: https://grafana.<cluster>.tech.mydomain.com
 # This is for gitlab authentication    
 #  auth.gitlab:
 #    enabled: true
@@ -63,9 +63,9 @@ For oauth configuration:
 #    client_id: <Google Client ID>
 #    client_secret: <Google Client Secret>
 #    scope: read_api
-#    auth_url: https://git.hk.asiaticketing.com/oauth/authorize
-#    token_url: https://git.hk.asiaticketing.com/oauth/token
-#    api_url: https://git.hk.asiaticketing.com/api/v4
+#    auth_url: https://gitlab.com/oauth/authorize
+#    token_url: https://gitlab.com/oauth/token
+#    api_url: https://gitlab.com/api/v4
 #    allowed_groups: whitelabels 
   auth.google:
     enabled: true
@@ -76,7 +76,7 @@ For oauth configuration:
     auth_url: https://accounts.google.com/o/oauth2/auth
     token_url: https://accounts.google.com/o/oauth2/token
     api_url: https://www.googleapis.com/oauth2/v1/userinfo
-    allowed_domains: magneticasia.com #email address to whitelist
+    allowed_domains: mydomain.com #email address to whitelist
 ```
 
 Then install grafana using helm by:

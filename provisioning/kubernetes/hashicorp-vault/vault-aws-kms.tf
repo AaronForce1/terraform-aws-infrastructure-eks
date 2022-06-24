@@ -5,13 +5,8 @@ resource "aws_kms_key" "vault" {
   enable_key_rotation     = true
   deletion_window_in_days = 10
 
-  tags = {
-    Name            = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-kms-unseal"
-    Environment     = var.tfenv
-    Billingcustomer = var.billingcustomer
-    Namespace       = var.app_namespace
-    Product         = var.app_name
-  }
+  tags = var.tags
+
 }
 
 resource "aws_kms_alias" "vault" {
@@ -56,6 +51,8 @@ resource "aws_iam_policy" "kms_access_policy" {
 
   path   = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
   policy = data.aws_iam_policy_document.kms_policy_data.json
+
+  tags = var.tags
 }
 
 data "aws_iam_policy_document" "kms_policy_data" {

@@ -176,20 +176,24 @@ variable "nat_gateway_custom_configuration" {
 
 variable "helm_installations" {
   type = object({
-    gitlab_runner    = bool
-    gitlab_k8s_agent = bool
-    vault_consul     = bool
-    ingress          = bool
-    elasticstack     = bool
-    grafana          = bool
+    gitlab_runner     = bool
+    gitlab_k8s_agent  = bool
+    vault_consul      = bool
+    ingress           = bool
+    elasticstack      = bool
+    grafana           = bool
+    stakater_reloader = bool
+    metrics_server    = bool
   })
   default = {
-    gitlab_runner    = false
-    gitlab_k8s_agent = false
-    vault_consul     = true
-    ingress          = true
-    elasticstack     = false
-    grafana          = true
+    gitlab_runner     = false
+    gitlab_k8s_agent  = false
+    vault_consul      = true
+    ingress           = true
+    elasticstack      = false
+    grafana           = true
+    stakater_reloader = true
+    metrics_server    = true
   }
 }
 
@@ -236,7 +240,13 @@ variable "cluster_endpoint_public_access_cidrs" {
 }
 
 variable "vault_nodeselector" {
-  default = ""
+  description = "for placing node/consul on specific nodes, example usage, string:'eks.amazonaws.com/nodegroup: vaultconsul_group'"
+  default     = ""
+}
+
+variable "vault_tolerations" {
+  description = "for tolerating certain taint on nodes, example usage, string:'NoExecute:we_love_hashicorp:true'"
+  default     = ""
 }
 
 variable "default_ami_type" {
@@ -254,5 +264,50 @@ variable "gitlab_kubernetes_agent_config" {
   default = {
     gitlab_agent_url    = ""
     gitlab_agent_secret = ""
+  }
+}
+
+variable "letsencrypt_email" {
+  description = "email used for the clusterissuer email definition (spec.acme.email)"
+}
+
+### AWS Cluster Autoscaling 
+variable "aws_autoscaler_scale_down_util_threshold" {
+  description = "AWS Autoscaling, scale_down_util_threshold (AWS defaults to 0.5, but raising that to 0.7 to be a tad more aggressive with scaling back)"
+  default     = 0.7
+}
+
+variable "aws_autoscaler_skip_nodes_with_local_storage" {
+  description = "AWS Autoscaling, skip_nodes_with_local_storage (AWS defaults to true, also modifying to false for more scaling back)"
+  default     = "false"
+}
+
+variable "aws_autoscaler_skip_nodes_with_system_pods" {
+  description = "AWS Autoscaling, skip_nodes_with_system_pods (AWS defaults to true, but here default to false, again to be a little bit more aggressive with scaling back)"
+  default     = "false"
+}
+
+variable "aws_autoscaler_cordon_node_before_term" {
+  description = "AWS Autoscaling, cordon_node_before_term (AWS defaults to false, but setting it to true migth give a more friendly removal process)"
+  default     = "true"
+}
+
+variable "extra_tags" {
+  type    = map(any)
+  default = {}
+}
+
+variable "ipv6" {
+  type = object({
+    enable                                         = bool
+    assign_ipv6_address_on_creation                = bool
+    private_subnet_assign_ipv6_address_on_creation = bool
+    public_subnet_assign_ipv6_address_on_creation  = bool
+  })
+  default = {
+    enable                                         = false
+    assign_ipv6_address_on_creation                = true
+    private_subnet_assign_ipv6_address_on_creation = true
+    public_subnet_assign_ipv6_address_on_creation  = true
   }
 }

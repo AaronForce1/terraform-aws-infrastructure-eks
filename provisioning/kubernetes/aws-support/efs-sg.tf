@@ -10,12 +10,5 @@ resource "aws_security_group" "efs_security_group" {
     cidr_blocks = ["${var.base_cidr_block}"]
   }
 
-  tags = {
-    "Environment"     = var.tfenv
-    "Terraform"       = "true"
-    "Namespace"       = var.app_namespace
-    "Billingcustomer" = var.billingcustomer
-    "Product"         = var.app_name
-    "Name"            = "${var.app_name}-${var.app_namespace}-${var.tfenv}-efs"
-  }
+  tags = var.tags
 }

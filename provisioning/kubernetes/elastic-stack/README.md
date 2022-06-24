@@ -29,11 +29,11 @@ You can acces kibana by port forwarding to 5601
 
 #Kibana Authentication
 
-Kibana will pull logs from all the pods which means it stores sensitive information. This means we need to protect our Kibana and we need to force a login for users who visit the dashboard. We can port forward kibana on our localhost but it has no authentication option. We can use external authentication using OAuth from our Magnetic Asia's google accounts.
+Kibana will pull logs from all the pods which means it stores sensitive information. This means we need to protect our Kibana and we need to force a login for users who visit the dashboard. We can port forward kibana on our localhost but it has no authentication option. We can use external authentication using OAuth from our google accounts.
 
-First thing is to create a google auth by logging in at https://console.developers.google.com/apis/credentials?pli=1 using the cloudshareadmin@magneticasia.com.
+First thing is to create a google auth by logging in at https://console.developers.google.com/apis/credentials?pli=1 using the cloudshareadmin@mydomain.com.
 
-Create an Oauth2 Client ID. Application Type is Web Application. Make sure you authorize the domain you will use on the origin and redirect uri will be "https://yourdomain.totalticketing.com/oauth2/callback"
+Create an Oauth2 Client ID. Application Type is Web Application. Make sure you authorize the domain you will use on the origin and redirect uri will be "https://yourdomain.mydomain.com/oauth2/callback"
 
 
 Save the "Google Client ID" and "Google Client Secret" and save the values at provisioning/kubernetes/elastic-stack/src/kibana-oauth-values.yaml
@@ -47,16 +47,16 @@ This will there will be an oauth2 pod and service running on port 80
 Next is we need the ingress for kibana for this example, modify kibana-ingress.yaml to your preference. Change the domain values of these lines:
 
 ```
-    nginx.ingress.kubernetes.io/auth-signin: https://yourdomain.totalticketing.com/oauth2/start?rd=$escaped_request_uri
-    nginx.ingress.kubernetes.io/auth-url: https://yourdomain.totalticketing.com/oauth2/auth
+    nginx.ingress.kubernetes.io/auth-signin: https://yourdomain.mydomain.com/oauth2/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://yourdomain.mydomain.com/oauth2/auth
 ...
 spec:
   tls:
   - hosts:
-    - yourdomain.totalticketing.com
+    - yourdomain.mydomain.com
     secretName: kibana-tls-secret
   rules:
-    - host: yourdomain.totalticketing.com
+    - host: yourdomain.mydomain.com
 ```
 
 You can then apply to create the ingress:
@@ -69,16 +69,16 @@ Next is to create the oauth ingress. Modify kibana-oauth-ingress.yaml and change
 ```
 spec:
   rules:
-  - host: yourdomain.totalticketing.com
+  - host: yourdomain.mydomain.com
     http:
 ...
   tls:
   - hosts:
-    - yourdomain.totalticketing.com
+    - yourdomain.mydomain.com
     secretName:  oauth2-noc-tls
 ```
 
-yourdomain.totalticketing.com/oauth2 will then be pointed to the oauth2-proxy so that you can perform oauth.
+yourdomain.mydomain.com/oauth2 will then be pointed to the oauth2-proxy so that you can perform oauth.
 
 Apply by: 
 

@@ -70,7 +70,7 @@ securely distribute the key shares printed above.
 ```
 
 ## Configure Kubernetes Auth Capabilities Deployment Integration
-The example below assumes the service account required is named `vault` however - for ETS, we typically use a service account named `ets-ticketing-{tfenv}-service-account`. The serviceaccount must be made in the default namespace and this functions as the anchor to auth between vault and k8s.
+The example below assumes the service account required is named `vault` however - for ETS, we typically use a service account named `{app}-{namespace}-{tfenv}-service-account`. The serviceaccount must be made in the default namespace and this functions as the anchor to auth between vault and k8s.
 
 Create the service account to be used by your pods that needs the secret
 ```yaml

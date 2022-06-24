@@ -8,11 +8,8 @@ resource "helm_release" "elasticstack-elasticsearch" {
 
   values = [
     <<-EOF
-      image: registry.git.hk.asiaticketing.com/technology/system/utils/elasticsearch
       imageTag: ${local.elkversion}
-      imagePullPolicy: Always
-      imagePullSecrets: 
-      - name: ticketing-v2-elasticsearch-backup-regcred
+      imagePullPolicy: IfNotPresent
       replicas: ${var.tfenv == "prod" ? 3 : 2}
       volumeClaimTemplate:
         resources:
