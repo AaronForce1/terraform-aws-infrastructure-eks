@@ -15,10 +15,6 @@ terraform.tfstate.d/
 # IDE Files
 .idea
 
-#ticketflap repo
-ticketflap/Ticketing
-Ticketflap/Ticketing
-
 # Others
 *.log
 *.vault*
