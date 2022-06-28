@@ -7,6 +7,7 @@ resource "helm_release" "nginx-controller" {
   create_namespace = true
   force_update     = false
   recreate_pods    = true
+  wait             = false
 
   values = [yamlencode({
     "controller" : {

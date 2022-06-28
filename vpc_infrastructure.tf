@@ -39,7 +39,7 @@ module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.1"
 
-  name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
+  name = "${app_name}-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
 
   # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
@@ -96,11 +96,11 @@ module "eks-vpc" {
 
   nat_gateway_tags = local.vpc_tags
 
-  vpc_tags = merge(local.vpc_tags, tomap({ "Name" = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc" }))
+  vpc_tags = merge(local.vpc_tags, tomap({ "Name" = "${app_name}-${var.app_namespace}-${var.tfenv}-cluster-vpc" }))
 
-  public_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
+  public_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/${app_name}-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
 
-  private_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/eks-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
+  private_subnet_tags = merge(local.vpc_tags, tomap({ "kubernetes.io/cluster/${app_name}-${var.app_namespace}-${var.tfenv}" = "shared", "kubernetes.io/role/elb" = "1" }))
 }
 
 module "eks-vpc-endpoints" {
