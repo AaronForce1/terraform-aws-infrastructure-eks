@@ -96,9 +96,10 @@ module "argocd" {
   count      = var.helm_installations.argocd ? 1 : 0
   depends_on = [module.eks]
 
-  root_domain_name = var.cluster_root_domain.name
-  hosted_zone_id   = aws_route53_zone.hosted_zone[0].zone_id
-  custom_manifest  = var.helm_configurations.argocd
+  root_domain_name     = var.cluster_root_domain.name
+  operator_domain_name = var.operator_domain_name
+  hosted_zone_id       = aws_route53_zone.hosted_zone[0].zone_id
+  custom_manifest      = var.helm_configurations.argocd
 }
 
 # module "gitlab_runner" {

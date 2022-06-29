@@ -29,12 +29,13 @@ resource "kubectl_manifest" "applicationset" {
   depends_on = [
     helm_release.argocd
   ]
-  
+
   yaml_body = templatefile(
-    "${var.custom_manifest.application_set[count.index]}", 
+    "${var.custom_manifest.application_set[count.index]}",
     {
-      root_domain_name = var.root_domain_name,
-      hosted_zone_id = var.hosted_zone_id
+      root_domain_name     = var.root_domain_name,
+      operator_domain_name = var.operator_domain_name,
+      hosted_zone_id       = var.hosted_zone_id
     }
   )
 }

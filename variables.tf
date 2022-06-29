@@ -99,6 +99,11 @@ variable "cluster_root_domain" {
   })
 }
 
+variable "operator_domain_name" {
+    description = "Domain root of operator cluster"
+    type = string
+}
+
 variable "app_name" {
   description = "Application Name"
   default     = "eks"
