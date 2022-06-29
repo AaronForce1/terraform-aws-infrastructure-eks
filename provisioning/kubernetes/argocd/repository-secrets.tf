@@ -10,6 +10,14 @@ data "aws_ssm_parameter" "argocd_application_ssh" {
   name = "/repository/kubernetes-application/ssh"
 }
 
+data "aws_ssm_parameter" "argocd_app_metazen_username" {
+  name = "/repository/argocd-app-metazen/username"
+}
+
+data "aws_ssm_parameter" "argocd_app_metazen_password" {
+  name = "/repository/argocd-app-metazen/password"
+}
+
 data "aws_ssm_parameter" "argocd_generic_helm_chart_registry_username" {
   name = "/repository/generic-helm-chart/username"
 }
@@ -31,6 +39,23 @@ resource "kubernetes_secret" "argocd_application_credential_template" {
     url           = "git@gitlab.int.hextech.io:metazen/kubernetes-application.git"
     type          = "git"
     sshPrivateKey = data.aws_ssm_parameter.argocd_application_ssh.value
+  }
+}
+
+resource "kubernetes_secret" "argocd_application_repository" {
+  metadata {
+    name      = "repository-application-repository"
+    namespace = "argocd"
+    labels = {
+      "argocd.argoproj.io/secret-type" = "repository"
+    }
+  }
+
+  data = {
+    url           = "https://gitlab.int.hextech.io/technology/applications/argocd-app-metazen.git"
+    type          = "git"
+    username = data.aws_ssm_parameter.argocd_app_metazen_username.value
+    password = data.aws_ssm_parameter.argocd_app_metazen_password.value
   }
 }
 
