@@ -100,6 +100,7 @@ module "argocd" {
   operator_domain_name = var.operator_domain_name
   hosted_zone_id       = aws_route53_zone.hosted_zone[0].zone_id
   custom_manifest      = var.helm_configurations.argocd
+  repository_secrets   = var.helm_configurations.argocd.repository_secrets
 }
 
 # module "gitlab_runner" {

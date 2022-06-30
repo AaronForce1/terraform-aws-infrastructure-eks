@@ -94,7 +94,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.5 |
 | <a name="requirement_gitlab"></a> [gitlab](#requirement\_gitlab) | ~> 3.4 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | ~> 1.14.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.11.0 |
 
 ## Providers
 
@@ -102,6 +103,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 4.13.0 |
 | <a name="provider_aws.secondary"></a> [aws.secondary](#provider\_aws.secondary) | 4.13.0 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | ~> 1.14.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.11.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.2.2 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.3 |
@@ -137,6 +139,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | [aws_kms_replica_key.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_replica_key) | resource |
 | [aws_route53_zone.hosted_zone](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_vpc_endpoint.rds](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [kubectl_manifest.aws-auth](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [kubernetes_namespace.cluster](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [random_integer.cidr_vpc](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
 | [aws_availability_zones.available_azs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
@@ -169,7 +172,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_google_authDomain"></a> [google\_authDomain](#input\_google\_authDomain) | Used for Infrastructure OAuth: Google Auth Domain | `any` | n/a | yes |
 | <a name="input_google_clientID"></a> [google\_clientID](#input\_google\_clientID) | Used for Infrastructure OAuth: Google Auth Client ID | `any` | n/a | yes |
 | <a name="input_google_clientSecret"></a> [google\_clientSecret](#input\_google\_clientSecret) | Used for Infrastructure OAuth: Google Auth Client Secret | `any` | n/a | yes |
-| <a name="input_helm_configurations"></a> [helm\_configurations](#input\_helm\_configurations) | n/a | <pre>object({<br>    dashboard     = optional(string)<br>    gitlab_runner = optional(string)<br>    vault_consul = optional(object({<br>      consul_values           = optional(string)<br>      vault_values            = optional(string)<br>      enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"<br>      vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file<br>    }))<br>    ingress = optional(object({<br>      nginx_values       = optional(string)<br>      certmanager_values = optional(string)<br>    }))<br>    elasticstack = optional(string)<br>    grafana      = optional(string)<br>    argocd       = optional(string)<br>  })</pre> | <pre>{<br>  "argocd": null,<br>  "dashboard": null,<br>  "elasticstack": null,<br>  "gitlab_runner": null,<br>  "grafana": null,<br>  "ingress": null,<br>  "vault_consul": null<br>}</pre> | no |
+| <a name="input_helm_configurations"></a> [helm\_configurations](#input\_helm\_configurations) | n/a | <pre>object({<br>    dashboard     = optional(string)<br>    gitlab_runner = optional(string)<br>    vault_consul = optional(object({<br>      consul_values           = optional(string)<br>      vault_values            = optional(string)<br>      enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"<br>      vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file<br>    }))<br>    ingress = optional(object({<br>      nginx_values       = optional(string)<br>      certmanager_values = optional(string)<br>    }))<br>    elasticstack = optional(string)<br>    grafana      = optional(string)<br>    argocd = optional(object({<br>      value_file      = optional(string)<br>      application_set = optional(list(string))<br>      repository_secrets = optional(list(object({<br>        name          = string<br>        url           = string<br>        type          = string<br>        username      = string<br>        password      = string<br>        secrets_store = string<br>      })))<br>    }))<br>  })</pre> | <pre>{<br>  "argocd": null,<br>  "dashboard": null,<br>  "elasticstack": null,<br>  "gitlab_runner": null,<br>  "grafana": null,<br>  "ingress": null,<br>  "vault_consul": null<br>}</pre> | no |
 | <a name="input_helm_installations"></a> [helm\_installations](#input\_helm\_installations) | n/a | <pre>object({<br>    dashboard     = bool<br>    gitlab_runner = bool<br>    vault_consul  = bool<br>    ingress       = bool<br>    elasticstack  = bool<br>    grafana       = bool<br>    argocd        = bool<br>  })</pre> | <pre>{<br>  "argocd": false,<br>  "dashboard": true,<br>  "elasticstack": false,<br>  "gitlab_runner": false,<br>  "grafana": true,<br>  "ingress": true,<br>  "vault_consul": true<br>}</pre> | no |
 | <a name="input_instance_desired_size"></a> [instance\_desired\_size](#input\_instance\_desired\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `2` | no |
 | <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `4` | no |
@@ -181,6 +184,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_nat_gateway_custom_configuration"></a> [nat\_gateway\_custom\_configuration](#input\_nat\_gateway\_custom\_configuration) | Override the default NAT Gateway configuration, which configures a single NAT gateway for non-prod, while one per AZ on tfenv=prod | <pre>object({<br>    enabled                           = bool<br>    enable_nat_gateway                = bool<br>    enable_dns_hostnames              = bool<br>    single_nat_gateway                = bool<br>    one_nat_gateway_per_az            = bool<br>    enable_vpn_gateway                = bool<br>    propagate_public_route_tables_vgw = bool<br>  })</pre> | <pre>{<br>  "enable_dns_hostnames": true,<br>  "enable_nat_gateway": true,<br>  "enable_vpn_gateway": false,<br>  "enabled": false,<br>  "one_nat_gateway_per_az": true,<br>  "propagate_public_route_tables_vgw": false,<br>  "single_nat_gateway": false<br>}</pre> | no |
 | <a name="input_node_key_name"></a> [node\_key\_name](#input\_node\_key\_name) | EKS Node Key Name | `string` | `""` | no |
 | <a name="input_node_public_ip"></a> [node\_public\_ip](#input\_node\_public\_ip) | assign public ip on the nodes | `bool` | `false` | no |
+| <a name="input_operator_domain_name"></a> [operator\_domain\_name](#input\_operator\_domain\_name) | Domain root of operator cluster | `string` | n/a | yes |
 | <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
 | <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment | `map` | `{}` | no |

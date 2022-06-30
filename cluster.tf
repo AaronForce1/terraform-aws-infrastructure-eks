@@ -2,17 +2,6 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.23.0"
 
-  ### This causes the issue!!!
-  # depends_on = [
-  #   ## VPC COMPONENTS
-  # module.eks-vpc,
-
-  #   ## KMS
-  # resource.aws_kms_key.eks,
-  # resource.aws_kms_alias.eks,
-  # resource.aws_kms_replica_key.eks,
-  # ]
-
   cluster_name    = local.name_prefix
   cluster_version = var.cluster_version
 

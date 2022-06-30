@@ -100,8 +100,8 @@ variable "cluster_root_domain" {
 }
 
 variable "operator_domain_name" {
-    description = "Domain root of operator cluster"
-    type = string
+  description = "Domain root of operator cluster"
+  type        = string
 }
 
 variable "app_name" {
@@ -286,9 +286,17 @@ variable "helm_configurations" {
     }))
     elasticstack = optional(string)
     grafana      = optional(string)
-    argocd       = optional(object({
+    argocd = optional(object({
       value_file      = optional(string)
       application_set = optional(list(string))
+      repository_secrets = optional(list(object({
+        name          = string
+        url           = string
+        type          = string
+        username      = string
+        password      = string
+        secrets_store = string
+      })))
     }))
   })
   default = {

@@ -41,10 +41,10 @@ locals {
   }
 
   aws_auth_roles = [
-    for x in module.eks_managed_node_group : 
+    for x in module.eks_managed_node_group :
     {
       "groups" : ["system:bootstrappers", "system:nodes"]
-      "rolearn": "${x.iam_role_arn}"
+      "rolearn" : "${x.iam_role_arn}"
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]
