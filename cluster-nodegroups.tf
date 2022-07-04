@@ -9,8 +9,12 @@ module "eks_managed_node_group" {
   cluster_name    = module.eks.cluster_id
   cluster_version = var.cluster_version
 
-  create_iam_role = true
-  launch_template_name = "${module.eks.cluster_id}-${var.eks_managed_node_groups[count.index].name}"
+  create_iam_role            = true
+  iam_role_name              = "${module.eks.cluster_id}-${var.eks_managed_node_groups[count.index].name}"
+  iam_role_attach_cni_policy = true
+  iam_role_use_name_prefix   = false
+
+  launch_template_name            = "${module.eks.cluster_id}-${var.eks_managed_node_groups[count.index].name}"
   launch_template_use_name_prefix = false
   # iam_role_arn = module.eks.eks_managed_node_groups.iam_role.arn
 
@@ -21,8 +25,8 @@ module "eks_managed_node_group" {
     var.eks_managed_node_groups[count.index].subnet_selections.private ? module.eks-vpc.private_subnets : []
   )
   cluster_primary_security_group_id = module.eks.cluster_primary_security_group_id
-  vpc_security_group_ids            = [module.eks.node_security_group_id]
-  create_security_group             = false
+  # vpc_security_group_ids            = [module.eks.node_security_group_id]
+  create_security_group = false
 
   desired_size = var.eks_managed_node_groups[count.index].desired_capacity
   max_size     = var.eks_managed_node_groups[count.index].max_capacity

@@ -99,6 +99,13 @@ variable "cluster_root_domain" {
   })
 }
 
+# TODO: Modularise better
+variable "operator_domain_name" {
+  description = "Domain root of operator cluster"
+  type        = string
+  default     = ""
+}
+
 variable "app_name" {
   description = "Application Name"
   default     = "eks"
@@ -281,7 +288,18 @@ variable "helm_configurations" {
     }))
     elasticstack = optional(string)
     grafana      = optional(string)
-    argocd       = optional(string)
+    argocd = optional(object({
+      value_file      = optional(string)
+      application_set = optional(list(string))
+      repository_secrets = optional(list(object({
+        name          = string
+        url           = string
+        type          = string
+        username      = string
+        password      = string
+        secrets_store = string
+      })))
+    }))
   })
   default = {
     dashboard     = null
