@@ -99,9 +99,11 @@ variable "cluster_root_domain" {
   })
 }
 
+# TODO: Modularise better
 variable "operator_domain_name" {
   description = "Domain root of operator cluster"
   type        = string
+  default     = ""
 }
 
 variable "app_name" {

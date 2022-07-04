@@ -24,6 +24,7 @@ EOT
   ]
 }
 
+## TODO: Modularise
 resource "kubectl_manifest" "applicationset" {
   count = try(length(var.custom_manifest.application_set), 0)
   depends_on = [
