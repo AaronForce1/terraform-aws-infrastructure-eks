@@ -312,6 +312,14 @@ variable "helm_configurations" {
         password      = string
         secrets_store = string
       })))
+      credential_templates = optional(list(object({
+        name = string
+        url = string
+        type = string
+        username = string
+        password = string
+        secrets_store = string
+      })))
     }))
   })
   default = {
