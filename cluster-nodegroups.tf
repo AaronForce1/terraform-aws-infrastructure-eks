@@ -9,11 +9,7 @@ module "eks_managed_node_group" {
   cluster_name    = module.eks.cluster_id
   cluster_version = var.cluster_version
 
-  create_iam_role            = true
-  iam_role_name              = "${module.eks.cluster_id}-${var.eks_managed_node_groups[count.index].name}"
-  iam_role_attach_cni_policy = true
-  iam_role_use_name_prefix   = false
-
+  create_iam_role                 = true
   launch_template_name            = "${module.eks.cluster_id}-${var.eks_managed_node_groups[count.index].name}"
   launch_template_use_name_prefix = false
   # iam_role_arn = module.eks.eks_managed_node_groups.iam_role.arn

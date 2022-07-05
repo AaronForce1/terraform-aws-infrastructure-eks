@@ -23,15 +23,8 @@ module "eks" {
   # See https://github.com/aws/containers-roadmap/issues/1666 for more context
   # TODO - remove this policy once AWS releases a managed version similar to AmazonEKS_CNI_Policy (IPv4)
   # create_cni_ipv6_iam_policy = true
-  cluster_addons = {
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-    }
-    kube-proxy = {}
-    vpc-cni = {
-      resolve_conflicts = "OVERWRITE"
-    }
-  }
+
+  cluster_addons = var.cluster_addons
 
   cluster_encryption_config = [{
     provider_key_arn = aws_kms_key.eks.arn
