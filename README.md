@@ -103,7 +103,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 4.13.0 |
 | <a name="provider_aws.secondary"></a> [aws.secondary](#provider\_aws.secondary) | 4.13.0 |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | ~> 1.14.0 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.11.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.2.2 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.3 |
@@ -158,6 +158,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS Region for all primary configurations | `any` | n/a | yes |
 | <a name="input_aws_secondary_region"></a> [aws\_secondary\_region](#input\_aws\_secondary\_region) | Secondary Region for certain redundant AWS components | `any` | n/a | yes |
 | <a name="input_billingcustomer"></a> [billingcustomer](#input\_billingcustomer) | Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning | `any` | n/a | yes |
+| <a name="input_cluster_addons"></a> [cluster\_addons](#input\_cluster\_addons) | An add-on is software that provides supporting operational capabilities to Kubernetes applications, but is not specific to the application: coredns, kube-proxy, vpc-cni | `any` | <pre>{<br>  "coredns": {<br>    "resolve_conflicts": "OVERWRITE"<br>  },<br>  "vpc-cni": {<br>    "resolve_conflicts": "OVERWRITE"<br>  }<br>}</pre> | no |
 | <a name="input_cluster_endpoint_public_access_cidrs"></a> [cluster\_endpoint\_public\_access\_cidrs](#input\_cluster\_endpoint\_public\_access\_cidrs) | If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to | `list(string)` | `[]` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Optional override for cluster name instead of standard {name}-{namespace}-{env} | `string` | `""` | no |
 | <a name="input_cluster_root_domain"></a> [cluster\_root\_domain](#input\_cluster\_root\_domain) | Domain root where all kubernetes systems are orchestrating control | <pre>object({<br>    create          = optional(bool)<br>    name            = string<br>    ingress_records = optional(list(string))<br>  })</pre> | n/a | yes |
@@ -184,7 +185,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_nat_gateway_custom_configuration"></a> [nat\_gateway\_custom\_configuration](#input\_nat\_gateway\_custom\_configuration) | Override the default NAT Gateway configuration, which configures a single NAT gateway for non-prod, while one per AZ on tfenv=prod | <pre>object({<br>    enabled                           = bool<br>    enable_nat_gateway                = bool<br>    enable_dns_hostnames              = bool<br>    single_nat_gateway                = bool<br>    one_nat_gateway_per_az            = bool<br>    enable_vpn_gateway                = bool<br>    propagate_public_route_tables_vgw = bool<br>  })</pre> | <pre>{<br>  "enable_dns_hostnames": true,<br>  "enable_nat_gateway": true,<br>  "enable_vpn_gateway": false,<br>  "enabled": false,<br>  "one_nat_gateway_per_az": true,<br>  "propagate_public_route_tables_vgw": false,<br>  "single_nat_gateway": false<br>}</pre> | no |
 | <a name="input_node_key_name"></a> [node\_key\_name](#input\_node\_key\_name) | EKS Node Key Name | `string` | `""` | no |
 | <a name="input_node_public_ip"></a> [node\_public\_ip](#input\_node\_public\_ip) | assign public ip on the nodes | `bool` | `false` | no |
-| <a name="input_operator_domain_name"></a> [operator\_domain\_name](#input\_operator\_domain\_name) | Domain root of operator cluster | `string` | n/a | yes |
+| <a name="input_operator_domain_name"></a> [operator\_domain\_name](#input\_operator\_domain\_name) | Domain root of operator cluster | `string` | `""` | no |
 | <a name="input_root_vol_size"></a> [root\_vol\_size](#input\_root\_vol\_size) | Root Volume Size | `string` | `"50"` | no |
 | <a name="input_tfenv"></a> [tfenv](#input\_tfenv) | Environment | `any` | n/a | yes |
 | <a name="input_vpc_flow_logs"></a> [vpc\_flow\_logs](#input\_vpc\_flow\_logs) | Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment | `map` | `{}` | no |
