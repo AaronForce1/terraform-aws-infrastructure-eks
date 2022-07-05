@@ -2,17 +2,6 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.23.0"
 
-  ### This causes the issue!!!
-  # depends_on = [
-  #   ## VPC COMPONENTS
-  # module.eks-vpc,
-
-  #   ## KMS
-  # resource.aws_kms_key.eks,
-  # resource.aws_kms_alias.eks,
-  # resource.aws_kms_replica_key.eks,
-  # ]
-
   cluster_name    = local.name_prefix
   cluster_version = var.cluster_version
 
@@ -62,12 +51,12 @@ module "eks" {
 
   enable_irsa = true
 
-  create_aws_auth_configmap = true
-  manage_aws_auth_configmap = true
+  create_aws_auth_configmap = false
+  manage_aws_auth_configmap = false
 
-  aws_auth_roles    = var.map_roles
-  aws_auth_users    = var.map_users
-  aws_auth_accounts = var.map_accounts
+  # aws_auth_roles    = local.default_aws_auth_roles
+  # aws_auth_users    = var.map_users
+  # aws_auth_accounts = var.map_accounts
 
   cluster_tags = local.base_tags
   tags = {
