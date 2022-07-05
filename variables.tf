@@ -299,10 +299,7 @@ variable "helm_configurations" {
         password      = string
         secrets_store = string
       })))
-      plugin_repository_secret = optional(object({
-        enabled                = bool
-        repository_secret_name = string
-      }))
+      generate_plugin_repository_secret = optional(bool)
     }))
   })
   default = {
