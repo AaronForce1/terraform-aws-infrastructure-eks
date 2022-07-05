@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "argocd_application_credential_template" {
+resource "kubernetes_secret" "argocd_application_repository_secrets" {
   count = length(var.repository_secrets)
 
   metadata {
@@ -19,13 +19,13 @@ resource "kubernetes_secret" "argocd_application_credential_template" {
 }
 
 resource "kubernetes_secret" "argocd_helm_envsubst_plugin_repositories" {
-  count = var.generate_plugin_repository_secret? 1: 0 
+  count = coalesce(var.generate_plugin_repository_secret, false) ? 1 : 0
 
   metadata {
-    name = "argocd-helm-envsubst-plugin-repositories"
+    name      = "argocd-helm-envsubst-plugin-repositories"
     namespace = "argocd"
   }
-  
+
   data = {
     "repositories.yaml" = yamlencode(local.helmRepositoryYaml)
   }

@@ -313,11 +313,10 @@ variable "helm_configurations" {
         secrets_store = string
       })))
       credential_templates = optional(list(object({
-        name = string
-        url = string
-        type = string
-        username = string
-        password = string
+        name          = string
+        url           = string
+        username      = string
+        password      = string
         secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
