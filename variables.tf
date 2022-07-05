@@ -312,6 +312,7 @@ variable "helm_configurations" {
         password      = string
         secrets_store = string
       })))
+      generate_plugin_repository_secret = optional(bool)
     }))
   })
   default = {
