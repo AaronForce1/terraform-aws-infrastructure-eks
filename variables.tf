@@ -162,6 +162,19 @@ variable "node_public_ip" {
   default     = false
 }
 
+variable "cluster_addons" {
+  description = "An add-on is software that provides supporting operational capabilities to Kubernetes applications, but is not specific to the application: coredns, kube-proxy, vpc-cni"
+  default = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
+  }
+  type = any
+}
+
 variable "vpc_flow_logs" {
   description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
   ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
