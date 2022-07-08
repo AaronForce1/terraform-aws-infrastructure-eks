@@ -14,7 +14,10 @@ module "infrastructure-terraform-eks" {
     grafana       = false
   }
   billingcustomer = "testing"
-  cluster_root_domain.name  = "testing.example.com"
+  cluster_root_domain = {
+    name   = "testing.example.com"
+    create = true
+  }
 
   google_clientID = ""
   google_clientSecret = ""
