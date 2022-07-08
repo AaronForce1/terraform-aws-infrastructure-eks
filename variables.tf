@@ -179,6 +179,7 @@ variable "cluster_addons" {
     vpc-cni = {
       resolve_conflicts = "OVERWRITE"
     }
+    kube-proxy = {}
   }
   type = any
 }
