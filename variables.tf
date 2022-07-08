@@ -175,6 +175,7 @@ variable "cluster_addons" {
     coredns = {
       resolve_conflicts = "OVERWRITE"
     }
+    kube-proxy = {}
     vpc-cni = {
       resolve_conflicts = "OVERWRITE"
     }
@@ -309,6 +310,13 @@ variable "helm_configurations" {
         name          = string
         url           = string
         type          = string
+        username      = string
+        password      = string
+        secrets_store = string
+      })))
+      credential_templates = optional(list(object({
+        name          = string
+        url           = string
         username      = string
         password      = string
         secrets_store = string

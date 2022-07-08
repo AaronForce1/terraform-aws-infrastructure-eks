@@ -101,6 +101,7 @@ module "argocd" {
   hosted_zone_id                    = aws_route53_zone.hosted_zone[0].zone_id
   custom_manifest                   = var.helm_configurations.argocd
   repository_secrets                = var.helm_configurations.argocd.repository_secrets
+  credential_templates              = var.helm_configurations.argocd.credential_templates
   generate_plugin_repository_secret = var.helm_configurations.argocd.generate_plugin_repository_secret
 }
 
