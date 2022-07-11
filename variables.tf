@@ -1,4 +1,10 @@
 ## GLOBAL VAR CONFIGURATION
+
+variable "aws_profile" {
+  description = "AWS Profile"
+  default     = "default"
+}
+
 variable "aws_region" {
   description = "AWS Region for all primary configurations"
 }
