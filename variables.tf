@@ -1,7 +1,7 @@
 ## GLOBAL VAR CONFIGURATION
 
 variable "aws_profile" {
-  description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
+  description = "Default AWS Profile"
   default     = "default"
 }
 
