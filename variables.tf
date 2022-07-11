@@ -1,8 +1,8 @@
 ## GLOBAL VAR CONFIGURATION
 
 variable "aws_profile" {
-  description = "Default AWS Profile"
-  default     = "water-oak"
+  description = "AWS Profile"
+  default     = "default"
 }
 
 variable "aws_region" {
