@@ -2,7 +2,7 @@
 
 variable "aws_profile" {
   description = "Default AWS Profile"
-  default     = "default"
+  default     = "water-oak"
 }
 
 variable "aws_region" {
