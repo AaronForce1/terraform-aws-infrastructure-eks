@@ -356,15 +356,21 @@ variable "custom_aws_s3_support_infra" {
 
 variable "vpc_subnet_configuration" {
   type = object({
-    base_cidr           = string
-    subnet_bit_interval = number
-    autogenerate        = optional(bool)
+    base_cidr = string
+    subnet_bit_interval = object({
+      public  = number
+      private = number
+    })
+    autogenerate = optional(bool)
   })
   description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
   default = {
-    base_cidr           = "172.%s.0.0/16"
-    subnet_bit_interval = 4
-    autogenerate        = true
+    base_cidr = "172.%s.0.0/16"
+    subnet_bit_interval = {
+      public  = 2
+      private = 6
+    }
+    autogenerate = true
   }
 }
 
