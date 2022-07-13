@@ -10,27 +10,27 @@ module "subnet_addrs" {
   networks = [
     {
       name     = "public-1"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.public
     },
     {
       name     = "public-2"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.public
     },
     {
       name     = "public-3"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.public
     },
     {
       name     = "private-1"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.private
     },
     {
       name     = "private-2"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.private
     },
     {
       name     = "private-3"
-      new_bits = var.vpc_subnet_configuration.subnet_bit_interval
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.private
     },
   ]
 }

@@ -1,7 +1,7 @@
 ##################################
 #### ------------------------ ####
 ####  FOSS - GITIGNORE        ####
-####  v1.0                    ####
+####  v1.0.1                  ####
 #### ------------------------ ####
 ##################################
 ### --
@@ -54,6 +54,7 @@ dist
 ### --
 *.tfvars
 *.tfstate*
+.terragrunt-cache/
 .terraform/
 .infracost/
 terraform.tfstate.d/
@@ -66,7 +67,6 @@ terraform.tfstate.d/
 ### --
 ### Others
 ### --
-*.log
 *.vault*
 *.pem
 *.gpg
@@ -76,4 +76,5 @@ terraform.tfstate.d/
 ### Environment
 ### --
 .env*
+.env.yaml
 !.env.example
