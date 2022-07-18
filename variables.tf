@@ -403,13 +403,15 @@ variable "default_capacity_type" {
 }
 
 variable "registry_credentials" {
+  description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
   type = list(object({
-    name                     = string 
-    namespace                = string
-    docker_username_ssm_path = string
-    docker_password_ssm_path = string
-    docker_server            = string
-    docker_email             = string
+    name            = string 
+    namespace       = string
+    docker_username = string
+    docker_password = string
+    docker_server   = string
+    docker_email    = string
+    secrets_store   = string
   }))
   default = []
 }
