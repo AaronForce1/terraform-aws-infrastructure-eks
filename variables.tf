@@ -401,3 +401,15 @@ variable "default_capacity_type" {
   description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
   default     = "ON_DEMAND"
 }
+
+variable "registry_credentials" {
+  type = list(object({
+    name                     = string 
+    namespace                = string
+    docker_username_ssm_path = string
+    docker_password_ssm_path = string
+    docker_server            = string
+    docker_email             = string
+  }))
+  default = []
+}
