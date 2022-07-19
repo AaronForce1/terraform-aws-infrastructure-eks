@@ -73,7 +73,3 @@ output "eks_managed_node_groups" {
 output "aws_region" {
   value = var.aws_region
 }
-
-output "aws_profile" {
-  value = aws.profile
-}
