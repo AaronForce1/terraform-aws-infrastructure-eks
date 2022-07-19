@@ -7,6 +7,11 @@ variable "aws_secondary_region" {
   description = "Secondary Region for certain redundant AWS components"
 }
 
+variable "aws_profile" {
+  description = "AWS Profile"
+  default = "default"
+}
+
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap."
   type        = list(string)
