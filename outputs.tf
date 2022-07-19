@@ -75,5 +75,5 @@ output "aws_region" {
 }
 
 output "aws_profile" {
-  value = var.profile
+  value = aws.profile
 }
