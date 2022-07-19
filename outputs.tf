@@ -68,8 +68,12 @@ output "eks_managed_node_groups" {
 }
 
 ###
-### Check you are using proper region
+### Check you are using proper profile
 ###
 output "aws_region" {
   value = var.aws_region
+}
+
+output "aws_profile" {
+  value = var.profile
 }
