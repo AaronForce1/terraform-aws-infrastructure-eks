@@ -336,7 +336,7 @@ variable "helm_configurations" {
     ingress       = null
     elasticstack  = null
     grafana       = null
-    argocd        = {}
+    argocd        = null
   }
 }
 
