@@ -407,3 +407,17 @@ variable "default_capacity_type" {
   description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
   default     = "ON_DEMAND"
 }
+
+variable "registry_credentials" {
+  description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
+  type = list(object({
+    name            = string 
+    namespace       = string
+    docker_username = string
+    docker_password = string
+    docker_server   = string
+    docker_email    = string
+    secrets_store   = string
+  }))
+  default = []
+}
