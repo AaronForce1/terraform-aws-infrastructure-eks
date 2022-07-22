@@ -7,3 +7,4 @@ variable "operator_domain_name" {}
 variable "repository_secrets" {}
 variable "credential_templates" {}
 variable "generate_plugin_repository_secret" {}
+variable "registry_credentials" {}
