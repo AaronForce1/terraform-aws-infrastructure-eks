@@ -103,7 +103,6 @@ module "argocd" {
   repository_secrets                = var.helm_configurations.argocd.repository_secrets
   credential_templates              = var.helm_configurations.argocd.credential_templates
   generate_plugin_repository_secret = var.helm_configurations.argocd.generate_plugin_repository_secret
-  registry_credentials              = var.helm_configurations.argocd.registry_credentials
 }
 
 # module "gitlab_runner" {
