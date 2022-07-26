@@ -185,12 +185,13 @@ variable "cluster_addons" {
 }
 
 variable "vpc_flow_logs" {
-  description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
-  ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
-  # type = object({
-  #   enabled = optional(bool)
-  # })
-  default = {}
+  description = "Manually enable or disable VPC flow logs; Please note, for production, these are always enabled"
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled = false
+  }
 }
 
 variable "elastic_ip_custom_configuration" {
@@ -421,3 +422,4 @@ variable "registry_credentials" {
   }))
   default = []
 }
+
