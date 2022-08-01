@@ -74,9 +74,9 @@ module "eks-vpc" {
   default_security_group_egress  = [{}]
 
   # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = var.tfenv == "prod" ? true : var.vpc_flow_logs.enabled
-  create_flow_log_cloudwatch_log_group = var.tfenv == "prod" ? true : var.vpc_flow_logs.enabled
-  create_flow_log_cloudwatch_iam_role  = var.tfenv == "prod" ? true : var.vpc_flow_logs.enabled
+  enable_flow_log                      = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_log_group = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
   tags = merge({

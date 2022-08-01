@@ -185,14 +185,13 @@ variable "cluster_addons" {
 }
 
 variable "vpc_flow_logs" {
-  description = "Manually enable or disable VPC flow logs; Please note, for production, these are always enabled"
+  description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
   type = object({
-    enabled = bool
+    enabled = optional(bool)
   })
-  default = {
-    enabled = false
-  }
+  default = {}
 }
+
 
 variable "elastic_ip_custom_configuration" {
   description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
