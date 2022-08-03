@@ -186,12 +186,12 @@ variable "cluster_addons" {
 
 variable "vpc_flow_logs" {
   description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
-  ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
-  # type = object({
-  #   enabled = optional(bool)
-  # })
+  type = object({
+    enabled = optional(bool)
+  })
   default = {}
 }
+
 
 variable "elastic_ip_custom_configuration" {
   description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
@@ -421,3 +421,4 @@ variable "registry_credentials" {
   }))
   default = []
 }
+
