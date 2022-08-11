@@ -7,9 +7,9 @@ resource "kubectl_manifest" "aws-auth" {
       "namespace" = "kube-system"
     }
     "data" = {
-      "mapUsers"    = jsonencode(var.map_users)
-      "mapAccounts" = jsonencode(var.map_accounts)
-      "mapRoles"    = jsonencode(local.aws_auth_roles)
+      "mapUsers"    = yamlencode(var.map_users)
+      "mapAccounts" = yamlencode(var.map_accounts)
+      "mapRoles"    = yamlencode(local.aws_auth_roles)
     }
   })
 }
