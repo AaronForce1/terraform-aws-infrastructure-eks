@@ -1,4 +1,5 @@
 locals {
+  ## TODO: Secret assumed secrets_store is ssm
   helmRepositoryYaml = {
     apiVersion = ""
     generated  = "0001-01-01T00:00:00Z"
