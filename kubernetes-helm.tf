@@ -67,6 +67,57 @@ module "vault" {
   custom_manifest = var.helm_configurations.vault_consul
 }
 
+module "vault-secrets-webhook" {
+  source     = "./provisioning/kubernetes/bonzai-vault-secrets-webhook"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.vault_consul ? 1 : 0
+
+  vault_nodeselector = var.vault_nodeselector
+  vault_tolerations  = var.vault_tolerations
+  app_namespace      = var.app_namespace
+  tfenv              = var.tfenv
+}
+
+module "vault-operator" {
+  source     = "./provisioning/kubernetes/bonzai-vault-operator"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.vault_consul ? 1 : 0
+
+  vault_nodeselector = var.vault_nodeselector
+  vault_tolerations  = var.vault_tolerations
+  app_namespace      = var.app_namespace
+  tfenv              = var.tfenv
+}
+
+module "stakater-reloader" {
+  source     = "./provisioning/kubernetes/stakater-reloader"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.stakater_reloader ? 1 : 0
+
+  app_namespace = var.app_namespace
+  tfenv         = var.tfenv
+}
+
+module "metrics-server" {
+  source     = "./provisioning/kubernetes/metrics-server"
+  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  count      = var.helm_installations.metrics_server ? 1 : 0
+
+  app_namespace = var.app_namespace
+  tfenv         = var.tfenv
+}
+
+module "gitlab-k8s-agent" {
+  source     = "./provisioning/kubernetes/gitlab-kubernetes-agent"
+  depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces]
+  count      = var.helm_installations.gitlab_k8s_agent ? 1 : 0
+
+  app_namespace       = var.app_namespace
+  tfenv               = var.tfenv
+  gitlab_agent_url    = var.gitlab_kubernetes_agent_config.gitlab_agent_url
+  gitlab_agent_secret = var.gitlab_kubernetes_agent_config.gitlab_agent_secret
+}
+
 module "elastic-stack" {
   source     = "./provisioning/kubernetes/elastic-stack"
   depends_on = [module.eks]
