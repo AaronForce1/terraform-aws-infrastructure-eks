@@ -5,7 +5,7 @@ resource "helm_release" "vault" {
   namespace        = "hashicorp"
   create_namespace = false
 
-  values = [<<EOT
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOT
 metrics:
   enabled: true
 client:
@@ -97,16 +97,5 @@ locals {
 EOF
   }))
 }
-
-variable "aws_region" {}
-variable "app_namespace" {}
-variable "tfenv" {}
-variable "root_domain_name" {}
-variable "app_name" {}
-variable "enable_aws_vault_unseal" {}
-variable "billingcustomer" {}
-variable "vault_nodeselector" {}
-variable "vault_tolerations" {}
-variable "tags" {}
 
 # ha: $${var.enable_aws_vault_unseal ? local.haConfig_KMS : local.haConfig_default}

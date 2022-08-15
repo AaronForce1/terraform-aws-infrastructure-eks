@@ -53,8 +53,8 @@ locals {
       index => "filebeat-%%{[agent.version]}-%%{+yyyy.MM.dd}" 
     }
     s3 {
-      access_key_id => ${module.iam_user.this_iam_access_key_id}
-      secret_access_key => "${module.iam_user.this_iam_access_key_secret}"
+      access_key_id => ${module.iam_user.iam_access_key_id}
+      secret_access_key => "${module.iam_user.iam_access_key_secret}"
       endpoint => "https://s3.${var.aws_region}.amazonaws.com"
       region => "${var.aws_region}"
       bucket => "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-logs"

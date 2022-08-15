@@ -6,19 +6,6 @@ module "infrastructure-terraform-eks" {
   root_domain_name = "basic.example.com"
 }
 
-module "gitlab-management" {
-  source     = "./gitlab-management"
-  depends_on = [module.infrastructure-terraform-eks]
-
-  gitlab_token              = var.gitlab_token
-  gitlab_namespace          = var.gitlab_namespace
-  app_namespace             = var.app_namespace
-  tfenv                     = var.tfenv
-  eks                       = module.infrastructure-terraform-eks
-  root_domain_name          = var.root_domain_name
-  cluster_environment_scope = var.cluster_environment_scope
-}
-
 module "gitlab_runner" {
   source     = "./gitlab-runner"
   depends_on = [module.infrastructure-terraform-eks]

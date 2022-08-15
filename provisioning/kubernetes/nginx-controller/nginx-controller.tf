@@ -7,9 +7,8 @@ resource "helm_release" "nginx-controller" {
   create_namespace = true
   force_update     = false
   recreate_pods    = true
-  wait             = false
 
-  values = [yamlencode({
+  values = var.custom_manifest != null ? [var.custom_manifest] : [yamlencode({
     "controller" : {
       "service" : {
         "annotations" : {

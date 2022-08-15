@@ -1,6 +1,19 @@
 ## GLOBAL VAR CONFIGURATION
 variable "aws_region" {
-  description = "Region for the VPC"
+  description = "AWS Region for all primary configurations"
+}
+
+variable "aws_secondary_region" {
+  description = "Secondary Region for certain redundant AWS components"
+}
+
+variable "aws_profile" {
+  description = "AWS Profile"
+  default     = ""
+}
+
+variable "tech_email" {
+  description = "Tech Contact E-Mail for services such as LetsEncrypt"
 }
 
 variable "map_accounts" {
@@ -55,34 +68,51 @@ variable "map_users" {
   # ]
 }
 
-variable "managed_node_groups" {
+variable "eks_managed_node_groups" {
   description = "Override default 'single nodegroup, on a private subnet' with more advaned configuration archetypes"
-  type = list(object({
-    name                   = string
-    desired_capacity       = number
-    max_capacity           = number
-    min_capacity           = number
-    instance_type          = string
-    ami_type               = optional(string)
-    key_name               = string
-    public_ip              = bool
-    create_launch_template = bool
-    disk_size              = number
-    taints = list(object({
-      key            = string
-      value          = string
-      effect         = string
-      affinity_label = bool
-    }))
-    subnet_selections = object({
-      public  = bool
-      private = bool
-    })
-  }))
+  default     = []
+  type        = any
+  # type = list(object({
+  #   name                   = string
+  #   desired_capacity       = number
+  #   max_capacity           = number
+  #   min_capacity           = number
+  #   instance_type          = string
+  #   ami_type               = optional(string)
+  #   key_name               = optional(string)
+  #   public_ip              = optional(bool)
+  #   create_launch_template = bool
+  #   disk_size              = number
+  #   disk_encrypted         = optional(bool)
+  #   capacity_type          = optional(string)
+  #   taints = optional(list(object({
+  #     key            = string
+  #     value          = string
+  #     effect         = string
+  #     affinity_label = bool
+  #   })))
+  #   subnet_selections = object({
+  #     public  = bool
+  #     private = bool
+  #   })
+  #   tags = optional(any)
+  # }))
 }
 
-variable "root_domain_name" {
+variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
+  type = object({
+    create          = optional(bool)
+    name            = string
+    ingress_records = optional(list(string))
+  })
+}
+
+# TODO: Modularise better
+variable "operator_domain_name" {
+  description = "Domain root of operator cluster"
+  type        = string
+  default     = ""
 }
 
 variable "app_name" {
@@ -98,6 +128,11 @@ variable "tfenv" {
   description = "Environment"
 }
 
+variable "cluster_name" {
+  description = "Optional override for cluster name instead of standard {name}-{namespace}-{env}"
+  default     = ""
+}
+
 variable "cluster_version" {
   description = "Kubernetes Cluster Version"
   default     = "1.21"
@@ -106,26 +141,26 @@ variable "cluster_version" {
 variable "instance_type" {
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
-  default     = "c5a.large"
+  default     = "c5a.medium"
 }
 
 variable "instance_desired_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 8
+  default     = 2
 }
 
 variable "instance_min_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 2
+  default     = 1
 }
 
 variable "instance_max_size" {
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
-  default     = 12
+  default     = 4
 }
 
 variable "billingcustomer" {
-  description = "Which BILLINGCUSTOMER is setup in AWS"
+  description = "Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning"
 }
 
 variable "root_vol_size" {
@@ -143,13 +178,56 @@ variable "node_public_ip" {
   default     = false
 }
 
+variable "cluster_addons" {
+  description = "An add-on is software that provides supporting operational capabilities to Kubernetes applications, but is not specific to the application: coredns, kube-proxy, vpc-cni"
+  default = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    kube-proxy = {}
+  }
+  type = any
+}
+
+variable "autoscaling_configuration" {
+  type = object({
+    scale_down_util_threshold     = number
+    skip_nodes_with_local_storage = bool
+    skip_nodes_with_system_pods   = bool
+    cordon_node_before_term       = bool
+  })
+  default = {
+    scale_down_util_threshold     = 0.7
+    skip_nodes_with_local_storage = false
+    skip_nodes_with_system_pods   = false
+    cordon_node_before_term       = true
+  }
+}
+
 variable "vpc_flow_logs" {
   description = "Manually enable or disable VPC flow logs; Please note, for production, these are enabled by default otherwise they will be disabled; setting a value for this object will override all defaults regardless of environment"
-  ## TODO: BUG - Seems that defining optional variables messes up the "try" terraform function logic so it needs to be removed altogether to function correctly
-  # type = object({
-  #   enabled = optional(bool)
-  # })
+  type = object({
+    enabled = optional(bool)
+  })
   default = {}
+}
+
+variable "elastic_ip_custom_configuration" {
+  description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
+  type = object({
+    enabled             = bool
+    reuse_nat_ips       = optional(bool)
+    external_nat_ip_ids = optional(list(string))
+  })
+  default = {
+    enabled             = false
+    external_nat_ip_ids = []
+    reuse_nat_ips       = false
+  }
 }
 
 variable "nat_gateway_custom_configuration" {
@@ -174,46 +252,159 @@ variable "nat_gateway_custom_configuration" {
   }
 }
 
-variable "helm_installations" {
+variable "aws_installations" {
+  description = "AWS Support Components including Cluster Autoscaler, EBS/EFS Storage Classes, etc."
   type = object({
-    gitlab_runner     = bool
-    gitlab_k8s_agent  = bool
-    vault_consul      = bool
-    ingress           = bool
-    elasticstack      = bool
-    grafana           = bool
-    stakater_reloader = bool
-    metrics_server    = bool
+    storage_ebs = optional(object({
+      eks_irsa_role = bool
+      gp2           = bool
+      gp3           = bool
+      st1           = bool
+    }))
+    storage_efs = optional(object({
+      eks_irsa_role       = bool
+      eks_security_groups = bool
+      efs                 = bool
+    }))
+    cluster_autoscaler   = optional(bool)
+    route53_external_dns = optional(bool)
+    kms_secrets_access   = optional(bool)
+    cert_manager         = optional(bool)
   })
   default = {
-    gitlab_runner     = false
-    gitlab_k8s_agent  = false
-    vault_consul      = true
-    ingress           = true
-    elasticstack      = false
-    grafana           = true
-    stakater_reloader = true
-    metrics_server    = true
+    cluster_autoscaler   = true
+    kms_secrets_access   = true
+    route53_external_dns = true
+    cert_manager         = true
+    storage_ebs = {
+      eks_irsa_role = true
+      gp2           = true
+      gp3           = true
+      st1           = true
+    }
+    storage_efs = {
+      efs                 = true
+      eks_irsa_role       = true
+      eks_security_groups = true
+    }
   }
+}
+
+variable "helm_installations" {
+  type = object({
+    dashboard     = bool
+    gitlab_runner = bool
+    vault_consul  = bool
+    ingress       = bool
+    elasticstack  = bool
+    grafana       = bool
+    argocd        = bool
+  })
+  default = {
+    dashboard     = true
+    gitlab_runner = false
+    vault_consul  = true
+    ingress       = true
+    elasticstack  = false
+    grafana       = true
+    argocd        = false
+  }
+}
+variable "helm_configurations" {
+  type = object({
+    dashboard     = optional(string)
+    gitlab_runner = optional(string)
+    vault_consul = optional(object({
+      consul_values           = optional(string)
+      vault_values            = optional(string)
+      enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
+      vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file
+      vault_tolerations       = optional(string) # Allow for tolerating certain taint on nodes, example usage, string:'NoExecute:we_love_hashicorp:true'
+    }))
+    ingress = optional(object({
+      nginx_values       = optional(string)
+      certmanager_values = optional(string)
+    }))
+    elasticstack = optional(string)
+    grafana      = optional(string)
+    argocd = optional(object({
+      value_file      = optional(string)
+      application_set = optional(list(string))
+      repository_secrets = optional(list(object({
+        name          = string
+        url           = string
+        type          = string
+        username      = string
+        password      = string
+        secrets_store = string
+      })))
+      credential_templates = optional(list(object({
+        name          = string
+        url           = string
+        username      = string
+        password      = string
+        secrets_store = string
+      })))
+      registry_secrets = optional(list(object({
+        name          = string
+        url           = string
+        username      = string
+        password      = string
+        secrets_store = string
+        auth          = string
+        email         = string
+      })))
+      generate_plugin_repository_secret = optional(bool)
+    }))
+  })
+  default = {
+    dashboard     = null
+    gitlab_runner = null
+    vault_consul  = null
+    ingress       = null
+    elasticstack  = null
+    grafana       = null
+    argocd        = null
+  }
+}
+
+variable "custom_namespaces" {
+  description = "Adding namespaces to a default cluster provisioning process"
+  type        = list(string)
+  default     = []
+}
+
+variable "custom_aws_s3_support_infra" {
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name                                 = string
+    bucket_acl                           = string
+    aws_kms_key_id                       = optional(string)
+    lifecycle_rules                      = any
+    versioning                           = bool
+    k8s_namespace_service_account_access = any
+  }))
+  default = []
 }
 
 variable "vpc_subnet_configuration" {
   type = object({
-    base_cidr           = string
-    subnet_bit_interval = number
-    autogenerate        = optional(bool)
+    base_cidr = string
+    subnet_bit_interval = object({
+      public  = number
+      private = number
+    })
+    autogenerate = optional(bool)
   })
   description = "Configure VPC CIDR and relative subnet intervals for generating a VPC. If not specified, default values will be generated."
   default = {
-    base_cidr           = "172.%s.0.0/16"
-    subnet_bit_interval = 4
-    autogenerate        = true
+    base_cidr = "172.%s.0.0/16"
+    subnet_bit_interval = {
+      public  = 2
+      private = 6
+    }
+    autogenerate = true
   }
-}
-
-variable "enable_aws_vault_unseal" {
-  description = "If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
-  default     = false
 }
 
 variable "google_clientID" {
@@ -239,75 +430,28 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = []
 }
 
-variable "vault_nodeselector" {
-  description = "for placing node/consul on specific nodes, example usage, string:'eks.amazonaws.com/nodegroup: vaultconsul_group'"
-  default     = ""
-}
-
-variable "vault_tolerations" {
-  description = "for tolerating certain taint on nodes, example usage, string:'NoExecute:we_love_hashicorp:true'"
-  default     = ""
-}
-
+## TODO: Merge all the default node_group configurations together
 variable "default_ami_type" {
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
 }
 
-variable "gitlab_kubernetes_agent_config" {
-  description = "Configuration for Gitlab Kubernetes Agent"
-  type = object({
-    gitlab_agent_url    = string
-    gitlab_agent_secret = string
-  })
-  sensitive = true
-  default = {
-    gitlab_agent_url    = ""
-    gitlab_agent_secret = ""
-  }
+variable "default_capacity_type" {
+  description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
+  default     = "ON_DEMAND"
 }
 
-variable "letsencrypt_email" {
-  description = "email used for the clusterissuer email definition (spec.acme.email)"
+variable "registry_credentials" {
+  description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
+  type = list(object({
+    name            = string
+    namespace       = string
+    docker_username = string
+    docker_password = string
+    docker_server   = string
+    docker_email    = string
+    secrets_store   = string
+  }))
+  default = []
 }
 
-### AWS Cluster Autoscaling 
-variable "aws_autoscaler_scale_down_util_threshold" {
-  description = "AWS Autoscaling, scale_down_util_threshold (AWS defaults to 0.5, but raising that to 0.7 to be a tad more aggressive with scaling back)"
-  default     = 0.7
-}
-
-variable "aws_autoscaler_skip_nodes_with_local_storage" {
-  description = "AWS Autoscaling, skip_nodes_with_local_storage (AWS defaults to true, also modifying to false for more scaling back)"
-  default     = "false"
-}
-
-variable "aws_autoscaler_skip_nodes_with_system_pods" {
-  description = "AWS Autoscaling, skip_nodes_with_system_pods (AWS defaults to true, but here default to false, again to be a little bit more aggressive with scaling back)"
-  default     = "false"
-}
-
-variable "aws_autoscaler_cordon_node_before_term" {
-  description = "AWS Autoscaling, cordon_node_before_term (AWS defaults to false, but setting it to true migth give a more friendly removal process)"
-  default     = "true"
-}
-
-variable "extra_tags" {
-  type    = map(any)
-  default = {}
-}
-
-variable "ipv6" {
-  type = object({
-    enable                                         = bool
-    assign_ipv6_address_on_creation                = bool
-    private_subnet_assign_ipv6_address_on_creation = bool
-    public_subnet_assign_ipv6_address_on_creation  = bool
-  })
-  default = {
-    enable                                         = false
-    assign_ipv6_address_on_creation                = true
-    private_subnet_assign_ipv6_address_on_creation = true
-    public_subnet_assign_ipv6_address_on_creation  = true
-  }
-}
