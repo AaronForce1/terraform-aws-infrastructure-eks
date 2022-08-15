@@ -292,22 +292,28 @@ variable "aws_installations" {
 
 variable "helm_installations" {
   type = object({
-    dashboard     = bool
-    gitlab_runner = bool
-    vault_consul  = bool
-    ingress       = bool
-    elasticstack  = bool
-    grafana       = bool
-    argocd        = bool
+    dashboard         = bool
+    gitlab_runner     = bool
+    gitlab_k8s_agent  = bool
+    vault_consul      = bool
+    ingress           = bool
+    elasticstack      = bool
+    grafana           = bool
+    argocd            = bool
+    stakater_reloader = bool
+    metrics_server    = bool
   })
   default = {
-    dashboard     = true
-    gitlab_runner = false
-    vault_consul  = true
-    ingress       = true
-    elasticstack  = false
-    grafana       = true
-    argocd        = false
+    dashboard         = true
+    gitlab_runner     = false
+    gitlab_k8s_agent  = false
+    vault_consul      = true
+    ingress           = true
+    elasticstack      = false
+    grafana           = true
+    argocd            = false
+    stakater_reloader = false
+    metrics_server    = true
   }
 }
 variable "helm_configurations" {
@@ -436,6 +442,18 @@ variable "default_ami_type" {
   default     = "AL2_x86_64"
 }
 
+variable "gitlab_kubernetes_agent_config" {
+  description = "Configuration for Gitlab Kubernetes Agent"
+  type = object({
+    gitlab_agent_url    = string
+    gitlab_agent_secret = string
+  })
+  sensitive = true
+  default = {
+    gitlab_agent_url    = ""
+    gitlab_agent_secret = ""
+  }
+}
 variable "default_capacity_type" {
   description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
   default     = "ON_DEMAND"
@@ -455,3 +473,17 @@ variable "registry_credentials" {
   default = []
 }
 
+variable "ipv6" {
+  type = object({
+    enable                                         = bool
+    assign_ipv6_address_on_creation                = bool
+    private_subnet_assign_ipv6_address_on_creation = bool
+    public_subnet_assign_ipv6_address_on_creation  = bool
+  })
+  default = {
+    enable                                         = false
+    assign_ipv6_address_on_creation                = true
+    private_subnet_assign_ipv6_address_on_creation = true
+    public_subnet_assign_ipv6_address_on_creation  = true
+  }
+}

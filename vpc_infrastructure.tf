@@ -39,7 +39,7 @@ module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.14"
 
-  name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
+  name = "${app_name}-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
   azs  = data.aws_availability_zones.available_azs.names
   # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
@@ -78,6 +78,15 @@ module "eks-vpc" {
   create_flow_log_cloudwatch_log_group = coalesce(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   create_flow_log_cloudwatch_iam_role  = coalesce(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
+
+  #IPv6 section
+  enable_ipv6                                    = var.ipv6.enable
+  assign_ipv6_address_on_creation                = var.ipv6.assign_ipv6_address_on_creation
+  private_subnet_assign_ipv6_address_on_creation = var.ipv6.private_subnet_assign_ipv6_address_on_creation
+  public_subnet_assign_ipv6_address_on_creation  = var.ipv6.public_subnet_assign_ipv6_address_on_creation
+
+  public_subnet_ipv6_prefixes  = [0, 1, 2]
+  private_subnet_ipv6_prefixes = [3, 4, 5]
 
   tags = merge({
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
@@ -124,8 +133,8 @@ module "eks-vpc-endpoints" {
 
 resource "aws_vpc_endpoint" "rds" {
   lifecycle { ignore_changes = [dns_entry] }
-  vpc_id = module.eks-vpc.vpc_id
-
+  vpc_id              = module.eks-vpc.vpc_id
+  depends_on          = [module.eks-vpc]
   service_name        = "com.amazonaws.${var.aws_region}.rds"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
