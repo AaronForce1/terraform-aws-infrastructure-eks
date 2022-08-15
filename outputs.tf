@@ -66,3 +66,14 @@ output "base_cidr_block" {
 output "eks_managed_node_groups" {
   value = module.eks.eks_managed_node_groups
 }
+
+###
+### Check you are using proper region
+###
+output "aws_region" {
+  value = var.aws_region
+}
+
+output "aws_profile" {
+  value = var.aws_profile
+}
