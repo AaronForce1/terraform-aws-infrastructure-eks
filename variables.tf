@@ -301,6 +301,7 @@ variable "helm_configurations" {
       vault_values            = optional(string)
       enable_aws_vault_unseal = optional(bool)   # If Vault is enabled and deployed, by default, the unseal process is manual; Changing this to true allows for automatic unseal using AWS KMS"
       vault_nodeselector      = optional(string) # Allow for vault node selectors without extensive reconfiguration of the standard values file
+      vault_tolerations       = optional(string) # Allow for tolerating certain taint on nodes, example usage, string:'NoExecute:we_love_hashicorp:true'
     }))
     ingress = optional(object({
       nginx_values       = optional(string)
@@ -325,6 +326,15 @@ variable "helm_configurations" {
         username      = string
         password      = string
         secrets_store = string
+      })))
+      registry_secrets = optional(list(object({
+        name          = string
+        url           = string
+        username      = string
+        password      = string
+        secrets_store = string
+        auth          = string
+        email         = string
       })))
       generate_plugin_repository_secret = optional(bool)
     }))
