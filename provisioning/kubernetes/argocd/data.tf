@@ -60,12 +60,3 @@ data "aws_ssm_parameter" "infrastructure_credentials_registry_password" {
 
   name = each.value.password
 }
-
-data "aws_ssm_parameter" "infrastructure_credentials_registry_auth" {
-  for_each = {
-    for secret in var.registry_secrets : secret.auth => secret
-    if secret.secrets_store == "ssm"
-  }
-
-  name = each.value.auth
-}
