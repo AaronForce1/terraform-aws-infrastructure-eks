@@ -9,7 +9,7 @@ resource "kubectl_manifest" "aws-auth" {
     "data" = {
       "mapUsers"    = yamlencode(var.map_users)
       "mapAccounts" = yamlencode(var.map_accounts)
-      "mapRoles"    = yamlencode(local.aws_auth_roles)
+      "mapRoles"    = yamlencode(concat(local.aws_auth_roles, var.map_roles))
     }
   })
 }
