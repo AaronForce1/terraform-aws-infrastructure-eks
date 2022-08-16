@@ -1,6 +1,6 @@
 data "aws_ssm_parameter" "regcred_username" {
-  for_each = { 
-    for regcred in var.registry_credentials: "${regcred.name}-${regcred.namespace}" => regcred 
+  for_each = {
+    for regcred in var.registry_credentials : "${regcred.name}-${regcred.namespace}" => regcred
     if regcred.secrets_store == "ssm"
   }
 
@@ -9,7 +9,7 @@ data "aws_ssm_parameter" "regcred_username" {
 
 data "aws_ssm_parameter" "regcred_password" {
   for_each = {
-    for regcred in var.registry_credentials: "${regcred.name}-${regcred.namespace}" => regcred 
+    for regcred in var.registry_credentials : "${regcred.name}-${regcred.namespace}" => regcred
     if regcred.secrets_store == "ssm"
   }
 
@@ -17,10 +17,10 @@ data "aws_ssm_parameter" "regcred_password" {
 }
 
 resource "kubernetes_secret" "regcred" {
-  for_each = { for regcred in var.registry_credentials: "${regcred.name}-${regcred.namespace}" => regcred }
+  for_each = { for regcred in var.registry_credentials : "${regcred.name}-${regcred.namespace}" => regcred }
 
   metadata {
-    name = each.value.name
+    name      = each.value.name
     namespace = each.value.namespace
   }
 
