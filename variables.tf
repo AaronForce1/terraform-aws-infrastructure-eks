@@ -9,7 +9,7 @@ variable "aws_secondary_region" {
 
 variable "aws_profile" {
   description = "AWS Profile"
-  default = "default"
+  default     = ""
 }
 
 variable "map_accounts" {
@@ -329,12 +329,11 @@ variable "helm_configurations" {
       })))
       registry_secrets = optional(list(object({
         name          = string
-        url           = string
         username      = string
         password      = string
-        secrets_store = string
-        auth          = string
+        url           = string
         email         = string
+        secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
     }))
@@ -426,7 +425,7 @@ variable "default_capacity_type" {
 variable "registry_credentials" {
   description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
   type = list(object({
-    name            = string 
+    name            = string
     namespace       = string
     docker_username = string
     docker_password = string
