@@ -122,11 +122,16 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="module_eks-vpc-endpoints"></a> [eks-vpc-endpoints](#module\_eks-vpc-endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | ~> 3.14 |
 | <a name="module_eks_managed_node_group"></a> [eks\_managed\_node\_group](#module\_eks\_managed\_node\_group) | terraform-aws-modules/eks/aws//modules/eks-managed-node-group | ~> 18.23.0 |
 | <a name="module_elastic-stack"></a> [elastic-stack](#module\_elastic-stack) | ./provisioning/kubernetes/elastic-stack | n/a |
+| <a name="module_gitlab-k8s-agent"></a> [gitlab-k8s-agent](#module\_gitlab-k8s-agent) | ./provisioning/kubernetes/gitlab-kubernetes-agent | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | ./provisioning/kubernetes/grafana | n/a |
 | <a name="module_kubernetes-dashboard"></a> [kubernetes-dashboard](#module\_kubernetes-dashboard) | ./provisioning/kubernetes/kubernetes-dashboard | n/a |
+| <a name="module_metrics-server"></a> [metrics-server](#module\_metrics-server) | ./provisioning/kubernetes/metrics-server | n/a |
 | <a name="module_nginx-controller-ingress"></a> [nginx-controller-ingress](#module\_nginx-controller-ingress) | ./provisioning/kubernetes/nginx-controller | n/a |
+| <a name="module_stakater-reloader"></a> [stakater-reloader](#module\_stakater-reloader) | ./provisioning/kubernetes/stakater-reloader | n/a |
 | <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | hashicorp/subnets/cidr | 1.0.0 |
 | <a name="module_vault"></a> [vault](#module\_vault) | ./provisioning/kubernetes/hashicorp-vault | n/a |
+| <a name="module_vault-operator"></a> [vault-operator](#module\_vault-operator) | ./provisioning/kubernetes/bonzai-vault-operator | n/a |
+| <a name="module_vault-secrets-webhook"></a> [vault-secrets-webhook](#module\_vault-secrets-webhook) | ./provisioning/kubernetes/bonzai-vault-secrets-webhook | n/a |
 
 ## Resources
 
@@ -185,7 +190,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `4` | no |
 | <a name="input_instance_min_size"></a> [instance\_min\_size](#input\_instance\_min\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `1` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | AWS Instance Type for provisioning | `string` | `"c5a.medium"` | no |
-| <a name="input_ipv6"></a> [ipv6](#input\_ipv6) | n/a | <pre>object({<br>    enable                                         = bool<br>    assign_ipv6_address_on_creation                = bool<br>    private_subnet_assign_ipv6_address_on_creation = bool<br>    public_subnet_assign_ipv6_address_on_creation  = bool<br>  })</pre> | <pre>{<br>  "assign_ipv6_address_on_creation": true,<br>  "enable": false,<br>  "private_subnet_assign_ipv6_address_on_creation": true,<br>  "public_subnet_assign_ipv6_address_on_creation": true<br>}</pre> | no |
+| <a name="input_ipv6"></a> [ipv6](#input\_ipv6) | n/a | <pre>object({<br>    enable                                         = bool<br>    assign_ipv6_address_on_creation                = bool<br>    private_subnet_assign_ipv6_address_on_creation = bool<br>    public_subnet_assign_ipv6_address_on_creation  = bool<br>  })</pre> | <pre>{<br>  "assign_ipv6_address_on_creation": false,<br>  "enable": false,<br>  "private_subnet_assign_ipv6_address_on_creation": false,<br>  "public_subnet_assign_ipv6_address_on_creation": false<br>}</pre> | no |
 | <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
 | <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
@@ -208,9 +213,8 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="output_aws_region"></a> [aws\_region](#output\_aws\_region) | # ----------- ## Region and AWS Profile Checks # ----------- |
 | <a name="output_base_cidr_block"></a> [base\_cidr\_block](#output\_base\_cidr\_block) | n/a |
 | <a name="output_eks_managed_node_groups"></a> [eks\_managed\_node\_groups](#output\_eks\_managed\_node\_groups) | n/a |
-| <a name="output_kubecfg"></a> [kubecfg](#output\_kubecfg) | n/a |
 | <a name="output_kubernetes-cluster-auth"></a> [kubernetes-cluster-auth](#output\_kubernetes-cluster-auth) | n/a |
-| <a name="output_kubernetes-cluster-certificate-authority-data"></a> [kubernetes-cluster-certificate-authority-data](#output\_kubernetes-cluster-certificate-authority-data) | n/a |
+| <a name="output_kubernetes-cluster-certificate-authority-data"></a> [kubernetes-cluster-certificate-authority-data](#output\_kubernetes-cluster-certificate-authority-data) | # ----------- # MODULE: EKS # ----------- |
 | <a name="output_kubernetes-cluster-endpoint"></a> [kubernetes-cluster-endpoint](#output\_kubernetes-cluster-endpoint) | n/a |
 | <a name="output_kubernetes-cluster-id"></a> [kubernetes-cluster-id](#output\_kubernetes-cluster-id) | n/a |
 | <a name="output_private_route_table_ids"></a> [private\_route\_table\_ids](#output\_private\_route\_table\_ids) | n/a |

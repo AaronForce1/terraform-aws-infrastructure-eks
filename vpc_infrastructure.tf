@@ -39,7 +39,7 @@ module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.14"
 
-  name = "${app_name}-${var.app_namespace}-${var.tfenv}-cluster-vpc"
+  name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
   azs  = data.aws_availability_zones.available_azs.names
   # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf

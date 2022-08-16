@@ -1,10 +1,6 @@
 ## -----------
 ## MODULE: EKS
 ## -----------
-
-output "kubecfg" {
-  value = module.eks.kubeconfig
-}
 output "kubernetes-cluster-certificate-authority-data" {
   value = module.eks.cluster_certificate_authority_data
 }

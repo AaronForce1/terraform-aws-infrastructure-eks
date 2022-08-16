@@ -69,29 +69,29 @@ module "vault" {
 
 module "vault-secrets-webhook" {
   source     = "./provisioning/kubernetes/bonzai-vault-secrets-webhook"
-  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks, module.vault]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector = var.vault_nodeselector
-  vault_tolerations  = var.vault_tolerations
+  vault_nodeselector = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
+  vault_tolerations  = try(var.helm_configurations.vault_consul.vault_tolerations, "") != null ? var.helm_configurations.vault_consul.vault_tolerations : ""
   app_namespace      = var.app_namespace
   tfenv              = var.tfenv
 }
 
 module "vault-operator" {
   source     = "./provisioning/kubernetes/bonzai-vault-operator"
-  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks, module.vault]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector = var.vault_nodeselector
-  vault_tolerations  = var.vault_tolerations
+  vault_nodeselector = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
+  vault_tolerations  = try(var.helm_configurations.vault_consul.vault_tolerations, "") != null ? var.helm_configurations.vault_consul.vault_tolerations : ""
   app_namespace      = var.app_namespace
   tfenv              = var.tfenv
 }
 
 module "stakater-reloader" {
   source     = "./provisioning/kubernetes/stakater-reloader"
-  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks]
   count      = var.helm_installations.stakater_reloader ? 1 : 0
 
   app_namespace = var.app_namespace
@@ -100,7 +100,7 @@ module "stakater-reloader" {
 
 module "metrics-server" {
   source     = "./provisioning/kubernetes/metrics-server"
-  depends_on = [module.eks-vpc, module.eks, aws_eks_node_group.custom_node_group, module.namespaces, module.nginx-controller-ingress, module.certmanager]
+  depends_on = [module.eks]
   count      = var.helm_installations.metrics_server ? 1 : 0
 
   app_namespace = var.app_namespace
@@ -109,7 +109,7 @@ module "metrics-server" {
 
 module "gitlab-k8s-agent" {
   source     = "./provisioning/kubernetes/gitlab-kubernetes-agent"
-  depends_on = [module.eks, aws_eks_node_group.custom_node_group, module.namespaces]
+  depends_on = [module.eks]
   count      = var.helm_installations.gitlab_k8s_agent ? 1 : 0
 
   app_namespace       = var.app_namespace
@@ -167,7 +167,7 @@ module "argocd" {
 
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
-#   depends_on = [module.namespaces, module.eks-vpc]
+#   depends_on =  module.eks-vpc]
 #   count      = var.helm_installations.gitlab_runner ? 1 : 0
 
 #   app_name                         = var.app_name
