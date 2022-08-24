@@ -45,7 +45,7 @@ data "aws_ssm_parameter" "infrastructure_credentials_repository_password" {
 ##################################
 data "aws_ssm_parameter" "infrastructure_credentials_registry_username" {
   for_each = {
-    for secret in var.registry_secrets : secret.username => secret
+    for secret in coalesce(var.registry_secrets, []) : secret.username => secret
     if secret.secrets_store == "ssm"
   }
 
@@ -54,7 +54,7 @@ data "aws_ssm_parameter" "infrastructure_credentials_registry_username" {
 
 data "aws_ssm_parameter" "infrastructure_credentials_registry_password" {
   for_each = {
-    for secret in var.registry_secrets : secret.password => secret
+    for secret in coalesce(var.registry_secrets, []) : secret.password => secret
     if secret.secrets_store == "ssm"
   }
 
