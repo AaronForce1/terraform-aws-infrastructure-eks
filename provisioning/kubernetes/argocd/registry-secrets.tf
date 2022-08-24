@@ -1,5 +1,5 @@
 resource "kubernetes_secret" "regcred" {
-  for_each = { for regcred in var.registry_secrets : "${regcred.name}-argocd" => regcred }
+  for_each = { for regcred in coalesce(var.registry_secrets, []) : "${regcred.name}-argocd" => regcred }
 
   metadata {
     name      = "registry-${each.value.name}"
