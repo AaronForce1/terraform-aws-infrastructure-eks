@@ -4,6 +4,7 @@ resource "helm_release" "argocd" {
   chart            = "argo-cd"
   namespace        = "argocd"
   create_namespace = false
+  version          = "4.10.6"
 
   ## Default values.yaml + configuration
   ## https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml
