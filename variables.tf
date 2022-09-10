@@ -353,12 +353,11 @@ variable "helm_configurations" {
       })))
       registry_secrets = optional(list(object({
         name          = string
-        url           = string
         username      = string
         password      = string
-        secrets_store = string
-        auth          = string
+        url           = string
         email         = string
+        secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
     }))

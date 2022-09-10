@@ -67,6 +67,5 @@ module "eks_managed_node_group" {
   tags = merge(
     local.kubernetes_tags,
     { "Name" : each.value.name }
-    # each.value[count.index].tags != null ? each.value[count.index].tags : []
   )
 }
