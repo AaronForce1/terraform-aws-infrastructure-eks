@@ -101,7 +101,7 @@ module "stakater-reloader" {
 module "metrics-server" {
   source     = "./provisioning/kubernetes/metrics-server"
   depends_on = [module.eks]
-  count      = var.helm_installations.metrics_server ? 1 : 0
+  count      = var.helm_installations.metrics_server && !var.helm_installations.monitoring ? 1 : 0
 
   app_namespace = var.app_namespace
   tfenv         = var.tfenv
@@ -135,10 +135,10 @@ module "elastic-stack" {
   tags                = local.base_tags
 }
 
-module "grafana" {
-  source     = "./provisioning/kubernetes/grafana"
+module "monitoring-stack" {
+  source     = "./provisioning/kubernetes/monitoring"
   depends_on = [module.eks]
-  count      = var.helm_installations.grafana ? 1 : 0
+  count      = var.helm_installations.monitoring ? 1 : 0
 
   app_namespace       = var.app_namespace
   tfenv               = var.tfenv
@@ -147,7 +147,8 @@ module "grafana" {
   google_clientSecret = var.google_clientSecret
   google_authDomain   = var.google_authDomain
 
-  custom_manifest = var.helm_configurations.grafana
+  custom_manifest = var.helm_configurations.monitoring.values
+  custom_version  = var.helm_configurations.monitoring.version
 }
 
 module "argocd" {

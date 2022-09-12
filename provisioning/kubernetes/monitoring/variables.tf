@@ -9,3 +9,7 @@ variable "root_domain_name" {}
 variable "custom_manifest" {
   default = null
 }
+
+variable "custom_version" {
+  default = null
+}

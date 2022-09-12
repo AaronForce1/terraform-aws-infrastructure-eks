@@ -298,19 +298,19 @@ variable "helm_installations" {
     vault_consul      = bool
     ingress           = bool
     elasticstack      = bool
-    grafana           = bool
+    monitoring        = bool
     argocd            = bool
     stakater_reloader = bool
     metrics_server    = bool
   })
   default = {
-    dashboard         = true
+    dashboard         = false
     gitlab_runner     = false
     gitlab_k8s_agent  = false
-    vault_consul      = true
+    vault_consul      = false
     ingress           = true
     elasticstack      = false
-    grafana           = true
+    monitoring        = true
     argocd            = false
     stakater_reloader = false
     metrics_server    = true
@@ -332,7 +332,10 @@ variable "helm_configurations" {
       certmanager_values = optional(string)
     }))
     elasticstack = optional(string)
-    grafana      = optional(string)
+    monitoring = optional(object({
+      values  = optional(string)
+      version = optional(string)
+    }))
     argocd = optional(object({
       value_file      = optional(string)
       application_set = optional(list(string))
@@ -368,7 +371,7 @@ variable "helm_configurations" {
     vault_consul  = null
     ingress       = null
     elasticstack  = null
-    grafana       = null
+    monitoring    = null
     argocd        = null
   }
 }
