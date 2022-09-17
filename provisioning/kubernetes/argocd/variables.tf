@@ -25,3 +25,6 @@ variable "generate_plugin_repository_secret" {
 variable "argocd_additionalProjects" {
   default = []
 }
+variable "chart_version" {
+  default = "4.10.9"
+}
