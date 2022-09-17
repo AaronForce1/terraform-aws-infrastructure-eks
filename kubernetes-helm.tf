@@ -98,6 +98,7 @@ module "argocd" {
   count      = var.helm_installations.argocd ? 1 : 0
   depends_on = [module.eks]
 
+  chart_version                     = var.helm_configurations.argocd.chart_version
   root_domain_name                  = var.cluster_root_domain.name
   operator_domain_name              = var.operator_domain_name
   hosted_zone_id                    = aws_route53_zone.hosted_zone[0].zone_id

@@ -326,6 +326,7 @@ variable "helm_configurations" {
     elasticstack = optional(string)
     grafana      = optional(string)
     argocd = optional(object({
+      chart_version   = optional(string)
       value_file      = optional(string)
       application_set = optional(list(string))
       repository_secrets = optional(list(object({
