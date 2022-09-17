@@ -113,10 +113,12 @@ resource "aws_kms_replica_key" "eks" {
   provider                = aws.secondary
 }
 
+# tflint-ignore: terraform_unused_declarations
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
 
+# tflint-ignore: terraform_unused_declarations
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }

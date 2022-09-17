@@ -12,7 +12,7 @@ resource "helm_release" "aws-cluster-autoscaler" {
       "serviceAccount" : {
         "name" : "aws-cluster-autoscaler-service-account",
         "annotations" : {
-          "eks.amazonaws.com/role-arn" : "${module.iam_assumable_role_admin.iam_role_arn}"
+          "eks.amazonaws.com/role-arn" : module.iam_assumable_role_admin.iam_role_arn
         }
       }
     },

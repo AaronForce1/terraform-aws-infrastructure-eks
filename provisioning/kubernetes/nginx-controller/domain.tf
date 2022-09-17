@@ -11,7 +11,7 @@ resource "aws_route53_record" "eks_domain" {
   type    = "A"
 
   alias {
-    name                   = data.kubernetes_service.ingress_gateway.status.0.load_balancer.0.ingress.0.hostname
+    name                   = data.kubernetes_service.ingress_gateway.status[0].load_balancer[0].ingress[0].hostname
     zone_id                = data.aws_elb_hosted_zone_id.elb_zone_id.id
     evaluate_target_health = true
   }

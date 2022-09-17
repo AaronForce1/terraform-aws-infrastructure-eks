@@ -1,13 +1,16 @@
 ## GLOBAL VAR CONFIGURATION
 variable "aws_region" {
+  type        = string
   description = "AWS Region for all primary configurations"
 }
 
 variable "aws_secondary_region" {
+  type        = string
   description = "Secondary Region for certain redundant AWS components"
 }
 
 variable "aws_profile" {
+  type        = string
   description = "AWS Profile"
   default     = ""
 }
@@ -112,64 +115,77 @@ variable "operator_domain_name" {
 }
 
 variable "app_name" {
+  type        = string
   description = "Application Name"
   default     = "eks"
 }
 
 variable "app_namespace" {
+  type        = string
   description = "Tagged App Namespace"
 }
 
 variable "tfenv" {
+  type        = string
   description = "Environment"
 }
 
 variable "cluster_name" {
+  type        = string
   description = "Optional override for cluster name instead of standard {name}-{namespace}-{env}"
   default     = ""
 }
 
 variable "cluster_version" {
+  type        = string
   description = "Kubernetes Cluster Version"
-  default     = "1.21"
+  default     = "1.22"
 }
 
 variable "instance_type" {
+  type = string
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
   default     = "c5a.medium"
 }
 
 variable "instance_desired_size" {
+  type        = string
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 2
 }
 
 variable "instance_min_size" {
+  type        = number
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 1
 }
 
 variable "instance_max_size" {
+  type        = number
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 4
 }
 
 variable "billingcustomer" {
+  type        = string
   description = "Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning"
 }
 
 variable "root_vol_size" {
+  type        = string
   description = "Root Volume Size"
   default     = "50"
 }
 
 variable "node_key_name" {
+  type        = string
   description = "EKS Node Key Name"
   default     = ""
 }
 
 variable "node_public_ip" {
+  type        = bool
   description = "assign public ip on the nodes"
   default     = false
 }
@@ -336,6 +352,20 @@ variable "helm_configurations" {
         secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
+      argocd_additionalProjects = optional(object({
+        name        = string
+        description = string
+        clusterResourceWhitelist = list(object({
+          group = string
+          kind  = string
+        }))
+        destinations = list(object({
+          name      = string
+          namespace = string
+          server    = string
+        }))
+        sourceRepos = list(string)
+      }))
     }))
   })
   default = {
@@ -389,18 +419,22 @@ variable "vpc_subnet_configuration" {
 }
 
 variable "google_clientID" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Client ID"
 }
 
 variable "google_clientSecret" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Client Secret"
 }
 
 variable "google_authDomain" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
 
 variable "create_launch_template" {
+  type        = bool
   description = "enable launch template on node group"
   default     = false
 }
@@ -413,11 +447,13 @@ variable "cluster_endpoint_public_access_cidrs" {
 
 ## TODO: Merge all the default node_group configurations together
 variable "default_ami_type" {
+  type        = string
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
 }
 
 variable "default_capacity_type" {
+  type        = string
   description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
   default     = "ON_DEMAND"
 }
