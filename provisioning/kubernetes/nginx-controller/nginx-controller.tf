@@ -19,7 +19,7 @@ resource "helm_release" "nginx-controller" {
         }
         "externalTrafficPolicy" : "Local"
       }
-      "replicaCount" : "${var.tfenv == "prod" ? 3 : 1}"
+      "replicaCount" : (var.tfenv == "prod" ? 3 : 1)
       "autoscaling" : {
         "enabled" : true
         "minReplicas" : 1

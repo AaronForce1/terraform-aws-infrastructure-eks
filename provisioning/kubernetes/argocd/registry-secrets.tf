@@ -9,7 +9,7 @@ resource "kubernetes_secret" "regcred" {
   data = {
     ".dockerconfigjson" = sensitive(jsonencode({
       auths = {
-        "${each.value.url}" = {
+        (each.value.url) = {
           "username" = each.value.secrets_store != "ssm" ? each.value.username : data.aws_ssm_parameter.infrastructure_credentials_registry_username[each.value.username].value
           "password" = each.value.secrets_store != "ssm" ? each.value.password : data.aws_ssm_parameter.infrastructure_credentials_registry_password[each.value.password].value
           "email"    = each.value.email

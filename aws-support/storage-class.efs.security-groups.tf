@@ -9,7 +9,7 @@ resource "aws_security_group" "efs_security_group" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = ["${var.base_cidr_block}"]
+    cidr_blocks = [var.base_cidr_block]
   }
 
   tags = {

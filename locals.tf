@@ -31,7 +31,7 @@ locals {
       key_name               = var.node_key_name
       public_ip              = var.node_public_ip
       create_launch_template = var.create_launch_template
-      disk_size              = "50"
+      disk_size              = var.root_vol_size
       k8s_labels = {
         Environment = var.tfenv
       }
@@ -44,7 +44,7 @@ locals {
     for x in module.eks_managed_node_group :
     {
       "groups" : ["system:bootstrappers", "system:nodes"]
-      "rolearn" : "${x.iam_role_arn}"
+      "rolearn" : x.iam_role_arn
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]

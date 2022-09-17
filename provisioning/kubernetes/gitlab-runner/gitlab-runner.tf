@@ -76,7 +76,6 @@ locals {
       EOF
 }
 
-variable "app_name" {}
 variable "app_namespace" {}
 variable "tfenv" {}
 variable "aws_region" {}
