@@ -22,7 +22,7 @@ variable "registry_secrets" {
 variable "generate_plugin_repository_secret" {
   default = false
 }
-variable "argocd_additionalProjects" {
+variable "additionalProjects" {
   default = []
 }
 variable "chart_version" {

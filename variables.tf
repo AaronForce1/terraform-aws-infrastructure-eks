@@ -352,7 +352,7 @@ variable "helm_configurations" {
         secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
-      argocd_additionalProjects = optional(object({
+      additionalProjects = optional(object({
         name        = string
         description = string
         clusterResourceWhitelist = list(object({
