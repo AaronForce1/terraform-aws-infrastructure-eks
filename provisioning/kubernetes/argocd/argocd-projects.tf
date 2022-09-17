@@ -1,5 +1,5 @@
 resource "kubernetes_manifest" "argocd_project" {
-  for_each = { for project in coalesce(var.argocd_additionalProjects, []) : project.name => project }
+  for_each = { for project in coalesce(var.additionalProjects, []) : project.name => project }
 
   manifest = yamldecode(<<YAML
 apiVersion: argoproj.io/v1alpha1
