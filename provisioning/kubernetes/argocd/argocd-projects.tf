@@ -11,9 +11,9 @@ metadata:
   namespace: argocd
 spec:
   description: ${each.value.description}
-  clusterResourceWhitelist: ${each.value.clusterResourceWhitelist}
-  destinations: ${each.value.destinations}
-  sourceRepos: ${each.value.sourceRepos}
+  clusterResourceWhitelist: ${jsonencode(each.value.clusterResourceWhitelist)}
+  destinations: ${jsonencode(each.value.destinations)}
+  sourceRepos: ${jsonencode(each.value.sourceRepos)}
 YAML
   )
   field_manager {
