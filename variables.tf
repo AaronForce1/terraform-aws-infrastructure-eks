@@ -352,6 +352,11 @@ variable "helm_configurations" {
         email         = string
         secrets_store = string
       })))
+      google_oauth_client_secret = optional(list(object({
+        name          = string
+        client_secret  = string
+        secrets_store = string
+      })))
       generate_plugin_repository_secret = optional(bool)
       additionalProjects = optional(list(object({
         name        = string

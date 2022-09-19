@@ -60,3 +60,19 @@ data "aws_ssm_parameter" "infrastructure_credentials_registry_password" {
 
   name = each.value.password
 }
+
+##################################
+####    Google SSO Token      ####
+##################################
+data "aws_ssm_parameter" "google_sso_service_account_secret" {
+   name = "/argocd/google-sso-service-account"
+}
+
+data "aws_ssm_parameter" "google_sso_oauth_client_secret" {
+  for_each = {
+    for secret in var.google_oauth_client_secret : secret.client_secret => secret
+    if secret.secrets_store == "ssm"
+  }
+
+  name = each.value.client_secret
+} 

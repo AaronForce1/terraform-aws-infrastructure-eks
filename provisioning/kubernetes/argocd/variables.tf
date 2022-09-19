@@ -19,6 +19,9 @@ variable "credential_templates" {
 variable "registry_secrets" {
   default = []
 }
+variable "google_oauth_client_secret" {
+  default = []
+}
 variable "generate_plugin_repository_secret" {
   default = false
 }
