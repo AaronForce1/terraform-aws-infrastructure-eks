@@ -64,25 +64,22 @@ resource "aws_iam_policy" "aws_s3_infra_support_bucket_iam_policies" {
   tags        = var.tags
 }
 
+
 module "aws_s3_infra_support_bucket_irsa_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version = "4.24"
-
+  
   count = length(var.eks_infrastructure_support_buckets)
-
+  create_role = true
+  
   role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-custom-role-${var.eks_infrastructure_support_buckets[count.index].name}"
-  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-
-  oidc_providers = {
-    main = {
-      provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = var.eks_infrastructure_support_buckets[count.index].k8s_namespace_service_account_access
-    }
-  }
-
-  # role_policy_arns = [
-  #   aws_iam_policy.aws_s3_infra_support_bucket_iam_policies[count.index].arn
-  # ]
-
+  
+  role_path    = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  provider_url = replace(var.oidc_url, "https://", "")
+  
+  role_policy_arns = [aws_iam_policy.aws_s3_infra_support_bucket_iam_policies[count.index].arn]
+  
+  oidc_fully_qualified_subjects = [join("", concat(["system:serviceaccount:"], "${var.eks_infrastructure_support_buckets[count.index].k8s_namespace_service_account_access}"))]
+  
   tags = var.tags
 }

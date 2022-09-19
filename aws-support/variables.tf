@@ -1,4 +1,5 @@
 variable "vpc_id" {}
+variable "oidc_url" {}
 variable "aws_region" {}
 variable "app_name" {}
 variable "app_namespace" {}
