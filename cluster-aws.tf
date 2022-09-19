@@ -3,6 +3,7 @@ module "aws-support" {
   depends_on = [module.eks]
 
   vpc_id                             = module.eks-vpc.vpc_id
+  oidc_url                           = module.eks.cluster_oidc_issuer_url
   aws_region                         = var.aws_region
   app_name                           = var.app_name
   app_namespace                      = var.app_namespace
