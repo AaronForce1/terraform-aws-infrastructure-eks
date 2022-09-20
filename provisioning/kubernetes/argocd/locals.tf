@@ -19,4 +19,10 @@ locals {
       if secret.type == "helm"
     ]
   }
+
+  ## ARGOCD: LOCAL VARS FOR TERRAFORM EXPOSED TO ARGO BY DEFAULT
+  argocd_applicationSet_clusterVars = {
+    root_domain_name     = var.root_domain_name,
+    hosted_zone_id       = var.hosted_zone_id
+  }
 }
