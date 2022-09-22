@@ -12,7 +12,7 @@ resource "kubernetes_secret" "google-sso-service-account-secret" {
 resource "kubernetes_secret" "argocd_google_oauth" {
   count = length(var.argocd_google_oauth_template)
   metadata {
-    name      = "argocd-google-oauth-${var.argocd_google_oauth_template[count.index].name}"
+    name      = "argocd-google-${var.argocd_google_oauth_template[count.index].name}"
     namespace = "argocd"
     labels = {
       "app.kubernetes.io/part-of" =  "argocd"
@@ -28,7 +28,7 @@ resource "kubernetes_secret" "argocd_google_oauth" {
 resource "kubernetes_secret" "grafana_google_oauth" {
   count = length(var.grafana_google_oauth_template)
   metadata {
-    name      = "grafana-google-oauth-${var.argocd_google_oauth_template[count.index].name}"
+    name      = "grafana-google-${var.argocd_google_oauth_template[count.index].name}"
     namespace = "grafana-stack"
   }
 
