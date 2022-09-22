@@ -108,7 +108,8 @@ module "argocd" {
   registry_secrets                  = var.helm_configurations.argocd.registry_secrets
   generate_plugin_repository_secret = var.helm_configurations.argocd.generate_plugin_repository_secret
   additionalProjects                = var.helm_configurations.argocd.additionalProjects
-  google_oauth_client_secret        = var.helm_configurations.argocd.google_oauth_client_secret
+  argocd_google_oauth_template      = var.helm_configurations.argocd.argocd_google_oauth_template
+  grafana_google_oauth_template     = var.helm_configurations.argocd.grafana_google_oauth_template
 }
 
 # module "gitlab_runner" {

@@ -352,8 +352,15 @@ variable "helm_configurations" {
         email         = string
         secrets_store = string
       })))
-      google_oauth_client_secret = optional(list(object({
+      argocd_google_oauth_template = optional(list(object({
         name          = string
+        client_id     = string
+        client_secret  = string
+        secrets_store = string
+      })))
+      grafana_google_oauth_template = optional(list(object({
+        name          = string
+        client_id     = string
         client_secret  = string
         secrets_store = string
       })))

@@ -9,11 +9,10 @@ resource "kubernetes_secret" "google-sso-service-account-secret" {
   }
 }
 
-resource "kubernetes_secret" "argocd_google_oauth_client_secret" {
-  count = length(var.google_oauth_client_secret)
-
+resource "kubernetes_secret" "argocd_google_oauth" {
+  count = length(var.argocd_google_oauth_template)
   metadata {
-    name      = "argocd-google-oauth-${var.google_oauth_client_secret[count.index].name}"
+    name      = "argocd-google-oauth-${var.argocd_google_oauth_template[count.index].name}"
     namespace = "argocd"
     labels = {
       "app.kubernetes.io/part-of" =  "argocd"
@@ -21,6 +20,20 @@ resource "kubernetes_secret" "argocd_google_oauth_client_secret" {
   }
 
   data = { 
-    client_secret = var.google_oauth_client_secret[count.index].secrets_store != "ssm" ? var.google_oauth_client_secret[count.index].client_secret : data.aws_ssm_parameter.google_sso_oauth_client_secret[var.google_oauth_client_secret[count.index].client_secret].value
+    client_id = var.argocd_google_oauth_template[count.index].secrets_store != "ssm" ? var.argocd_google_oauth_template[count.index].client_id : data.aws_ssm_parameter.argocd_google_oauth_client_id[var.argocd_google_oauth_template[count.index].client_id].value
+    client_secret = var.argocd_google_oauth_template[count.index].secrets_store != "ssm" ? var.argocd_google_oauth_template[count.index].client_secret : data.aws_ssm_parameter.argocd_google_oauth_client_secret[var.argocd_google_oauth_template[count.index].client_secret].value
+  }
+}
+
+resource "kubernetes_secret" "grafana_google_oauth" {
+  count = length(var.grafana_google_oauth_template)
+  metadata {
+    name      = "grafana-google-oauth-${var.argocd_google_oauth_template[count.index].name}"
+    namespace = "grafana-stack"
+  }
+
+  data = { 
+    client_id = var.grafana_google_oauth_template[count.index].secrets_store != "ssm" ? var.grafana_google_oauth_template[count.index].client_id : data.aws_ssm_parameter.grafana_google_oauth_client_id[var.grafana_google_oauth_template[count.index].client_id].value
+    client_secret = var.grafana_google_oauth_template[count.index].secrets_store != "ssm" ? var.grafana_google_oauth_template[count.index].client_secret : data.aws_ssm_parameter.grafana_google_oauth_client_secret[var.grafana_google_oauth_template[count.index].client_secret].value
   }
 }

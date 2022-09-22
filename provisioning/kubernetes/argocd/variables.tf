@@ -19,9 +19,13 @@ variable "credential_templates" {
 variable "registry_secrets" {
   default = []
 }
-variable "google_oauth_client_secret" {
-  default = []
+variable "argocd_google_oauth_template" {
+   default = []
 }
+variable "grafana_google_oauth_template" {
+   default = []
+}
+
 variable "generate_plugin_repository_secret" {
   default = false
 }
