@@ -268,6 +268,10 @@ variable "aws_installations" {
     route53_external_dns = optional(bool)
     kms_secrets_access   = optional(bool)
     cert_manager         = optional(bool)
+    vault_aws_kms        = optional(object({
+      enabled                    = optional(bool)
+      namespace_service_accounts = optional(list(string))
+    }))
   })
   default = {
     cluster_autoscaler   = true
@@ -284,6 +288,9 @@ variable "aws_installations" {
       efs                 = true
       eks_irsa_role       = true
       eks_security_groups = true
+    }
+    vault_aws_kms = {
+      enabled = false
     }
   }
 }
