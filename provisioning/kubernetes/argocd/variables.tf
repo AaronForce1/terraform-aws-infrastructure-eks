@@ -28,3 +28,6 @@ variable "additionalProjects" {
 variable "chart_version" {
   default = "4.10.9"
 }
+variable "kms_key_id" {
+    default = ""
+}

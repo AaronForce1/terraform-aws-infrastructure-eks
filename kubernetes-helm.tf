@@ -102,6 +102,7 @@ module "argocd" {
   root_domain_name                  = var.cluster_root_domain.name
   operator_domain_name              = var.operator_domain_name
   hosted_zone_id                    = aws_route53_zone.hosted_zone[0].zone_id
+  kms_key_id                        = aws_kms_key.eks.key_id
   custom_manifest                   = var.helm_configurations.argocd
   repository_secrets                = var.helm_configurations.argocd.repository_secrets
   credential_templates              = var.helm_configurations.argocd.credential_templates
