@@ -1,6 +1,6 @@
 ## IAM Role for external-secrets
 data "aws_iam_policy_document" "vault_aws_kms" {
-  count = var.aws_installations.vault_aws_kms.enabled ? 1 : 0
+  count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
   statement {
     effect = "Allow"
     actions = [
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "vault_aws_kms" {
 }
 
 resource "aws_iam_policy" "vault_aws_kms" {
-  count = var.aws_installations.vault_aws_kms.enabled ? 1 : 0
+  count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault-policy"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
@@ -26,7 +26,7 @@ resource "aws_iam_policy" "vault_aws_kms" {
 
 ### 
 data "aws_iam_policy_document" "vault_aws_kms_trusted_entity" {
-  count = var.aws_installations.vault_aws_kms.enabled ? 1 : 0
+  count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
 
   statement {
     effect  = "Allow"
@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "vault_aws_kms_trusted_entity" {
 }
 
 resource "aws_iam_role" "vault_aws_kms" {
-  count = var.aws_installations.vault_aws_kms.enabled ? 1 : 0
+  count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
@@ -65,7 +65,7 @@ resource "aws_iam_role" "vault_aws_kms" {
 }
 
 resource "aws_iam_role_policy_attachment" "vault_aws_kms" {
-  count = var.aws_installations.vault_aws_kms.enabled ? 1 : 0
+  count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
 
   role       = aws_iam_role.vault_aws_kms[0].name
   policy_arn = aws_iam_policy.vault_aws_kms[0].arn
