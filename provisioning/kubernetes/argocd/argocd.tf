@@ -24,7 +24,19 @@ EOT
   ]
 }
 
-## TODO: Modularise
+resource "kubectl_manifest" "applicationsets" {
+  for_each = { for applicationSet in coalesce(var.custom_manifest.application_sets, []) : regex("[A-Za-z0-9-]+", applicationSet.filepath) => applicationSet }
+  depends_on = [
+    helm_release.argocd
+  ]
+
+  yaml_body = templatefile(
+    each.value.filepath,
+    merge(each.value.envvars, local.argocd_applicationSet_clusterVars)
+  )
+}
+
+# DEPRICATED - To Remove in 3.1.0
 resource "kubectl_manifest" "applicationset" {
   count = try(length(var.custom_manifest.application_set), 0)
   depends_on = [

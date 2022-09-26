@@ -336,6 +336,10 @@ variable "helm_configurations" {
       chart_version   = optional(string)
       value_file      = optional(string)
       application_set = optional(list(string))
+      application_sets = optional(list(object({
+        filepath = string
+        envvars = map(string)
+      })))
       repository_secrets = optional(list(object({
         name          = string
         url           = string
