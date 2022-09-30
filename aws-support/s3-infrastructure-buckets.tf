@@ -46,7 +46,8 @@ data "aws_iam_policy_document" "aws_s3_infra_support_bucket_iam_policy_document"
   statement {
     actions = [
       "kms:GenerateDataKey",
-      "kms:Decrypt"
+      "kms:Encrypt",
+      "kms:Decrypt" 
     ]
     resources = [
       var.eks_infrastructure_support_buckets[count.index].aws_kms_key_id != null ? var.eks_infrastructure_support_buckets[count.index].aws_kms_key_id : var.eks_infrastructure_kms_arn
