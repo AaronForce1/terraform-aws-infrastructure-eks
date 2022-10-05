@@ -48,6 +48,7 @@ resource "kubectl_manifest" "applicationset" {
     {
       root_domain_name     = var.root_domain_name,
       operator_domain_name = var.operator_domain_name,
+      slave_domain_name    = var.slave_domain_name,
       hosted_zone_id       = var.hosted_zone_id
       kms_key_id           = var.kms_key_id
     }

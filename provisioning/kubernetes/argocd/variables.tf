@@ -10,6 +10,9 @@ variable "hosted_zone_id" {
 variable "operator_domain_name" {
   default = ""
 }
+variable "slave_domain_name" {
+  default = ""
+}
 variable "repository_secrets" {
   default = []
 }

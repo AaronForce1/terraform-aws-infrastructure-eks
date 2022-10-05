@@ -18,6 +18,8 @@ module "aws-support" {
   node_count                         = var.instance_min_size # var.eks_managed_node_groups != null ? var.eks_managed_node_groups[keys(var.eks_managed_node_groups)[0]].min_capacity : var.instance_min_size
   tags                               = local.base_tags
   route53_hosted_zone_arn            = try(aws_route53_zone.hosted_zone[0].arn, "")
+  thanos_slave_role                  = var.thanos_slave_role
+  eks_slave                          = var.eks_slave
 }
 
 module "aws-cluster-autoscaler" {

@@ -114,6 +114,12 @@ variable "operator_domain_name" {
   default     = ""
 }
 
+variable "slave_domain_name" {
+  description = "Domain root of slave cluster"
+  type        = string
+  default     = ""
+}
+
 variable "app_name" {
   type        = string
   description = "Application Name"
@@ -467,6 +473,17 @@ variable "cluster_endpoint_public_access_cidrs" {
   description = "If the cluster endpoint is to be exposed to the public internet, specify CIDRs here that it should be restricted to"
   type        = list(string)
   default     = []
+}
+
+variable "thanos_slave_role" {
+  type        = bool
+  description = "enable thanos slave role"
+  default     = false
+}
+
+variable "eks_slave" {
+  type        = string
+  description = "fillout name cluster eks slave"
 }
 
 ## TODO: Merge all the default node_group configurations together
