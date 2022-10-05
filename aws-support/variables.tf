@@ -13,6 +13,9 @@ variable "eks_infrastructure_support_buckets" {}
 variable "eks_infrastructure_kms_arn" {}
 variable "oidc_provider_arn" {}
 variable "tags" {}
+variable "thanos_slave_role" {}
+variable "eks_slave" {}
 variable "route53_hosted_zone_arn" {
   default = ""
 }
+
