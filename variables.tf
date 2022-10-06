@@ -484,6 +484,7 @@ variable "thanos_slave_role" {
 variable "eks_slave" {
   type        = string
   description = "fillout name cluster eks slave"
+  default = ""
 }
 
 ## TODO: Merge all the default node_group configurations together
