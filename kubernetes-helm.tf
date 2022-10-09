@@ -147,8 +147,8 @@ module "monitoring-stack" {
   google_clientSecret = var.google_clientSecret
   google_authDomain   = var.google_authDomain
 
-  custom_manifest = var.helm_configurations.monitoring.values
-  custom_version  = var.helm_configurations.monitoring.version
+  custom_manifest = try(var.helm_configurations.monitoring.values, null)
+  custom_version  = try(var.helm_configurations.monitoring.version, null)
 }
 
 module "argocd" {
