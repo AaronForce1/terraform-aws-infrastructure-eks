@@ -55,8 +55,8 @@ data "aws_iam_policy_document" "vault_aws_kms_trusted_entity" {
 resource "aws_iam_role" "vault_aws_kms" {
   count = try(var.aws_installations.vault_aws_kms.enabled, false) ? 1 : 0
 
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault"
-  path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-vault"
+  path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   assume_role_policy    = data.aws_iam_policy_document.vault_aws_kms_trusted_entity[0].json
   force_detach_policies = true

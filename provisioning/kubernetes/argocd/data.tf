@@ -65,7 +65,7 @@ data "aws_ssm_parameter" "infrastructure_credentials_registry_password" {
 ####    Google SSO Token      ####
 ##################################
 data "aws_ssm_parameter" "google_sso_service_account_secret" {
-   name = "/argocd/google-sso-service-account"
+  name = "/argocd/google-sso-service-account"
 }
 
 data "aws_ssm_parameter" "argocd_google_oauth_client_id" {
@@ -75,7 +75,7 @@ data "aws_ssm_parameter" "argocd_google_oauth_client_id" {
   }
 
   name = each.value.client_id
-} 
+}
 
 data "aws_ssm_parameter" "argocd_google_oauth_client_secret" {
   for_each = {
@@ -84,7 +84,7 @@ data "aws_ssm_parameter" "argocd_google_oauth_client_secret" {
   }
 
   name = each.value.client_secret
-} 
+}
 
 data "aws_ssm_parameter" "grafana_google_oauth_client_id" {
   for_each = {
@@ -93,7 +93,7 @@ data "aws_ssm_parameter" "grafana_google_oauth_client_id" {
   }
 
   name = each.value.client_id
-} 
+}
 
 data "aws_ssm_parameter" "grafana_google_oauth_client_secret" {
   for_each = {
@@ -102,4 +102,4 @@ data "aws_ssm_parameter" "grafana_google_oauth_client_secret" {
   }
 
   name = each.value.client_secret
-} 
+}

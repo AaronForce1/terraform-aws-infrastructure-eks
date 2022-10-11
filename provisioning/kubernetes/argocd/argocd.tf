@@ -25,7 +25,7 @@ EOT
 }
 
 resource "kubectl_manifest" "applicationsets" {
-  for_each = { for applicationSet in coalesce(var.custom_manifest.application_sets, []) : regex("[A-Za-z0-9-]+", applicationSet.filepath) => applicationSet }
+  for_each = { for applicationSet in try(var.custom_manifest.application_sets, []) : regex("[A-Za-z0-9-]+", applicationSet.filepath) => applicationSet }
   depends_on = [
     helm_release.argocd
   ]

@@ -23,10 +23,10 @@ variable "registry_secrets" {
   default = []
 }
 variable "argocd_google_oauth_template" {
-   default = []
+  default = []
 }
 variable "grafana_google_oauth_template" {
-   default = []
+  default = []
 }
 
 variable "generate_plugin_repository_secret" {
@@ -39,5 +39,5 @@ variable "chart_version" {
   default = "4.10.9"
 }
 variable "kms_key_id" {
-    default = ""
+  default = ""
 }
