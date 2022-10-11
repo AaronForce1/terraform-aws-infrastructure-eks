@@ -274,7 +274,7 @@ variable "aws_installations" {
     route53_external_dns = optional(bool)
     kms_secrets_access   = optional(bool)
     cert_manager         = optional(bool)
-    vault_aws_kms        = optional(object({
+    vault_aws_kms = optional(object({
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
@@ -344,7 +344,7 @@ variable "helm_configurations" {
       application_set = optional(list(string))
       application_sets = optional(list(object({
         filepath = string
-        envvars = map(string)
+        envvars  = map(string)
       })))
       repository_secrets = optional(list(object({
         name          = string
@@ -372,13 +372,13 @@ variable "helm_configurations" {
       argocd_google_oauth_template = optional(list(object({
         name          = string
         client_id     = string
-        client_secret  = string
+        client_secret = string
         secrets_store = string
       })))
       grafana_google_oauth_template = optional(list(object({
         name          = string
         client_id     = string
-        client_secret  = string
+        client_secret = string
         secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
@@ -416,14 +416,29 @@ variable "custom_namespaces" {
 }
 
 variable "custom_aws_s3_support_infra" {
+  ## TODO: Expand capabilities to allow more granular control of node_group access
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({
-    name                                 = string
-    bucket_acl                           = string
-    aws_kms_key_id                       = optional(string)
-    lifecycle_rules                      = any
+    name           = string
+    bucket_acl     = string
+    aws_kms_key_id = optional(string)
+    lifecycle_rules = optional(list(object({
+      id      = string
+      enabled = bool
+      filter = object({
+        prefix = string
+      })
+      transition = list(object({
+        days          = number
+        storage_class = string
+      }))
+      expiration = object({
+        days = number
+      })
+    })))
     versioning                           = bool
-    k8s_namespace_service_account_access = any
+    k8s_namespace_service_account_access = list(string)
+    eks_node_group_access                = optional(bool)
   }))
   default = []
 }
@@ -484,7 +499,7 @@ variable "thanos_slave_role" {
 variable "eks_slave" {
   type        = string
   description = "fillout name cluster eks slave"
-  default = ""
+  default     = ""
 }
 
 ## TODO: Merge all the default node_group configurations together
