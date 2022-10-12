@@ -90,7 +90,7 @@ resource "kubernetes_secret" "google-sso-service-account-secret" {
     namespace = each.value.namespace
     labels = merge(
       {
-          "app.kubernetes.io/part-of" =  "${each.value.namespace}"
+        "app.kubernetes.io/part-of" =  "${each.value.namespace}"
       },
     )
   }
@@ -111,7 +111,6 @@ resource "kubernetes_secret" "infrastructure_client_id_secret" {
       },
     )
   }
-
   data = { 
     client_id = each.value.secrets_store != "ssm" ? each.value.client_id : data.aws_ssm_parameter.infrastructure_client_id[each.value.client_id].value
     client_secret = each.value.secrets_store != "ssm" ? each.value.client_secret : data.aws_ssm_parameter.infrastructure_client_secret[each.value.client_secret].value
@@ -126,11 +125,10 @@ resource "kubernetes_secret" "postgres_db_credentials" {
     namespace = each.value.namespace
     labels = merge(
       {
-          "app.kubernetes.io/part-of" =  "${each.value.namespace}"
+        "app.kubernetes.io/part-of" =  "${each.value.namespace}"
       },
     )
   }
-
   data = { 
     postgres-password = each.value.secrets_store != "ssm" ? each.value.postgres-password : data.aws_ssm_parameter.db_postgres_password[each.value.postgres-password].value
     password = each.value.secrets_store != "ssm" ? each.value.password : data.aws_ssm_parameter.db_password[each.value.password].value
