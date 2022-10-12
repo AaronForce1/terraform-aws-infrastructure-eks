@@ -428,10 +428,10 @@ variable "custom_aws_s3_support_infra" {
       filter = object({
         prefix = string
       })
-      transition = list(object({
+      transition = optional(list(object({
         days          = number
         storage_class = string
-      }))
+      })))
       expiration = object({
         days = number
       })
@@ -482,6 +482,12 @@ variable "create_launch_template" {
   type        = bool
   description = "enable launch template on node group"
   default     = false
+}
+
+variable "cluster_endpoint_private_access_cidrs" {
+  description = "Additional ip cidr to add to cluster security group"
+  type        = list(string)
+  default     = []
 }
 
 variable "cluster_endpoint_public_access_cidrs" {

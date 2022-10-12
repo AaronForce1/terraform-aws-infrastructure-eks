@@ -13,6 +13,8 @@ module "eks" {
   cluster_endpoint_public_access       = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
+  cluster_security_group_additional_rules = local.cluster_security_group_additional_rules
+
   # IPV6
   # cluster_ip_family = "ipv6" # NOT READY YET
 
