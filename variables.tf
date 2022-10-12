@@ -553,7 +553,7 @@ variable "db_credentials" {
      password           = string
      postgres-password  = string
      type               = optional(string)
-     secrets_store       = string
+     secrets_store      = string
    }))
    default = []
  }

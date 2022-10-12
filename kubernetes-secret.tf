@@ -89,9 +89,9 @@ resource "kubernetes_secret" "google-sso-service-account-secret" {
     name      = each.value.name
     namespace = each.value.namespace
     labels = merge(
-        {
+      {
           "app.kubernetes.io/part-of" =  "${each.value.namespace}"
-        },
+      },
     )
   }
   binary_data = {
@@ -106,9 +106,9 @@ resource "kubernetes_secret" "infrastructure_client_id_secret" {
     name      = each.value.name
     namespace = each.value.namespace
     labels = merge(
-        {
-          "app.kubernetes.io/part-of" =  "${each.value.namespace}"
-        },
+      {
+        "app.kubernetes.io/part-of" =  "${each.value.namespace}"
+      },
     )
   }
 
@@ -125,9 +125,9 @@ resource "kubernetes_secret" "postgres_db_credentials" {
     name      = each.value.name
     namespace = each.value.namespace
     labels = merge(
-        {
+      {
           "app.kubernetes.io/part-of" =  "${each.value.namespace}"
-        },
+      },
     )
   }
 
