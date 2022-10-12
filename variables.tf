@@ -369,18 +369,6 @@ variable "helm_configurations" {
         email         = string
         secrets_store = string
       })))
-      argocd_google_oauth_template = optional(list(object({
-        name          = string
-        client_id     = string
-        client_secret = string
-        secrets_store = string
-      })))
-      grafana_google_oauth_template = optional(list(object({
-        name          = string
-        client_id     = string
-        client_secret = string
-        secrets_store = string
-      })))
       generate_plugin_repository_secret = optional(bool)
       additionalProjects = optional(list(object({
         name        = string
@@ -529,3 +517,43 @@ variable "registry_credentials" {
   default = []
 }
 
+variable "google_service_account" {
+  description = "google-service-account token"
+  type = list(object({
+    name                = string
+    namespace           = string
+    labels              = optional(map(string))
+    data                = string
+    type                = optional(string)
+    secrets_store       = string
+  }))
+  default = []
+}
+
+variable "infrastructure_client_id_secret" {
+  description = "client id and secret for google authentication"
+  type = list(object({
+    name                = string
+    namespace           = string
+    labels              = optional(map(string))
+    client_id           = string
+    client_secret       = string
+    type                = optional(string)
+    secrets_store       = string
+  }))
+  default = []
+}
+
+variable "db_credentials" {
+  description = "postgres passwords for grafana google auth"
+  type = list(object({
+    name               = string     
+    namespace          = string
+    labels             = optional(map(string))
+    password           = string
+    postgres-password  = string
+    type               = optional(string)
+    secrets_store      = string
+  }))
+  default = []
+}
