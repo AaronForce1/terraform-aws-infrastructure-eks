@@ -1,10 +1,10 @@
-resource "kubernetes_manifest" "argocd_project" {
+resource "kubectl_manifest" "argocd_project" {
   for_each = { for project in coalesce(var.additionalProjects, []) : project.name => project }
   depends_on = [
     helm_release.argocd
   ]
 
-  manifest = {
+  yaml_body = yamlencode({
     "apiVersion" : "argoproj.io/v1alpha1"
     "kind" : "AppProject"
     "metadata" : {
@@ -20,10 +20,6 @@ resource "kubernetes_manifest" "argocd_project" {
       "destinations" : each.value.destinations
       "sourceRepos" : each.value.sourceRepos
     }
-  }
-  field_manager {
-    name            = "spec"
-    force_conflicts = true
-  }
+  })
 }
 
