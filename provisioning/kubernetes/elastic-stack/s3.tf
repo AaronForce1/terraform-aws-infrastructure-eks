@@ -6,7 +6,7 @@ resource "aws_kms_key" "eks_logging" {
 
 module "log_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 2.6"
+  version = "~> 3.2"
 
   # create_bucket = var.tfenv == "prod" ? true : false
 
@@ -34,7 +34,7 @@ module "log_bucket" {
 
 module "s3_elasticstack_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 2.6"
+  version = "~> 3.2"
 
   # create_bucket = var.tfenv == "prod" ? true : false
 
@@ -106,7 +106,7 @@ module "s3_elasticstack_bucket" {
 ### IAM USER DEFINITION
 module "iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version = "~> 3.0"
+  version = "~> 4.24"
 
   name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-elasticstack-s3-user"
   path = "/serviceaccounts/${var.app_name}/${var.app_namespace}/"
@@ -235,7 +235,7 @@ data "aws_iam_policy_document" "s3_policy_data" {
 }
 
 resource "aws_iam_user_policy_attachment" "s3_attach" {
-  user       = module.iam_user.this_iam_user_name
+  user       = module.iam_user.iam_user_name
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 
@@ -263,6 +263,6 @@ data "aws_iam_policy_document" "kms_policy_data" {
 }
 
 resource "aws_iam_user_policy_attachment" "kms_attach" {
-  user       = module.iam_user.this_iam_user_name
+  user       = module.iam_user.iam_user_name
   policy_arn = aws_iam_policy.kms_access_policy.arn
 }

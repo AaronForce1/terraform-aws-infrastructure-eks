@@ -5,7 +5,7 @@ resource "helm_release" "consul" {
   namespace        = "hashicorp"
   create_namespace = true
 
-  values = [<<EOF
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOF
 global:
   domain: consul.${var.app_namespace}-${var.tfenv}.${var.root_domain_name}
   datacenter: ${var.app_name}-${var.app_namespace}-${var.tfenv}
@@ -44,10 +44,3 @@ locals {
   nodeSelector = var.vault_nodeselector != "" ? format("nodeSelector: |\n    %s", var.vault_nodeselector) : ""
   tolerations  = var.vault_tolerations != "" ? format("tolerations: |\n    - \"key\": \"%s\"\n      \"operator\": \"Equal\"\n      \"value\": \"%s\"\n      \"effect\": \"%s\"", split(":", var.vault_tolerations)[1], split(":", var.vault_tolerations)[2], split(":", var.vault_tolerations)[0]) : ""
 }
-
-variable "app_namespace" {}
-variable "tfenv" {}
-variable "root_domain_name" {}
-variable "app_name" {}
-variable "vault_nodeselector" {}
-variable "vault_tolerations" {}

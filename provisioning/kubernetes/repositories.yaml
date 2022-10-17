@@ -97,3 +97,11 @@ repositories:
   password: ""
   url: https://grafana.github.io/helm-charts
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: prometheus-community
+  password: ""
+  url: https://prometheus-community.github.io/helm-charts
+  username: ""

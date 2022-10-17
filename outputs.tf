@@ -1,10 +1,6 @@
 ## -----------
 ## MODULE: EKS
 ## -----------
-
-output "kubecfg" {
-  value = module.eks.kubeconfig
-}
 output "kubernetes-cluster-certificate-authority-data" {
   value = module.eks.cluster_certificate_authority_data
 }
@@ -15,6 +11,11 @@ output "kubernetes-cluster-id" {
 
 output "kubernetes-cluster-endpoint" {
   value = module.eks.cluster_endpoint
+}
+
+output "kubernetes-cluster-auth" {
+  value     = data.aws_eks_cluster_auth.cluster
+  sensitive = true
 }
 
 ## -----------
@@ -56,4 +57,19 @@ output "public_subnets_cidr_blocks" {
 
 output "base_cidr_block" {
   value = module.subnet_addrs.base_cidr_block
+}
+
+output "eks_managed_node_groups" {
+  value = module.eks.eks_managed_node_groups
+}
+
+## -----------
+### Region and AWS Profile Checks
+## -----------
+output "aws_region" {
+  value = var.aws_region
+}
+
+output "aws_profile" {
+  value = var.aws_profile
 }

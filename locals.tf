@@ -3,24 +3,24 @@ locals {
 }
 
 locals {
+  name_prefix = var.cluster_name != "" ? var.cluster_name : "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   base_tags = {
-    Environment                  = var.tfenv
-    Terraform                    = "true"
-    Namespace                    = var.app_namespace
-    Billingcustomer              = var.billingcustomer
-    Product                      = var.app_name
-    infrastructure-eks-terraform = local.module_version
+    Environment                      = var.tfenv
+    Terraform                        = "true"
+    Version                          = local.module_version
+    Namespace                        = var.app_namespace
+    Billingcustomer                  = var.billingcustomer
+    Product                          = var.app_name
+    terraform-aws-infrastructure-eks = local.module_version
   }
-  non_vpc_tags = {
-    Name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-  }
-  kubernetes_tags = {
+  kubernetes_tags = merge({
+    Name                                                                          = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
     "k8s.io/cluster-autoscaler/enabled"                                           = true
     "k8s.io/cluster-autoscaler/${var.app_name}-${var.app_namespace}-${var.tfenv}" = true
-  }
-
-  tags     = merge(local.base_tags, local.non_vpc_tags, var.extra_tags)
-  vpc_tags = merge(local.base_tags, var.extra_tags)
+  }, local.base_tags)
+  additional_kubernetes_tags = merge({
+    Name = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  }, local.base_tags)
 
   default_node_group = {
     core = {
@@ -31,19 +31,20 @@ locals {
       key_name               = var.node_key_name
       public_ip              = var.node_public_ip
       create_launch_template = var.create_launch_template
-      disk_size              = "50"
+      disk_size              = var.root_vol_size
       k8s_labels = {
         Environment = var.tfenv
       }
-      tags            = merge(local.kubernetes_tags, local.tags)
-      additional_tags = local.tags
+      tags            = local.kubernetes_tags
+      additional_tags = local.additional_kubernetes_tags
     }
   }
 
-  default_aws_auth_roles = [
+  aws_auth_roles = [
+    for x in module.eks_managed_node_group :
     {
-      "groups" : ["system:bootstrappers", "system:nodes"],
-      "rolearn" : module.eks.worker_iam_role_arn,
+      "groups" : ["system:bootstrappers", "system:nodes"]
+      "rolearn" : "${x.iam_role_arn}"
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]
@@ -51,25 +52,31 @@ locals {
   base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0].result) : var.vpc_subnet_configuration.base_cidr
 
   nat_gateway_configuration = var.nat_gateway_custom_configuration.enabled ? {
-    "enable_nat_gateway"     = var.nat_gateway_custom_configuration.enable_nat_gateway
-    "enable_dns_hostnames"   = var.nat_gateway_custom_configuration.enable_dns_hostnames
-    "single_nat_gateway"     = var.nat_gateway_custom_configuration.single_nat_gateway
-    "one_nat_gateway_per_az" = var.nat_gateway_custom_configuration.one_nat_gateway_per_az
-    # reuse_nat_ips                     = true
-    # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+    "enable_nat_gateway"                = var.nat_gateway_custom_configuration.enable_nat_gateway
+    "enable_dns_hostnames"              = var.nat_gateway_custom_configuration.enable_dns_hostnames
+    "single_nat_gateway"                = var.nat_gateway_custom_configuration.single_nat_gateway
+    "one_nat_gateway_per_az"            = var.nat_gateway_custom_configuration.one_nat_gateway_per_az
+    "reuse_nat_ips"                     = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.reuse_nat_ips : false
+    "external_nat_ip_ids"               = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.external_nat_ip_ids : []
     "enable_vpn_gateway"                = var.nat_gateway_custom_configuration.enable_vpn_gateway
     "propagate_public_route_tables_vgw" = var.nat_gateway_custom_configuration.enable_vpn_gateway
     } : {
-    enable_nat_gateway     = true
-    enable_dns_hostnames   = true
-    single_nat_gateway     = var.tfenv == "prod" ? false : true
-    one_nat_gateway_per_az = false
-    # reuse_nat_ips                     = true
-    # external_nat_ip_ids               = [aws_eip.nat_gw_elastic_ip.id]
+    enable_nat_gateway                = true
+    enable_dns_hostnames              = true
+    single_nat_gateway                = var.tfenv == "prod" ? false : true
+    one_nat_gateway_per_az            = false
+    reuse_nat_ips                     = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.reuse_nat_ips : false
+    external_nat_ip_ids               = var.elastic_ip_custom_configuration.enabled ? var.elastic_ip_custom_configuration.external_nat_ip_ids : []
     enable_vpn_gateway                = false
     propagate_public_route_tables_vgw = false
   }
 
+  namespaces = concat(
+    var.custom_namespaces,
+    ["monitoring"],
+    (var.helm_installations.vault_consul ? ["hashicorp"] : []),
+    (var.helm_installations.argocd ? ["argocd"] : [])
+  )
 }
 
 resource "random_integer" "cidr_vpc" {

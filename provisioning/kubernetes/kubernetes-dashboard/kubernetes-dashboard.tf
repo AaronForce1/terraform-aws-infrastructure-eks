@@ -8,8 +8,5 @@ resource "helm_release" "kubernetes-dashboard" {
   namespace        = "kubernetes-dashboard"
   create_namespace = false
 
-  values = []
+  values = var.custom_manifest != null ? [var.custom_manifest] : []
 }
-
-variable "app_namespace" {}
-variable "tfenv" {}
