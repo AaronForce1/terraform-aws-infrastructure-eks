@@ -139,7 +139,6 @@ grafana:
     enabled: "true"
     ingressClassName: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
       cert-manager.io/cluster-issuer: letsencrypt-prod
     labels:
