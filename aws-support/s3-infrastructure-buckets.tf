@@ -128,9 +128,10 @@ module "aws_s3_thanos_slave_bucket_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version = "4.24"
 
-  for_each = {
-    for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket if length(data.aws_eks_cluster.eks_slave) == 1
-  }
+  # for_each = {
+  #   for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket if length(data.aws_eks_cluster.eks_slave) == 1
+  # }
+  count = var.thanos_slave_role ? 1 : 0
 
   create_role = var.thanos_slave_role ? true : false
 
@@ -140,11 +141,9 @@ module "aws_s3_thanos_slave_bucket_irsa_role" {
   
   provider_url = replace(data.aws_eks_cluster.eks_slave[0].identity[0].oidc[0].issuer, "https://", "")
 
+  role_policy_arns = [aws_iam_policy.aws_s3_infra_support_bucket_iam_policies["${var.name_prefix}-thanos"].arn]
 
-  role_policy_arns = [aws_iam_policy.aws_s3_infra_support_bucket_iam_policies[lookup(each.value, "name", "${var.name_prefix}-${var.name_prefix}-thanos")].arn]
-
-
-  oidc_fully_qualified_subjects = ["system:serviceaccount:prometheus-stack:thanos-prometheus"]
+  oidc_fully_qualified_subjects = [join("", concat(["system:serviceaccount:"], var.eks_infrastructure_support_buckets[1].k8s_namespace_service_account_access))]
 
   tags = var.tags
 }
