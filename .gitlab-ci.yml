@@ -37,7 +37,7 @@ stages:
 ## VALIDATE
 validate:
   stage: validate
-  image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+  image: registry.gitlab.com/gitlab-org/terraform-images/branches/v0-45-1-1.3:b0c140232338caf3c1848a2ce504412e8f52266c
   before_script:
     - terraform init -backend=false -upgrade
   script:
