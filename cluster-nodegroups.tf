@@ -25,7 +25,8 @@ module "eks_managed_node_group" {
   vpc_id = module.eks-vpc.vpc_id
   subnet_ids = concat(
     each.value.subnet_selections.public ? module.eks-vpc.public_subnets : [],
-    each.value.subnet_selections.private ? module.eks-vpc.private_subnets : []
+    each.value.subnet_selections.private ? module.eks-vpc.private_subnets : [],
+    try(each.value.subnet_selections.custom, [])
   )
   cluster_primary_security_group_id = module.eks.cluster_primary_security_group_id
   # vpc_security_group_ids            = [module.eks.node_security_group_id]

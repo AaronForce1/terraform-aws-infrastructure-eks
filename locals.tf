@@ -81,12 +81,12 @@ locals {
   cluster_security_group_additional_rules = {
     for cidr in var.cluster_endpoint_private_access_cidrs :
     "ingress-${cidr}" => {
-      description      = "ingress for ${cidr}"
-      protocol         = "-1"
-      from_port        = 443
-      to_port          = 443
-      type             = "ingress"
-      cidr_blocks      = [cidr]
+      description = "ingress for ${cidr}"
+      protocol    = "-1"
+      from_port   = 443
+      to_port     = 443
+      type        = "ingress"
+      cidr_blocks = [cidr]
     }
   }
 }

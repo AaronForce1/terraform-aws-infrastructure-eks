@@ -93,6 +93,7 @@ variable "eks_managed_node_groups" {
   #   subnet_selections = object({
   #     public  = bool
   #     private = bool
+  #     custom  = list(string)
   #   })
   #   tags = optional(any)
   # }))
@@ -526,12 +527,12 @@ variable "registry_credentials" {
 variable "google_service_account" {
   description = "google-service-account token"
   type = list(object({
-    name                = string
-    namespace           = string
-    labels              = optional(map(string))
-    data                = string
-    type                = optional(string)
-    secrets_store       = string
+    name          = string
+    namespace     = string
+    labels        = optional(map(string))
+    data          = string
+    type          = optional(string)
+    secrets_store = string
   }))
   default = []
 }
@@ -539,13 +540,13 @@ variable "google_service_account" {
 variable "infrastructure_client_id_secret" {
   description = "client id and secret for google authentication"
   type = list(object({
-    name                = string
-    namespace           = string
-    labels              = optional(map(string))
-    client_id           = string
-    client_secret       = string
-    type                = optional(string)
-    secrets_store       = string
+    name          = string
+    namespace     = string
+    labels        = optional(map(string))
+    client_id     = string
+    client_secret = string
+    type          = optional(string)
+    secrets_store = string
   }))
   default = []
 }
@@ -553,13 +554,13 @@ variable "infrastructure_client_id_secret" {
 variable "db_credentials" {
   description = "postgres passwords for grafana google auth"
   type = list(object({
-    name               = string     
-    namespace          = string
-    labels             = optional(map(string))
-    password           = string
-    postgres-password  = string
-    type               = optional(string)
-    secrets_store      = string
+    name              = string
+    namespace         = string
+    labels            = optional(map(string))
+    password          = string
+    postgres-password = string
+    type              = optional(string)
+    secrets_store     = string
   }))
   default = []
 }

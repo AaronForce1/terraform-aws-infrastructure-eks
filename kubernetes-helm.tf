@@ -48,8 +48,8 @@ module "vault" {
   depends_on = [module.eks]
   count      = var.helm_installations.vault_consul ? 1 : 0
 
-  vault_nodeselector      = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
-  vault_tolerations       = try(var.helm_configurations.vault_consul.vault_tolerations, "") != null ? var.helm_configurations.vault_consul.vault_tolerations : ""
+  vault_nodeselector = try(var.helm_configurations.vault_consul.vault_nodeselector, "") != null ? var.helm_configurations.vault_consul.vault_nodeselector : ""
+  # vault_tolerations       = try(var.helm_configurations.vault_consul.vault_tolerations, "") != null ? var.helm_configurations.vault_consul.vault_tolerations : ""
   app_namespace           = var.app_namespace
   tfenv                   = var.tfenv
   root_domain_name        = var.cluster_root_domain.name
@@ -57,7 +57,7 @@ module "vault" {
   billingcustomer         = var.billingcustomer
   aws_region              = var.aws_region
   enable_aws_vault_unseal = try(var.helm_configurations.vault_consul.enable_aws_vault_unseal, false) != null ? var.helm_configurations.vault_consul.enable_aws_vault_unseal : false
-  tags                    = local.base_tags
+  # tags                    = local.base_tags
 
   custom_manifest = var.helm_configurations.vault_consul
 }
