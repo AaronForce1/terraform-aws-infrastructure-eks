@@ -137,8 +137,8 @@ module "aws_s3_thanos_slave_bucket_irsa_role" {
 
   role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-custom-role-thanos-slave"
 
-  role_path    = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-  
+  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+
   provider_url = replace(data.aws_eks_cluster.eks_slave[0].identity[0].oidc[0].issuer, "https://", "")
 
   role_policy_arns = [aws_iam_policy.aws_s3_infra_support_bucket_iam_policies["${var.name_prefix}-thanos"].arn]
