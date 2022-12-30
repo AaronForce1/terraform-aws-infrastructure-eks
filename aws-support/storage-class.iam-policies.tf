@@ -8,6 +8,7 @@ module "aws_csi_irsa_role" {
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   attach_ebs_csi_policy = var.aws_installations.storage_ebs.eks_irsa_role
+  ebs_csi_kms_cmk_ids   = [var.eks_infrastructure_kms_arn]
   attach_efs_csi_policy = var.aws_installations.storage_efs.eks_irsa_role
 
   oidc_providers = {
