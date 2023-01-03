@@ -98,6 +98,40 @@ resource "aws_kms_key" "eks" {
   multi_region            = "true"
   enable_key_rotation     = true
   deletion_window_in_days = 30
+  policy                  = jsonencode({
+    Version = "2012-10-17",
+    "Id": "key-default-1",
+    "Statement": [
+        {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.aws_account_id}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "logs.${var.aws_region}.amazonaws.com"
+            },
+            "Action": [
+                "kms:Encrypt*",
+                "kms:Decrypt*",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Describe*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnEquals": {
+                    "kms:EncryptionContext:aws:logs:arn": "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:*"
+                }
+            }
+        }
+    ]
+  })
   tags = merge({
     Name = "${local.name_prefix}-key"
   }, local.base_tags)
