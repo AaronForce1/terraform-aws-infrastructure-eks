@@ -98,9 +98,45 @@ resource "aws_kms_key" "eks" {
   multi_region            = "true"
   enable_key_rotation     = true
   deletion_window_in_days = 30
+  policy                  = data.aws_iam_policy_document.eks.json
   tags = merge({
     Name = "${local.name_prefix}-key"
   }, local.base_tags)
+}
+
+data "aws_iam_policy_document" "eks" {
+    statement {
+    sid       = "Enable IAM User Permissions"
+    actions   = ["kms:*"]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.aws_account_id}:root"]
+    }
+  }
+
+  statement {
+    sid = "Allow service-linked role use of the CMK"
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+    condition {
+      test      = "ArnEquals"
+      variable  = "kms:EncryptionContext:aws:logs:arn"
+      values    = ["arn:aws:logs:${var.aws_region}:${var.aws_account_id}:*"]
+    }
+
+    principals {
+      type = "Service"
+      identifiers = ["logs.${var.aws_region}.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_kms_alias" "eks" {
