@@ -4,11 +4,6 @@ variable "aws_region" {
   description = "AWS Region for all primary configurations"
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS Account ID for all primary configurations"
-}
-
 variable "aws_secondary_region" {
   type        = string
   description = "Secondary Region for certain redundant AWS components"
