@@ -4,11 +4,6 @@ variable "aws_region" {
   description = "AWS Region for all primary configurations"
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS Account ID for all primary configurations"
-}
-
 variable "aws_secondary_region" {
   type        = string
   description = "Secondary Region for certain redundant AWS components"
@@ -515,6 +510,21 @@ variable "default_capacity_type" {
   default     = "ON_DEMAND"
 }
 
+variable "kubernetes_secrets" {
+  description = "Baseline kubernetes secrets to be provisioned alongside the cluster."
+  type = list(object({
+    name               = string
+    namespace          = string
+    labels             = optional(map(string))
+    secrets_store      = string
+    secrets_store_name = string
+    type               = optional(string)
+    data               = optional(string)
+  }))
+  default = []
+}
+
+## TODO: Consolidate These
 variable "registry_credentials" {
   description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
   type = list(object({
