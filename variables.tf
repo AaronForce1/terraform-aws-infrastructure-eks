@@ -519,8 +519,9 @@ variable "kubernetes_secrets" {
     secrets_store      = string
     secrets_store_name = string
     type               = optional(string)
-    data               = string
+    data               = optional(string)
   }))
+  default = []
 }
 
 ## TODO: Consolidate These

@@ -27,12 +27,10 @@ resource "kubernetes_secret" "kubernetes_secret" {
       {
         "app.kubernetes.io/part-of" = each.value.namespace
       },
-      coalesce(each.value.labels, [])
+      try(each.value.labels, [])
     )
   }
-  binary_data = {
-    "data" = each.value.secrets_store != "ssm" ? each.value.data : data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value
-  }
+  data = each.value.secrets_store != "ssm" ? yamldecode(each.value.data) : yamldecode(data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value)
   type = coalesce(each.value.type, "Opaque")
 }
 
