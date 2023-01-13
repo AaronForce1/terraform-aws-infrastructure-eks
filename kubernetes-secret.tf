@@ -18,7 +18,7 @@ resource "kubernetes_secret" "kubernetes_secret" {
   depends_on = [
     module.eks
   ]
-  
+
   for_each = { for secret in coalesce(var.kubernetes_secrets, []) : "${secret.name}-${secret.namespace}" => secret }
   metadata {
     name      = each.value.name
@@ -31,7 +31,7 @@ resource "kubernetes_secret" "kubernetes_secret" {
     )
   }
   binary_data = {
-    "data" = each.value.secrets_store != "ssm" ? each.value.data : data.aws_ssm_parameter.kubernetes_secret["${secret.name}-${secret.namespace}"].value
+    "data" = each.value.secrets_store != "ssm" ? each.value.data : data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value
   }
   type = coalesce(each.value.type, "Opaque")
 }

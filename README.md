@@ -145,6 +145,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | [kubernetes_namespace.cluster](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 | [kubernetes_secret.google-sso-service-account-secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_secret.infrastructure_client_id_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
+| [kubernetes_secret.kubernetes_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_secret.postgres_db_credentials](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_secret.regcred](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [random_integer.cidr_vpc](https://registry.terraform.io/providers/hashicorp/random/3.4.3/docs/resources/integer) | resource |
@@ -156,6 +157,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | [aws_ssm_parameter.google_sso_service_account_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.infrastructure_client_id](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.infrastructure_client_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
+| [aws_ssm_parameter.kubernetes_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.regcred_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.regcred_username](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [local_file.infrastructure-terraform-eks-version](https://registry.terraform.io/providers/hashicorp/local/2.2.3/docs/data-sources/file) | data source |
@@ -166,6 +168,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application Name | `string` | `"eks"` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Tagged App Namespace | `string` | n/a | yes |
+| <a name="input_aws_account_id"></a> [aws\_account\_id](#input\_aws\_account\_id) | AWS Account ID for all primary configurations | `string` | n/a | yes |
 | <a name="input_aws_installations"></a> [aws\_installations](#input\_aws\_installations) | AWS Support Components including Cluster Autoscaler, EBS/EFS Storage Classes, etc. | <pre>object({<br>    storage_ebs = optional(object({<br>      eks_irsa_role = bool<br>      gp2           = bool<br>      gp3           = bool<br>      st1           = bool<br>    }))<br>    storage_efs = optional(object({<br>      eks_irsa_role       = bool<br>      eks_security_groups = bool<br>      efs                 = bool<br>    }))<br>    cluster_autoscaler   = optional(bool)<br>    route53_external_dns = optional(bool)<br>    kms_secrets_access   = optional(bool)<br>    cert_manager         = optional(bool)<br>    vault_aws_kms = optional(object({<br>      enabled                    = optional(bool)<br>      namespace_service_accounts = optional(list(string))<br>    }))<br>  })</pre> | <pre>{<br>  "cert_manager": true,<br>  "cluster_autoscaler": true,<br>  "kms_secrets_access": true,<br>  "route53_external_dns": true,<br>  "storage_ebs": {<br>    "eks_irsa_role": true,<br>    "gp2": true,<br>    "gp3": true,<br>    "st1": true<br>  },<br>  "storage_efs": {<br>    "efs": true,<br>    "eks_irsa_role": true,<br>    "eks_security_groups": true<br>  },<br>  "vault_aws_kms": {<br>    "enabled": false<br>  }<br>}</pre> | no |
 | <a name="input_aws_profile"></a> [aws\_profile](#input\_aws\_profile) | AWS Profile | `string` | `""` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS Region for all primary configurations | `string` | n/a | yes |
@@ -197,6 +200,7 @@ MIT Licensed. See [LICENSE](https://gitlab.com/magnetic-asia/infrastructure-as-c
 | <a name="input_instance_max_size"></a> [instance\_max\_size](#input\_instance\_max\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `4` | no |
 | <a name="input_instance_min_size"></a> [instance\_min\_size](#input\_instance\_min\_size) | Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2 | `number` | `1` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | AWS Instance Type for provisioning | `string` | `"c5a.medium"` | no |
+| <a name="input_kubernetes_secrets"></a> [kubernetes\_secrets](#input\_kubernetes\_secrets) | Baseline kubernetes secrets to be provisioned alongside the cluster. | <pre>list(object({<br>    name               = string<br>    namespace          = string<br>    labels             = optional(map(string))<br>    secrets_store      = string<br>    secrets_store_name = string<br>    type               = optional(string)<br>    data               = optional(map(string))<br>  }))</pre> | n/a | yes |
 | <a name="input_map_accounts"></a> [map\_accounts](#input\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
 | <a name="input_map_roles"></a> [map\_roles](#input\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_map_users"></a> [map\_users](#input\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |

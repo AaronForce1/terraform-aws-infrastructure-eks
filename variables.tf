@@ -515,16 +515,16 @@ variable "default_capacity_type" {
   default     = "ON_DEMAND"
 }
 
-variable kubernetes_secrets {
+variable "kubernetes_secrets" {
   description = "Baseline kubernetes secrets to be provisioned alongside the cluster."
   type = list(object({
-    name = string
-    namespace = string
-    labels = optional(map(string))
-    secrets_store = string
+    name               = string
+    namespace          = string
+    labels             = optional(map(string))
+    secrets_store      = string
     secrets_store_name = string
-    type = optional(string)
-    data = optional(map(string))
+    type               = optional(string)
+    data               = string
   }))
 }
 
