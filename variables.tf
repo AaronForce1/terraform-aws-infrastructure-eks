@@ -515,6 +515,20 @@ variable "default_capacity_type" {
   default     = "ON_DEMAND"
 }
 
+variable kubernetes_secrets {
+  description = "Baseline kubernetes secrets to be provisioned alongside the cluster."
+  type = list(object({
+    name = string
+    namespace = string
+    labels = optional(map(string))
+    secrets_store = string
+    secrets_store_name = string
+    type = optional(string)
+    data = optional(map(string))
+  }))
+}
+
+## TODO: Consolidate These
 variable "registry_credentials" {
   description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
   type = list(object({
