@@ -31,5 +31,9 @@ terraform {
       source  = "hashicorp/local"
       version = "2.2.3"
     }
+    twingate = {
+      source  = "Twingate/twingate"
+      version = "0.2.3"
+    }
   }
 }
