@@ -112,6 +112,29 @@ module "argocd" {
   additionalProjects                = var.helm_configurations.argocd.additionalProjects
 }
 
+
+
+module "twingate" {
+  source     = "./provisioning/kubernetes/twingate"
+  depends_on = [module.eks]
+
+  count = var.helm_installations.twingate ? 1 : 0
+
+  chart_version   = var.helm_configurations.twingate.chart_version
+  custom_manifest = var.helm_configurations.twingate.values_file
+  image_url       = coalesce(var.helm_configurations.twingate.registryURL, "twingate/connector")
+
+  name                 = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  url                  = coalesce(var.helm_configurations.twingate.url, "twingate.com")
+  network_name         = var.helm_configurations.twingate.network
+  group                = var.helm_configurations.twingate.group
+  connector_count      = coalesce(var.helm_configurations.twingate.connectorCount, 2)
+  cluster_endpoint     = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
+  additional_resources = var.helm_configurations.twingate.resources
+
+  logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
+}
+
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
 #   depends_on = [module.namespaces, module.eks-vpc]

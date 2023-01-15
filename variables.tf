@@ -311,6 +311,7 @@ variable "helm_installations" {
     elasticstack  = bool
     grafana       = bool
     argocd        = bool
+    twingate      = bool
   })
   default = {
     dashboard     = true
@@ -320,6 +321,7 @@ variable "helm_installations" {
     elasticstack  = false
     grafana       = true
     argocd        = false
+    twingate      = false
   }
 }
 variable "helm_configurations" {
@@ -384,6 +386,31 @@ variable "helm_configurations" {
           server    = string
         }))
         sourceRepos = list(string)
+      })))
+    }))
+    twingate = optional(object({
+      chart_version  = optional(string)
+      values_file    = optional(string)
+      registryURL    = optional(string)
+      group          = string
+      url            = optional(string)
+      network        = string
+      logLevel       = optional(string)
+      connectorCount = optional(number)
+      resources = optional(list(object({
+        name    = string
+        address = string
+        protocols = object({
+          allow_icmp = bool
+          tcp = object({
+            policy = string
+            ports  = list(string)
+          })
+          udp = object({
+            policy = string
+            ports  = list(string)
+          })
+        })
       })))
     }))
   })
