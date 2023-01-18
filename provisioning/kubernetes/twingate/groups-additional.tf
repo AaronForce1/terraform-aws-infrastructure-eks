@@ -49,7 +49,3 @@ data "twingate_groups" "additional_resources_existing_groups" {
   name = each.value.name
   is_active = true
 }
-
-output "twingate_group2" {
-  value = data.twingate_groups.additional_resources_existing_groups
-}
