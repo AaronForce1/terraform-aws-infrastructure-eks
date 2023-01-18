@@ -392,11 +392,14 @@ variable "helm_configurations" {
       chart_version  = optional(string)
       values_file    = optional(string)
       registryURL    = optional(string)
-      group          = string
       url            = optional(string)
       network        = string
       logLevel       = optional(string)
       connectorCount = optional(number)
+      management_group_configurations = list(object({
+        name = string
+        create = bool
+      }))
       resources = optional(list(object({
         name    = string
         address = string
@@ -411,6 +414,10 @@ variable "helm_configurations" {
             ports  = list(string)
           })
         })
+        group_configurations = list(object({
+          name = string
+          create = bool
+        }))
       })))
     }))
   })
