@@ -127,7 +127,7 @@ module "twingate" {
   name                 = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   url                  = coalesce(var.helm_configurations.twingate.url, "twingate.com")
   network_name         = var.helm_configurations.twingate.network
-  group                = var.helm_configurations.twingate.group
+  management_group_configurations                = var.helm_configurations.twingate.management_group_configurations
   connector_count      = coalesce(var.helm_configurations.twingate.connectorCount, 2)
   cluster_endpoint     = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
   additional_resources = var.helm_configurations.twingate.resources

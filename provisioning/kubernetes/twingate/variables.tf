@@ -17,10 +17,6 @@ variable "url" {
   default = "twingate.com"
 }
 
-variable "group" {
-  type = string
-}
-
 variable "network_name" {
   type = string
 }
@@ -29,6 +25,12 @@ variable "cluster_endpoint" {
   type = string
 }
 
+variable "management_group_configurations" {
+  type = list(object({
+    name = string
+    create = bool
+  }))
+}
 variable "additional_resources" {
   type = list(object({
     name    = string
@@ -44,6 +46,10 @@ variable "additional_resources" {
         ports  = list(string)
       })
     })
+    group_configurations = list(object({
+      name = string
+      create = bool
+    }))
   }))
   default = []
 }
