@@ -45,17 +45,16 @@ resource "twingate_resource" "additional_resources" {
   name              = "cluster-resource-${each.value.name}"
   address           = each.value.address
   remote_network_id = twingate_remote_network.aws_network.id
-  # group_ids = []
   group_ids         = concat(
     [for group in local.resource_group_creation: twingate_group.additional_resources_created_groups[group.name].id if group.parent == each.value.name],
-    ## TODO: Expand so more than one group can be found?
-    [for group in local.resource_group_existing: data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"].groups[0].id if can(data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"])]
-    # [for group in local.resource_group_existing: 
-    #   [
-    #     for block in data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"].groups: block.id
-    #     if can(data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"])
-    #   ]
-    # ]
+    # Adding distinct flatten to transform from [["foo"],["bar"]] to ["foo","bar"]
+    distinct(flatten([for group in local.resource_group_existing: 
+     [
+      for block in data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"].groups:
+        block.id
+     ]
+      if can(data.twingate_groups.additional_resources_existing_groups["${each.value.name}-${group.name}"])
+    ]))
   )
   protocols {
     allow_icmp = each.value.protocols.allow_icmp
