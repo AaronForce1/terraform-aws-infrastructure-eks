@@ -139,11 +139,10 @@ module "teleport" {
   source     = "./provisioning/kubernetes/teleport"
   depends_on = [module.eks]
   
-  chart_version    = var.helm_configurations.teleport.chart_version
-  name             = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-  kubeClusterName  = var.helm_configurations.teleport.cluster_name
-  authToken        = var.helm_configurations.teleport.auth_token
-  proxyAddr        = var.helm_configurations.teleport.proxy_address
+  chart_version = var.helm_configurations.teleport.chart_version
+  cluster_name  = var.helm_configurations.teleport.cluster_name
+  auth_token    = var.helm_configurations.teleport.auth_token
+  proxy_address = var.helm_configurations.teleport.proxy_address
 }
 
 # module "gitlab_runner" {
