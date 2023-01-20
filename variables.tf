@@ -312,6 +312,7 @@ variable "helm_installations" {
     grafana       = bool
     argocd        = bool
     twingate      = bool
+    teleport      = bool
   })
   default = {
     dashboard     = true
@@ -322,6 +323,7 @@ variable "helm_installations" {
     grafana       = true
     argocd        = false
     twingate      = false
+    teleport      = false
   }
 }
 variable "helm_configurations" {
@@ -419,6 +421,12 @@ variable "helm_configurations" {
           create = bool
         }))
       })))
+    }))
+    teleport =  optional(object({
+      chart_version    = optional(string)
+      kubeClusterName  = optional(string)
+      authToken        = optional(string)
+      proxyAddr        = optional(string)
     }))
   })
   default = {
