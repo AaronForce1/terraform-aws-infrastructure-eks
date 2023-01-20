@@ -14,6 +14,11 @@ variable "auth_token" {
   type = string
 }
 
+variable "roles" {
+  type = string
+}
+
+
 variable "custom_manifest" {
   type    = string
   default = null
