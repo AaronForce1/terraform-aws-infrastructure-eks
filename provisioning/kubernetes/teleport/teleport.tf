@@ -11,6 +11,9 @@ kubeClusterName: ${var.cluster_name}
 authToken: ${var.auth_token}
 proxyAddr: ${var.proxy_address}
 roles: ${var.roles}
+labels:
+  cluster: ${var.cluster_name}
+  env: ${var.env}
 EOT
   ]
 }

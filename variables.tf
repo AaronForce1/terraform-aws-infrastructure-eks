@@ -429,6 +429,7 @@ variable "helm_configurations" {
       auth_token    = optional(string)
       proxy_address = optional(string)
       roles         = optional(string)
+      env           = optional(string)
     }))
   })
   default = {

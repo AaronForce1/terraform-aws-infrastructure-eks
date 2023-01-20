@@ -18,7 +18,9 @@ variable "roles" {
   type = string
 }
 
-
+variable "env" {
+  type = string
+}
 variable "custom_manifest" {
   type = string
   default = null
