@@ -13,3 +13,8 @@ variable "proxy_address" {
 variable "auth_token" {
   type = string
 }
+
+variable "custom_manifest" {
+  type    = string
+  default = null
+}

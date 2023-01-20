@@ -140,6 +140,7 @@ module "teleport" {
   depends_on = [module.eks]
   
   chart_version = var.helm_configurations.teleport.chart_version
+  custom_manifest = var.helm_configurations.teleport.values_file
   cluster_name  = var.helm_configurations.teleport.cluster_name
   auth_token    = var.helm_configurations.teleport.auth_token
   proxy_address = var.helm_configurations.teleport.proxy_address
