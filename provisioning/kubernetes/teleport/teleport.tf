@@ -1,7 +1,7 @@
 resource "helm_release" "teleport" {
   name             = "teleport-agent"
   repository       = "https://charts.releases.teleport.dev"
-  chart            = "teleport/teleport-kube-agent"
+  chart            = "teleport-kube-agent"
   namespace        = "teleport"
   create_namespace = false
   version          = var.chart_version
