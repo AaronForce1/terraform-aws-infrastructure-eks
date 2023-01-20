@@ -5,7 +5,12 @@ resource "helm_release" "teleport" {
   namespace        = "teleport"
   create_namespace = false
   version          = var.chart_version
-  kubeClusterName  = var.cluster_name
-  authToken        = var.auth_token
-  proxyAddr        = var.proxy_address
+  values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOT
+
+kubeClusterName  = ${var.cluster_name}
+authToken        = ${var.auth_token}
+proxyAddr        = ${var.proxy_address}
+
+EOT
+  ]
 }
