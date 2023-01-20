@@ -1,9 +1,9 @@
 variable "chart_version" {
-  type    = string
+  type = string
 }
 
 variable "cluster_name" {
-  type    = string
+  type = string
 }
 
 variable "proxy_address" {
@@ -20,6 +20,6 @@ variable "roles" {
 
 
 variable "custom_manifest" {
-  type    = string
+  type = string
   default = null
 }
