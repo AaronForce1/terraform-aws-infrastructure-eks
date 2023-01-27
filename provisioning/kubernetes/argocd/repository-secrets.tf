@@ -3,7 +3,7 @@ resource "kubernetes_secret" "argocd_application_repository_secrets" {
 
   metadata {
     name      = "repository-${var.repository_secrets[count.index].name}"
-    namespace = "argocd"
+    namespace = "hexsafe-alpha" # just for testing
     labels = {
       "argocd.argoproj.io/secret-type" = "repository"
     }
