@@ -279,6 +279,10 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
+    teleport_rds_iam = optional(object({
+      enabled                    = optional(bool)
+      namespace_service_accounts = optional(list(string))
+    }))
   })
   default = {
     cluster_autoscaler   = true
@@ -297,6 +301,9 @@ variable "aws_installations" {
       eks_security_groups = true
     }
     vault_aws_kms = {
+      enabled = false
+    }
+    teleport_rds_iam = {
       enabled = false
     }
   }
