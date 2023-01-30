@@ -1,20 +1,31 @@
 resource "kubernetes_secret" "argocd_application_repository_secrets" {
-  count = length(var.repository_secrets)
+  # count = length(var.repository_secrets)
+  for_each = {
+    for repository_secret in var.repository_secrets : repository_secret.name => repository_secret
+  }
 
   metadata {
-    name      = "repository-${var.repository_secrets[count.index].name}"
+    # name      = "repository-${var.repository_secrets[count.index].name}"
+    name      = "repository-${each.value.name}"
     namespace = "hexsafe-alpha" # just for testing
     labels = {
       "argocd.argoproj.io/secret-type" = "repository"
     }
   }
 
+  # data = {
+  #   name     = var.repository_secrets[count.index].name
+  #   url      = var.repository_secrets[count.index].url
+  #   type     = var.repository_secrets[count.index].type
+  #   username = var.repository_secrets[count.index].secrets_store != "ssm" ? var.repository_secrets[count.index].username : data.aws_ssm_parameter.infrastructure_credentials_username[var.repository_secrets[count.index].username].value
+  #   password = var.repository_secrets[count.index].secrets_store != "ssm" ? var.repository_secrets[count.index].password : data.aws_ssm_parameter.infrastructure_credentials_password[var.repository_secrets[count.index].password].value
+  # }
   data = {
-    name     = var.repository_secrets[count.index].name
-    url      = var.repository_secrets[count.index].url
-    type     = var.repository_secrets[count.index].type
-    username = var.repository_secrets[count.index].secrets_store != "ssm" ? var.repository_secrets[count.index].username : data.aws_ssm_parameter.infrastructure_credentials_username[var.repository_secrets[count.index].username].value
-    password = var.repository_secrets[count.index].secrets_store != "ssm" ? var.repository_secrets[count.index].password : data.aws_ssm_parameter.infrastructure_credentials_password[var.repository_secrets[count.index].password].value
+    name     = each.value.name
+    url      = each.value.url
+    type     = each.value.type
+    username = each.value.secrets_store != "ssm" ? each.value.username : data.aws_ssm_parameter.infrastructure_credentials_username[each.value.username].value
+    password = each.value.secrets_store != "ssm" ? each.value.password : data.aws_ssm_parameter.infrastructure_credentials_password[each.value.password].value
   }
 }
 
