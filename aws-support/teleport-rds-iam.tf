@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "aws_rds_iam_policy_document_teleport" {
   statement {
     effect = "Allow"
     actions = ["rds-db:connect"]
-    resources = ["arn:aws:rds-db:${var.aws_region}:${local.account_id}:dbuser:rds_db_resource_id/*"]
+    resources = ["arn:aws:rds-db:${var.aws_region}:${local.account_id}:dbuser:${local.rds_db_resource_id}/*"]
   }
 }
 
