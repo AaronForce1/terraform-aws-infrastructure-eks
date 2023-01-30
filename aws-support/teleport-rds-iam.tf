@@ -1,15 +1,5 @@
 ## IAM Role and policies for teleport
 
-data "aws_db_instance" "rds_db_postgres" {
-  db_instance_identifier = "postgres-${var.app_namespace}-${var.tfenv}"
-}
-locals {
-  rds_db_resource_id = data.aws_db_instance.rds_db_postgres.resource_id
-}
-output "rds_db_resource_id" {
-  value = local.rds_db_resource_id
-}
-
 data "aws_caller_identity" "current" {}
 locals {
     account_id = data.aws_caller_identity.current.account_id
@@ -22,7 +12,7 @@ data "aws_iam_policy_document" "aws_rds_iam_policy_document_teleport" {
   statement {
     effect = "Allow"
     actions = ["rds-db:connect"]
-    resources = ["arn:aws:rds-db:${var.aws_region}:${local.account_id}:dbuser:${local.rds_db_resource_id}/*"]
+    resources = ["arn:aws:rds-db:${var.aws_region}:${local.account_id}:dbuser:*/*"]
   }
 }
 
