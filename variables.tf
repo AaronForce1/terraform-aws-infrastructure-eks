@@ -431,12 +431,8 @@ variable "helm_configurations" {
     }))
     teleport =  optional(object({
       chart_version = optional(string)
-      values_file   = optional(string)
+      value_file    = optional(string)
       cluster_name  = optional(string)
-      auth_token    = optional(string)
-      proxy_address = optional(string)
-      roles         = optional(string)
-      env           = optional(string)
     }))
   })
   default = {
