@@ -279,6 +279,10 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
+    teleport_rds_iam = optional(object({
+      enabled                    = optional(bool)
+      namespace_service_accounts = optional(list(string))
+    }))
   })
   default = {
     cluster_autoscaler   = true
@@ -299,6 +303,9 @@ variable "aws_installations" {
     vault_aws_kms = {
       enabled = false
     }
+    teleport_rds_iam = {
+      enabled = false
+    }
   }
 }
 
@@ -312,6 +319,7 @@ variable "helm_installations" {
     grafana       = bool
     argocd        = bool
     twingate      = bool
+    teleport      = bool
   })
   default = {
     dashboard     = true
@@ -322,6 +330,7 @@ variable "helm_installations" {
     grafana       = true
     argocd        = false
     twingate      = false
+    teleport      = false
   }
 }
 variable "helm_configurations" {
@@ -419,6 +428,11 @@ variable "helm_configurations" {
           create = bool
         }))
       })))
+    }))
+    teleport =  optional(object({
+      chart_version = optional(string)
+      value_file    = optional(string)
+      cluster_name  = optional(string)
     }))
   })
   default = {

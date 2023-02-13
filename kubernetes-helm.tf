@@ -135,6 +135,15 @@ module "twingate" {
   logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
 }
 
+module "teleport" {
+  source     = "./provisioning/kubernetes/teleport"
+  depends_on = [module.eks]
+  
+  chart_version = var.helm_configurations.teleport.chart_version
+  custom_manifest = var.helm_configurations.teleport
+  cluster_name  = var.helm_configurations.teleport.cluster_name
+}
+
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
 #   depends_on = [module.namespaces, module.eks-vpc]
