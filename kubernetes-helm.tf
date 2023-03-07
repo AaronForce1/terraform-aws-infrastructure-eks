@@ -120,28 +120,30 @@ module "twingate" {
 
   count = var.helm_installations.twingate ? 1 : 0
 
-  chart_version   = var.helm_configurations.twingate.chart_version
-  custom_manifest = var.helm_configurations.twingate.values_file
-  image_url       = coalesce(var.helm_configurations.twingate.registryURL, "twingate/connector")
+  chart_version   = try(var.helm_configurations.twingate.chart_version, "")
+  custom_manifest = try(var.helm_configurations.twingate.values_file, "")
+  image_url       = try(var.helm_configurations.twingate.registryURL, "twingate/connector")
 
   name                 = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
-  url                  = coalesce(var.helm_configurations.twingate.url, "twingate.com")
-  network_name         = var.helm_configurations.twingate.network
-  management_group_configurations                = var.helm_configurations.twingate.management_group_configurations
-  connector_count      = coalesce(var.helm_configurations.twingate.connectorCount, 2)
+  url                  = try(var.helm_configurations.twingate.url, "twingate.com")
+  network_name         = try(var.helm_configurations.twingate.network, "")
+  management_group_configurations                = try(var.helm_configurations.twingate.management_group_configurations, [])
+  connector_count      = try(var.helm_configurations.twingate.connectorCount, 2)
   cluster_endpoint     = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
-  additional_resources = var.helm_configurations.twingate.resources
+  additional_resources = try(var.helm_configurations.twingate.resources, [])
 
-  logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
+  logLevel = try(var.helm_configurations.twingate.logLevel, "error")
 }
 
 module "teleport" {
   source     = "./provisioning/kubernetes/teleport"
   depends_on = [module.eks]
+
+  count = var.helm_installations.teleport ? 1 : 0
   
-  chart_version = var.helm_configurations.teleport.chart_version
-  custom_manifest = var.helm_configurations.teleport
-  cluster_name  = var.helm_configurations.teleport.cluster_name
+  chart_version = try(var.helm_configurations.teleport.chart_version, "")
+  custom_manifest = try(var.helm_configurations.teleport, "")
+  cluster_name  = try(var.helm_configurations.teleport.cluster_name, "")
 }
 
 # module "gitlab_runner" {
