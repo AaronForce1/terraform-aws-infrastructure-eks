@@ -15,6 +15,7 @@ module "eks_managed_node_group" {
   iam_role_name              = "${module.eks.cluster_id}-${each.value.name}"
   iam_role_attach_cni_policy = true
   iam_role_use_name_prefix   = false
+  iam_role_tags              = local.base_tags
 
   launch_template_name            = "${module.eks.cluster_id}-${each.value.name}"
   launch_template_use_name_prefix = false
@@ -24,7 +25,8 @@ module "eks_managed_node_group" {
   vpc_id = module.eks-vpc.vpc_id
   subnet_ids = concat(
     each.value.subnet_selections.public ? module.eks-vpc.public_subnets : [],
-    each.value.subnet_selections.private ? module.eks-vpc.private_subnets : []
+    each.value.subnet_selections.private ? module.eks-vpc.private_subnets : [],
+    try(each.value.subnet_selections.custom, [])
   )
   cluster_primary_security_group_id = module.eks.cluster_primary_security_group_id
   # vpc_security_group_ids            = [module.eks.node_security_group_id]
@@ -42,6 +44,7 @@ module "eks_managed_node_group" {
   ebs_optimized = true
 
   labels = merge(
+    { Namespace = var.app_namespace },
     { Environment = var.tfenv },
     zipmap(
       [
@@ -56,12 +59,7 @@ module "eks_managed_node_group" {
   )
 
   taints = {
-    for taint in each.value.taints : taint.key => {
-      key            = taint.key
-      value          = taint.value
-      effect         = taint.effect
-      affinity_label = taint.affinity_label
-    }
+    for taint in each.value.taints : taint.key => taint
   }
 
   tags = merge(

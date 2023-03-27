@@ -3,7 +3,7 @@ module "nginx-controller-ingress" {
   depends_on = [module.eks, resource.aws_route53_zone.hosted_zone]
   count      = var.helm_installations.ingress ? 1 : 0
 
-  cluster_root_domain                  = var.cluster_root_domain
+  cluster_root_domain                  = var.cluster_root_domain.name
   app_namespace                        = var.app_namespace
   app_name                             = var.app_name
   tfenv                                = var.tfenv
@@ -156,19 +156,54 @@ module "argocd" {
   count      = var.helm_installations.argocd ? 1 : 0
   depends_on = [module.eks]
 
+  chart_version                     = var.helm_configurations.argocd.chart_version
   root_domain_name                  = var.cluster_root_domain.name
   operator_domain_name              = var.operator_domain_name
   hosted_zone_id                    = aws_route53_zone.hosted_zone[0].zone_id
+  kms_key_id                        = aws_kms_key.eks.key_id
   custom_manifest                   = var.helm_configurations.argocd
   repository_secrets                = var.helm_configurations.argocd.repository_secrets
   credential_templates              = var.helm_configurations.argocd.credential_templates
   registry_secrets                  = var.helm_configurations.argocd.registry_secrets
   generate_plugin_repository_secret = var.helm_configurations.argocd.generate_plugin_repository_secret
+  additionalProjects                = var.helm_configurations.argocd.additionalProjects
+}
+
+
+
+module "twingate" {
+  source     = "./provisioning/kubernetes/twingate"
+  depends_on = [module.eks]
+
+  count = var.helm_installations.twingate ? 1 : 0
+
+  chart_version   = var.helm_configurations.twingate.chart_version
+  custom_manifest = var.helm_configurations.twingate.values_file
+  image_url       = coalesce(var.helm_configurations.twingate.registryURL, "twingate/connector")
+
+  name                            = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  url                             = coalesce(var.helm_configurations.twingate.url, "twingate.com")
+  network_name                    = var.helm_configurations.twingate.network
+  management_group_configurations = var.helm_configurations.twingate.management_group_configurations
+  connector_count                 = coalesce(var.helm_configurations.twingate.connectorCount, 2)
+  cluster_endpoint                = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
+  additional_resources            = var.helm_configurations.twingate.resources
+
+  logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
+}
+
+module "teleport" {
+  source     = "./provisioning/kubernetes/teleport"
+  depends_on = [module.eks]
+
+  chart_version   = var.helm_configurations.teleport.chart_version
+  custom_manifest = var.helm_configurations.teleport
+  cluster_name    = var.helm_configurations.teleport.cluster_name
 }
 
 # module "gitlab_runner" {
 #   source     = "./provisioning/kubernetes/gitlab-runner"
-#   depends_on =  module.eks-vpc]
+#   depends_on = [module.namespaces, module.eks-vpc]
 #   count      = var.helm_installations.gitlab_runner ? 1 : 0
 
 #   app_name                         = var.app_name

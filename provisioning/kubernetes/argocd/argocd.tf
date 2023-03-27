@@ -4,6 +4,7 @@ resource "helm_release" "argocd" {
   chart            = "argo-cd"
   namespace        = "argocd"
   create_namespace = false
+  version          = var.chart_version
 
   ## Default values.yaml + configuration
   ## https://github.com/argoproj/argo-helm/blob/master/charts/argo-cd/values.yaml
@@ -23,7 +24,19 @@ EOT
   ]
 }
 
-## TODO: Modularise
+resource "kubectl_manifest" "applicationsets" {
+  for_each = { for applicationSet in try(var.custom_manifest.application_sets, []) : regex("[A-Za-z0-9-]+", applicationSet.filepath) => applicationSet }
+  depends_on = [
+    helm_release.argocd
+  ]
+
+  yaml_body = templatefile(
+    each.value.filepath,
+    merge(each.value.envvars, local.argocd_applicationSet_clusterVars)
+  )
+}
+
+# DEPRICATED - To Remove in 3.1.0
 resource "kubectl_manifest" "applicationset" {
   count = try(length(var.custom_manifest.application_set), 0)
   depends_on = [
@@ -31,11 +44,12 @@ resource "kubectl_manifest" "applicationset" {
   ]
 
   yaml_body = templatefile(
-    "${var.custom_manifest.application_set[count.index]}",
+    var.custom_manifest.application_set[count.index],
     {
       root_domain_name     = var.root_domain_name,
       operator_domain_name = var.operator_domain_name,
       hosted_zone_id       = var.hosted_zone_id
+      kms_key_id           = var.kms_key_id
     }
   )
 }

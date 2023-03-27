@@ -44,7 +44,7 @@ locals {
     for x in module.eks_managed_node_group :
     {
       "groups" : ["system:bootstrappers", "system:nodes"]
-      "rolearn" : "${x.iam_role_arn}"
+      "rolearn" : x.iam_role_arn
       "username" : "system:node:{{EC2PrivateDNSName}}"
     }
   ]
@@ -77,6 +77,18 @@ locals {
     (var.helm_installations.vault_consul ? ["hashicorp"] : []),
     (var.helm_installations.argocd ? ["argocd"] : [])
   )
+
+  cluster_security_group_additional_rules = {
+    for cidr in var.cluster_endpoint_private_access_cidrs :
+    "ingress-${cidr}" => {
+      description = "ingress for ${cidr}"
+      protocol    = "-1"
+      from_port   = 443
+      to_port     = 443
+      type        = "ingress"
+      cidr_blocks = [cidr]
+    }
+  }
 }
 
 resource "random_integer" "cidr_vpc" {

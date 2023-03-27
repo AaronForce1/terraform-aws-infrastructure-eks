@@ -55,6 +55,8 @@ module "eks-vpc" {
     module.subnet_addrs.networks[2].cidr_block,
   ]
 
+  map_public_ip_on_launch = false
+
   # NAT Gateway settings + EIPs
   enable_nat_gateway                = local.nat_gateway_configuration.enable_nat_gateway
   enable_dns_hostnames              = local.nat_gateway_configuration.enable_dns_hostnames
@@ -74,9 +76,9 @@ module "eks-vpc" {
   default_security_group_egress  = [{}]
 
   # VPC Flow Logs (Cloudwatch log group and IAM role will be created)
-  enable_flow_log                      = coalesce(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
-  create_flow_log_cloudwatch_log_group = coalesce(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
-  create_flow_log_cloudwatch_iam_role  = coalesce(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  enable_flow_log                      = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_log_group = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
+  create_flow_log_cloudwatch_iam_role  = try(var.vpc_flow_logs.enabled, var.tfenv == "prod" ? true : false)
   flow_log_max_aggregation_interval    = 60
 
   #IPv6 section

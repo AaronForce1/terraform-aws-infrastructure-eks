@@ -1,3 +1,42 @@
+###########################################################################
+#### Kubernetes Secrets: Default                                       ####
+###########################################################################
+data "aws_ssm_parameter" "kubernetes_secret" {
+  depends_on = [
+    module.eks
+  ]
+
+  for_each = {
+    for secret in var.kubernetes_secrets : "${secret.name}-${secret.namespace}" => secret
+    if secret.secrets_store == "ssm"
+  }
+
+  name = each.value.secrets_store_name
+}
+
+resource "kubernetes_secret" "kubernetes_secret" {
+  depends_on = [
+    module.eks
+  ]
+
+  for_each = { for secret in coalesce(var.kubernetes_secrets, []) : "${secret.name}-${secret.namespace}" => secret }
+  metadata {
+    name      = each.value.name
+    namespace = each.value.namespace
+    labels = merge(
+      {
+        "app.kubernetes.io/part-of" = each.value.namespace
+      },
+      try(each.value.labels, [])
+    )
+  }
+  data = each.value.secrets_store != "ssm" ? yamldecode(each.value.data) : yamldecode(data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value)
+  type = coalesce(each.value.type, "Opaque")
+}
+
+###########################################################################
+#### Kubernetes Secrets: Regcred                                       ####
+###########################################################################
 data "aws_ssm_parameter" "regcred_username" {
   for_each = {
     for regcred in var.registry_credentials : "${regcred.name}-${regcred.namespace}" => regcred
@@ -27,7 +66,7 @@ resource "kubernetes_secret" "regcred" {
   data = {
     ".dockerconfigjson" = sensitive(jsonencode({
       auths = {
-        "${each.value.docker_server}" = {
+        (each.value.docker_server) = {
           "username" = each.value.secrets_store != "ssm" ? each.value.docker_username : data.aws_ssm_parameter.regcred_username["${each.value.name}-${each.value.namespace}"].value
           "password" = each.value.secrets_store != "ssm" ? each.value.docker_password : data.aws_ssm_parameter.regcred_password["${each.value.name}-${each.value.namespace}"].value
           "email"    = each.value.docker_email

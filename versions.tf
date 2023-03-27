@@ -1,6 +1,5 @@
 terraform {
-  required_version = ">= 1.1"
-  experiments      = [module_variable_optional_attrs]
+  required_version = ">= 1.3"
 
   required_providers {
     aws = {
@@ -23,6 +22,18 @@ terraform {
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = "~> 1.14.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.4.3"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.2.3"
+    }
+    twingate = {
+      source  = "Twingate/twingate"
+      version = "0.2.3"
     }
   }
 }

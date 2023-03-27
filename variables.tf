@@ -1,18 +1,22 @@
 ## GLOBAL VAR CONFIGURATION
 variable "aws_region" {
+  type        = string
   description = "AWS Region for all primary configurations"
 }
 
 variable "aws_secondary_region" {
+  type        = string
   description = "Secondary Region for certain redundant AWS components"
 }
 
 variable "aws_profile" {
+  type        = string
   description = "AWS Profile"
   default     = ""
 }
 
 variable "tech_email" {
+  type        = string
   description = "Tech Contact E-Mail for services such as LetsEncrypt"
 }
 
@@ -94,6 +98,7 @@ variable "eks_managed_node_groups" {
   #   subnet_selections = object({
   #     public  = bool
   #     private = bool
+  #     custom  = list(string)
   #   })
   #   tags = optional(any)
   # }))
@@ -116,64 +121,77 @@ variable "operator_domain_name" {
 }
 
 variable "app_name" {
+  type        = string
   description = "Application Name"
   default     = "eks"
 }
 
 variable "app_namespace" {
+  type        = string
   description = "Tagged App Namespace"
 }
 
 variable "tfenv" {
+  type        = string
   description = "Environment"
 }
 
 variable "cluster_name" {
+  type        = string
   description = "Optional override for cluster name instead of standard {name}-{namespace}-{env}"
   default     = ""
 }
 
 variable "cluster_version" {
+  type        = string
   description = "Kubernetes Cluster Version"
-  default     = "1.21"
+  default     = "1.23"
 }
 
 variable "instance_type" {
+  type = string
   # Standard Types (M | L | XL | XXL): m5.large | c5.xlarge | t3a.2xlarge | m5a.2xlarge
   description = "AWS Instance Type for provisioning"
   default     = "c5a.medium"
 }
 
 variable "instance_desired_size" {
+  type        = string
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 2
 }
 
 variable "instance_min_size" {
+  type        = number
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 1
 }
 
 variable "instance_max_size" {
+  type        = number
   description = "Count of instances to be spun up within the context of a kubernetes cluster. Minimum: 2"
   default     = 4
 }
 
 variable "billingcustomer" {
+  type        = string
   description = "Which Billingcustomer, aka Cost Center, is responsible for this infra provisioning"
 }
 
 variable "root_vol_size" {
+  type        = string
   description = "Root Volume Size"
   default     = "50"
 }
 
 variable "node_key_name" {
+  type        = string
   description = "EKS Node Key Name"
   default     = ""
 }
 
 variable "node_public_ip" {
+  type        = bool
   description = "assign public ip on the nodes"
   default     = false
 }
@@ -215,6 +233,7 @@ variable "vpc_flow_logs" {
   })
   default = {}
 }
+
 
 variable "elastic_ip_custom_configuration" {
   description = "By default, this module will provision new Elastic IPs for the VPC's NAT Gateways; however, one can also override and specify separate, pre-existing elastic IPs as needed in order to preserve IPs that are whitelisted; reminder that the list of EIPs should have the same count as nat gateways created."
@@ -270,6 +289,14 @@ variable "aws_installations" {
     route53_external_dns = optional(bool)
     kms_secrets_access   = optional(bool)
     cert_manager         = optional(bool)
+    vault_aws_kms = optional(object({
+      enabled                    = optional(bool)
+      namespace_service_accounts = optional(list(string))
+    }))
+    teleport_rds_iam = optional(object({
+      enabled                    = optional(bool)
+      namespace_service_accounts = optional(list(string))
+    }))
   })
   default = {
     cluster_autoscaler   = true
@@ -287,6 +314,12 @@ variable "aws_installations" {
       eks_irsa_role       = true
       eks_security_groups = true
     }
+    vault_aws_kms = {
+      enabled = false
+    }
+    teleport_rds_iam = {
+      enabled = false
+    }
   }
 }
 
@@ -302,6 +335,8 @@ variable "helm_installations" {
     argocd            = bool
     stakater_reloader = bool
     metrics_server    = bool
+    twingate          = bool
+    teleport          = bool
   })
   default = {
     dashboard         = false
@@ -314,6 +349,8 @@ variable "helm_installations" {
     argocd            = false
     stakater_reloader = false
     metrics_server    = true
+    twingate          = false
+    teleport          = false
   }
 }
 variable "helm_configurations" {
@@ -337,8 +374,13 @@ variable "helm_configurations" {
       version = optional(string)
     }))
     argocd = optional(object({
+      chart_version   = optional(string)
       value_file      = optional(string)
       application_set = optional(list(string))
+      application_sets = optional(list(object({
+        filepath = string
+        envvars  = map(string)
+      })))
       repository_secrets = optional(list(object({
         name          = string
         url           = string
@@ -363,6 +405,57 @@ variable "helm_configurations" {
         secrets_store = string
       })))
       generate_plugin_repository_secret = optional(bool)
+      additionalProjects = optional(list(object({
+        name        = string
+        description = string
+        clusterResourceWhitelist = list(object({
+          group = string
+          kind  = string
+        }))
+        destinations = list(object({
+          name      = string
+          namespace = string
+          server    = string
+        }))
+        sourceRepos = list(string)
+      })))
+    }))
+    twingate = optional(object({
+      chart_version  = optional(string)
+      values_file    = optional(string)
+      registryURL    = optional(string)
+      url            = optional(string)
+      network        = string
+      logLevel       = optional(string)
+      connectorCount = optional(number)
+      management_group_configurations = list(object({
+        name   = string
+        create = bool
+      }))
+      resources = optional(list(object({
+        name    = string
+        address = string
+        protocols = object({
+          allow_icmp = bool
+          tcp = object({
+            policy = string
+            ports  = list(string)
+          })
+          udp = object({
+            policy = string
+            ports  = list(string)
+          })
+        })
+        group_configurations = list(object({
+          name   = string
+          create = bool
+        }))
+      })))
+    }))
+    teleport = optional(object({
+      chart_version = optional(string)
+      value_file    = optional(string)
+      cluster_name  = optional(string)
     }))
   })
   default = {
@@ -383,14 +476,29 @@ variable "custom_namespaces" {
 }
 
 variable "custom_aws_s3_support_infra" {
+  ## TODO: Expand capabilities to allow more granular control of node_group access
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({
-    name                                 = string
-    bucket_acl                           = string
-    aws_kms_key_id                       = optional(string)
-    lifecycle_rules                      = any
+    name           = string
+    bucket_acl     = string
+    aws_kms_key_id = optional(string)
+    lifecycle_rules = optional(list(object({
+      id      = string
+      enabled = bool
+      filter = object({
+        prefix = string
+      })
+      transition = optional(list(object({
+        days          = number
+        storage_class = string
+      })))
+      expiration = object({
+        days = number
+      })
+    })))
     versioning                           = bool
-    k8s_namespace_service_account_access = any
+    k8s_namespace_service_account_access = list(string)
+    eks_node_group_access                = optional(bool)
   }))
   default = []
 }
@@ -416,20 +524,30 @@ variable "vpc_subnet_configuration" {
 }
 
 variable "google_clientID" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Client ID"
 }
 
 variable "google_clientSecret" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Client Secret"
 }
 
 variable "google_authDomain" {
+  type        = string
   description = "Used for Infrastructure OAuth: Google Auth Domain"
 }
 
 variable "create_launch_template" {
+  type        = bool
   description = "enable launch template on node group"
   default     = false
+}
+
+variable "cluster_endpoint_private_access_cidrs" {
+  description = "Additional ip cidr to add to cluster security group"
+  type        = list(string)
+  default     = []
 }
 
 variable "cluster_endpoint_public_access_cidrs" {
@@ -440,6 +558,7 @@ variable "cluster_endpoint_public_access_cidrs" {
 
 ## TODO: Merge all the default node_group configurations together
 variable "default_ami_type" {
+  type        = string
   description = "Default AMI used for node provisioning"
   default     = "AL2_x86_64"
 }
@@ -457,10 +576,26 @@ variable "gitlab_kubernetes_agent_config" {
   }
 }
 variable "default_capacity_type" {
+  type        = string
   description = "Default capacity configuraiton used for node provisioning. Valid values: `ON_DEMAND, SPOT`"
   default     = "ON_DEMAND"
 }
 
+variable "kubernetes_secrets" {
+  description = "Baseline kubernetes secrets to be provisioned alongside the cluster."
+  type = list(object({
+    name               = string
+    namespace          = string
+    labels             = optional(map(string))
+    secrets_store      = string
+    secrets_store_name = string
+    type               = optional(string)
+    data               = optional(string)
+  }))
+  default = []
+}
+
+## TODO: Consolidate These
 variable "registry_credentials" {
   description = "Create list of registry credential for different namespaces, username and password are fetched from AWS parameter store"
   type = list(object({

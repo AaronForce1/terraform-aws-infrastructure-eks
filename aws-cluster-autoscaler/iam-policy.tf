@@ -20,6 +20,7 @@ resource "aws_iam_policy" "cluster_autoscaler_policy" {
   tags        = var.tags
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "cluster_autoscaler" {
   statement {
     sid    = "clusterAutoscalerAll"

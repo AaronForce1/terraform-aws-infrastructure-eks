@@ -12,6 +12,7 @@ variable "node_count" {}
 variable "name_prefix" {}
 variable "aws_installations" {}
 variable "eks_infrastructure_support_buckets" {}
+variable "eks_managed_node_group_roles" {}
 variable "eks_infrastructure_kms_arn" {}
 variable "oidc_provider_arn" {}
 variable "tags" {}

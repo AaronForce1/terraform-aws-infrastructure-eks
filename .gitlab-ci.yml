@@ -25,6 +25,7 @@ cache:
 stages:
   - validate
   - security review
+  - release
 
 ##################################
 #### ------------------------ ####
@@ -56,3 +57,18 @@ tfsec:
   artifacts:
     reports:
       sast: gl-sast-report.json
+
+##################################
+#### ------------------------ ####
+####     SEMANTIC RELEASE     ####
+#### ------------------------ ####
+##################################
+release:semantic:
+  image: registry.gitlab.com/technology-utils/semantic-release-image:v1.1.0
+  stage: release
+  variables:
+    GL_TOKEN: ${GL_TOKEN}
+  script:
+    - semantic-release
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
