@@ -132,7 +132,7 @@ module "twingate" {
   cluster_endpoint     = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
   additional_resources = coalesce(var.helm_configurations.twingate.resources, [])
 
-  logLevel = try(var.helm_configurations.twingate.logLevel, "error")
+  logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
 }
 
 module "teleport" {
