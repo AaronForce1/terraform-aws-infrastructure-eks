@@ -448,8 +448,12 @@ variable "helm_configurations" {
 
 variable "custom_namespaces" {
   description = "Adding namespaces to a default cluster provisioning process"
-  type        = list(string)
-  default     = []
+  type = list(object({
+    name               = string
+    labels             = optional(map(string))
+    annotations        = optional(map(string))
+  }))
+  default = []
 }
 
 variable "custom_aws_s3_support_infra" {
