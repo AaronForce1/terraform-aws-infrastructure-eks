@@ -131,6 +131,7 @@ module "twingate" {
   connector_count      = coalesce(var.helm_configurations.twingate.connectorCount, 2)
   cluster_endpoint     = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
   additional_resources = coalesce(var.helm_configurations.twingate.resources, [])
+  legacy_resource_list = var.helm_configurations.twingate.resource_manifest
 
   logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
 }

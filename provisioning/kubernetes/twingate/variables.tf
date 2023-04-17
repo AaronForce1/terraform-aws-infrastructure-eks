@@ -54,6 +54,47 @@ variable "additional_resources" {
   default = []
 }
 
+## TODO: Merge legacy_resource_list with additional_resources and leverage yaml definitions file or custom
+## Perhaps convert twingate into a custom helm chart?
+variable "legacy_resource_list" {
+  type = object({
+    address_list = list(object({
+      name = optional(string)
+      address = string
+    }))
+    protocols = object({
+      allow_icmp = bool
+      tcp = object({
+        policy = string
+        ports  = list(string)
+      })
+      udp = object({
+        policy = string
+        ports  = list(string)
+      })
+    })
+    group_configurations = list(object({
+      name = string
+      create = bool
+    }))
+  })
+  default = {
+    address_list: []
+    protocols: {
+      allow_icmp: false
+      tcp: {
+        policy: "DENY_ALL"
+        ports: []
+      }
+      udp: {
+        policy: "DENY_ALL"
+        ports: []
+      }
+    }
+    group_configurations: []
+  }
+}
+
 variable "connector_count" {
   type    = number
   default = 2
