@@ -8,7 +8,7 @@ locals {
   ]))
   resource_group_existing_v2 = distinct(flatten([
     for resource in var.additional_resources: [
-      for group in concat(resource.group_configurations, var.legacy_resource_list.group_configurations): group.name
+      for group in concat(resource.group_configurations, try(var.legacy_resource_list.group_configurations, [])): group.name
       if !group.create
     ]
   ]))
