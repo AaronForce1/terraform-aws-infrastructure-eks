@@ -428,6 +428,27 @@ variable "helm_configurations" {
           create = bool
         }))
       })))
+      resource_manifest = optional(object({
+        address_list = list(object({
+          name = optional(string)
+          address = string
+        }))
+        protocols = object({
+          allow_icmp = bool
+          tcp = object({
+            policy = string
+            ports  = list(string)
+          })
+          udp = object({
+            policy = string
+            ports  = list(string)
+          })
+        })
+        group_configurations = list(object({
+          name = string
+          create = bool
+        }))
+      }))
     }))
     teleport =  optional(object({
       chart_version = optional(string)
