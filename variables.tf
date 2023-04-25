@@ -505,6 +505,34 @@ variable "custom_aws_s3_support_infra" {
   default = []
 }
 
+variable "custom_aws_cloudwatch" {
+  ## TODO: Expand capabilities to allow more granular control of node_group access
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name           = string
+    bucket_acl     = string
+    aws_kms_key_id = optional(string)
+    lifecycle_rules = optional(list(object({
+      id      = string
+      enabled = bool
+      filter = object({
+        prefix = string
+      })
+      transition = optional(list(object({
+        days          = number
+        storage_class = string
+      })))
+      expiration = object({
+        days = number
+      })
+    })))
+    versioning                           = bool
+    k8s_namespace_service_account_access = list(string)
+    eks_node_group_access                = optional(bool)
+  }))
+  default = []
+}
+
 variable "vpc_subnet_configuration" {
   type = object({
     base_cidr = string
