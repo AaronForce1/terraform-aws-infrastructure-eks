@@ -73,7 +73,7 @@ module "aws_cloudwatch_bucket_irsa_role" {
 
   create_role = true
 
-  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-aws-cloudwatch-${each.value.name}"
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cloudwatch-${each.value.name}"
 
   role_path    = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   provider_url = replace(var.oidc_url, "https://", "")
@@ -83,25 +83,4 @@ module "aws_cloudwatch_bucket_irsa_role" {
   oidc_fully_qualified_subjects = [join("", concat(["system:serviceaccount:"], each.value.k8s_namespace_service_account_access))]
 
   tags = var.tags
-}
-
-locals {
-  role_policy_attachments = distinct(flatten([
-    for cloudwatch in var.eks_aws_cloudwatch : [
-      for role_name in var.eks_managed_node_group_roles : {
-        cloudwatch = cloudwatch
-        role_name = role_name.value
-      }
-    ]
-    if cloudwatch.eks_node_group_access
-  ]))
-}
-
-resource "aws_iam_role_policy_attachment" "additional" {
-  for_each = {
-    for role_attachment in local.role_policy_attachments : "${role_attachment.cloudwatch.name}-${role_attachment.role_name}" => role_attachment
-  }
-
-  policy_arn = resource.aws_iam_policy.aws_cloudwatch_bucket_iam_policies[each.value.cloudwatch.name].arn
-  role       = each.value.role_name
 }
