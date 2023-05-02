@@ -639,3 +639,17 @@ variable "registry_credentials" {
   }))
   default = []
 }
+
+
+variable "vpc_peering" {
+  description = "vpc peering - support peer to multiple vpcs"
+  type = list(object({
+    peer_vpc_id             = string
+    peer_owner_same_aws_acc = optional(bool)
+    peer_owner_aws_acc_id   = optional(string)
+    add_to_routetable       = bool
+    peer_region             = string
+    peer_cidr               = optional(string)
+  }))
+  default = []
+}
