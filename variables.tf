@@ -279,6 +279,9 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
+    teleport             = optional(object({
+      cluster = optional(bool)
+    }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
@@ -451,9 +454,11 @@ variable "helm_configurations" {
       }))
     }))
     teleport =  optional(object({
-      chart_version = optional(string)
-      value_file    = optional(string)
-      cluster_name  = optional(string)
+      installations = list(object({
+        chart_name = string
+        chart_version = string
+        values_file = string
+      }))
     }))
   })
   default = {

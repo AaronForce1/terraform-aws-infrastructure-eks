@@ -1,11 +1,8 @@
-variable "chart_version" {
-  type = string
-}
-
-variable "cluster_name" {
-  type = string
-}
-
-variable "custom_manifest" {
-  default = null
+variable "teleport_installations" {
+  type = list(object({
+    chart_name = string
+    chart_version = string
+    values_file = string
+  }))
+  default = []
 }
