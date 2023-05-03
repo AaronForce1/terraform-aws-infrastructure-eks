@@ -281,6 +281,7 @@ variable "aws_installations" {
     }))
     teleport             = optional(object({
       cluster = optional(bool)
+      cluster_discovery = optional(bool)
     }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)

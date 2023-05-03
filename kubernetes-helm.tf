@@ -143,6 +143,7 @@ module "teleport" {
   count = var.helm_installations.teleport ? 1 : 0
   
   teleport_installations = var.helm_configurations.teleport.installations
+  teleport_integrations  = var.aws_installations.teleport
 }
 
 # module "gitlab_runner" {

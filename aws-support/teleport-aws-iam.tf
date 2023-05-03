@@ -136,6 +136,34 @@ resource "aws_iam_policy" "cluster_s3_recording" {
   tags        = var.tags
 }
 
+## ----------------------------------
+## IAM Role for eks-cluster-discovery
+## ----------------------------------
+data "aws_iam_policy_document" "cluster_discovery" {
+  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  
+  statement {
+    sid = "AutomatedClusterDiscovery"
+    effect = "Allow"
+    actions = [
+      "eks:DescribeCluster",
+      "eks:ListClusters"
+    ]
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "cluster_discovery" {
+  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+
+  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-eks-discovery"
+  path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  description = "EKS Policy to discover clusters automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  policy      = data.aws_iam_policy_document.cluster_discovery[0].json
+  tags        = var.tags
+}
 
 module "teleport_cluster_irsa_role" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
@@ -156,6 +184,12 @@ module "teleport_cluster_irsa_role" {
   role_policy_arns = {
     state_storage   = aws_iam_policy.cluster_state_storage[0].arn,
     events_storage  = aws_iam_policy.cluster_events_storage[0].arn,
-    s3_session_recording = aws_iam_policy.cluster_s3_recording[0].arn
+    s3_session_recording = aws_iam_policy.cluster_s3_recording[0].arn,
   }
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cluster_discovery-irsa-role-attachment" {
+  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  role       = module.teleport_cluster_irsa_role[0].iam_role_name
+  policy_arn = aws_iam_policy.cluster_discovery[0].arn
 }

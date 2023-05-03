@@ -6,3 +6,14 @@ variable "teleport_installations" {
   }))
   default = []
 }
+
+variable "teleport_integrations" {
+  type = object({
+    cluster = bool
+    cluster_discovery = bool
+  })
+  default = {
+    cluster = false
+    cluster_discovery = false
+  }
+}
