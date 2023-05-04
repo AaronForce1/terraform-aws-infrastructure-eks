@@ -63,7 +63,7 @@ resource "aws_iam_policy" "aws_cloudwatch_bucket_iam_policies" {
 
 
 module "aws_cloudwatch_bucket_irsa_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
   version = "4.24"
 
   for_each = {
@@ -76,11 +76,12 @@ module "aws_cloudwatch_bucket_irsa_role" {
   role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cloudwatch-${each.value.name}"
 
   role_path    = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-  provider_url = replace(var.oidc_url, "https://", "")
 
-  role_policy_arns = [aws_iam_policy.aws_cloudwatch_bucket_iam_policies[each.value.name].arn]
+  custom_role_policy_arns = [aws_iam_policy.aws_cloudwatch_bucket_iam_policies[each.value.name].arn]
 
-  oidc_fully_qualified_subjects = [join("", concat(["system:serviceaccount:"], each.value.k8s_namespace_service_account_access))]
+  trusted_role_arns = ["*"]
+
+  role_requires_mfa = false
 
   tags = var.tags
 }
