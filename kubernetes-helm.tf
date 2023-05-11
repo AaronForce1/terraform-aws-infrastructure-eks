@@ -1,6 +1,6 @@
 module "nginx-controller-ingress" {
   source     = "./provisioning/kubernetes/nginx-controller"
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.aws-support]
   count      = var.helm_installations.ingress ? 1 : 0
 
   root_domain_name                     = var.cluster_root_domain.name
@@ -142,9 +142,8 @@ module "teleport" {
 
   count = var.helm_installations.teleport ? 1 : 0
   
-  chart_version = try(var.helm_configurations.teleport.chart_version, "")
-  custom_manifest = try(var.helm_configurations.teleport, "")
-  cluster_name  = coalesce(var.helm_configurations.teleport.cluster_name, "")
+  teleport_installations = var.helm_configurations.teleport.installations
+  teleport_integrations  = var.aws_installations.teleport
 }
 
 # module "gitlab_runner" {

@@ -3,7 +3,7 @@ module "aws_s3_infra_support_buckets" {
   version = "~> 3.4"
 
   for_each = {
-    for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket
+    for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
   }
 
   bucket = "${var.name_prefix}-${each.value.name}"
@@ -37,7 +37,7 @@ module "aws_s3_infra_support_buckets" {
 ## IAM Role and Policy
 data "aws_iam_policy_document" "aws_s3_infra_support_bucket_iam_policy_document" {
   for_each = {
-    for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket
+    for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
   }
 
   statement {
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "aws_s3_infra_support_bucket_iam_policy_document"
 
 resource "aws_iam_policy" "aws_s3_infra_support_bucket_iam_policies" {
   for_each = {
-    for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket
+    for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
   }
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-s3-custom-policy-${each.value.name}"
@@ -78,8 +78,8 @@ module "aws_s3_infra_support_bucket_irsa_role" {
   version = "4.24"
 
   for_each = {
-    for bucket in var.eks_infrastructure_support_buckets : bucket.name => bucket
-
+    for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
+    if length(bucket.k8s_namespace_service_account_access) > 0
   }
 
   create_role = true
