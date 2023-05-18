@@ -25,7 +25,8 @@ resource "kubernetes_secret" "kubernetes_secret" {
     namespace = each.value.namespace
     labels = merge(
       {
-        "app.kubernetes.io/part-of" = each.value.namespace
+        "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+        "app.kubernetes.io/managed-by" = "Terraform" 
       },
       try(each.value.labels, [])
     )
@@ -61,6 +62,10 @@ resource "kubernetes_secret" "regcred" {
   metadata {
     name      = each.value.name
     namespace = each.value.namespace
+    labels = {
+      "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+      "app.kubernetes.io/managed-by" = "Terraform" 
+    }
   }
 
   data = {
