@@ -8,6 +8,8 @@ resource "kubernetes_secret" "argocd_application_repository_secrets" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" = "repository"
+      "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+      "app.kubernetes.io/managed-by" = "Terraform" 
     }
   }
 
@@ -26,6 +28,10 @@ resource "kubernetes_secret" "argocd_helm_envsubst_plugin_repositories" {
   metadata {
     name      = "argocd-helm-envsubst-plugin-repositories"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+      "app.kubernetes.io/managed-by" = "Terraform" 
+    }
   }
 
   data = {

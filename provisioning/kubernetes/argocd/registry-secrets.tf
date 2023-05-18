@@ -4,6 +4,10 @@ resource "kubernetes_secret" "regcred" {
   metadata {
     name      = "registry-${each.value.name}"
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+      "app.kubernetes.io/managed-by" = "Terraform" 
+    }
   }
 
   data = {
