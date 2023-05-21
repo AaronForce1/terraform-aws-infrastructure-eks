@@ -15,14 +15,14 @@ resource "aws_vpc_peering_connection" "vpc_peering" {
 }
 
 # Get vpc info
-data "aws_vpc" "vpc_peering" {
-    for_each = {
-        for vpc in var.vpc_peering : vpc.peer_vpc_id => vpc
-        if vpc.add_to_routetable
-    }
+# data "aws_vpc" "vpc_peering" {
+#     for_each = {
+#         for vpc in var.vpc_peering : vpc.peer_vpc_id => vpc
+#         if vpc.add_to_routetable
+#     }
 
-    id = each.key
-}
+#     id = each.key
+# }
 
 # Combines vpc_peering and route table ids
 locals {
@@ -49,7 +49,7 @@ resource "aws_route" "vpc_peering" {
     }
 
     route_table_id            = each.value.route_table_id
-    destination_cidr_block    = data.aws_vpc.vpc_peering[each.value.vpc.peer_vpc_id].cidr_block
+    destination_cidr_block    = each.value.vpc.peer_cidr
     vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering[each.value.vpc.peer_vpc_id].id
     depends_on                = [
         aws_vpc_peering_connection.vpc_peering
