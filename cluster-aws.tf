@@ -24,6 +24,7 @@ module "aws-support" {
   slave_assume_operator_roles        = var.slave_assume_operator_roles
   providers = {
     aws.destination-aws-provider = aws.destination-aws-provider
+    aws                          = aws
   }
 }
 

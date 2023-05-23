@@ -615,3 +615,9 @@ variable "slave_assume_operator_roles" {
   }))
   default = []
 }
+
+variable "aws_operator_profile" {
+  type        = string
+  description = "AWS Destination Profile"
+  default     = ""
+}
