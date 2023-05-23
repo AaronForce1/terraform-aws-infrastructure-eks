@@ -73,12 +73,14 @@ resource "kubectl_manifest" "configmaps_admin_secret" {
 
 
 data "kubernetes_secret" "configmaps_admin_secret" {
+  depends_on = [kubectl_manifest.configmaps_admin_secret]
   metadata {
     name = "configmaps-admin-service-account-token"
   }
 }
 
 resource "aws_ssm_parameter" "configmaps_admin_service_account_token" {
+  depends_on =[data.kubernetes_secret.configmaps_admin_secret]
   name  = "/${var.app_namespace}/${var.tfenv}/cluster-access-bearer-token"
   type  = "String"
   value = "${data.kubernetes_secret.configmaps_admin_secret.data.token}"
