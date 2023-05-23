@@ -21,6 +21,10 @@ module "aws-support" {
   route53_hosted_zone_arn            = try(aws_route53_zone.hosted_zone[0].arn, "")
   thanos_slave_role                  = var.thanos_slave_role
   eks_slave                          = var.eks_slave
+  slave_assume_operator_roles        = var.slave_assume_operator_roles
+  providers = {
+    aws.destination-aws-provider = aws.destination-aws-provider
+  }
 }
 
 module "aws-cluster-autoscaler" {

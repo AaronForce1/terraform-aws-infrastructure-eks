@@ -604,3 +604,14 @@ variable "vpc_peering" {
   }))
   default = []
 }
+
+variable "slave_assume_operator_roles" {
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name           = string
+    attach_policy_name = string
+    service_account_access = list(string)
+    tags = map(string)
+  }))
+  default = []
+}

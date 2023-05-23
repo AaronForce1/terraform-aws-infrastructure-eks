@@ -21,4 +21,6 @@ variable "eks_slave" {
 variable "route53_hosted_zone_arn" {
   default = ""
 }
-
+variable "slave_assume_operator_roles" {
+  default = ""
+}
