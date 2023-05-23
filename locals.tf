@@ -89,6 +89,11 @@ locals {
       cidr_blocks = [cidr]
     }
   }
+
+  cluster_domains = concat(
+    try(var.cluster_root_domain.create, false) ? [] : [var.cluster_root_domain.name],
+    coalesce(var.cluster_root_domain.additional_domains, [])
+  )
 }
 
 resource "random_integer" "cidr_vpc" {

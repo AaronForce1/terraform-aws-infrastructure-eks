@@ -105,6 +105,7 @@ variable "cluster_root_domain" {
     create          = optional(bool)
     name            = string
     ingress_records = optional(list(string))
+    additional_domains = optional(list(string)) ## TODO: Expand to include creation / NS allocation / etc.
   })
 }
 
