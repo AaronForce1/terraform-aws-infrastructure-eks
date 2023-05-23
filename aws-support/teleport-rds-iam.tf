@@ -3,15 +3,15 @@ data "aws_iam_policy_document" "aws_rds_iam_policy_document_teleport" {
   count = try(var.aws_installations.teleport, false) ? 1 : 0
 
   statement {
-    effect = "Allow"
-    actions = ["rds-db:connect"]
+    effect    = "Allow"
+    actions   = ["rds-db:connect"]
     resources = ["arn:aws:rds-db:${var.aws_region}:${data.aws_caller_identity.current.account_id}:dbuser:*/*"]
   }
 }
 
 resource "aws_iam_policy" "aws_rds_iam_policy_teleport" {
   count = try(var.aws_installations.teleport, false) ? 1 : 0
-  
+
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   description = "TELEPORT RDS IAM policy: ${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
@@ -50,11 +50,11 @@ data "aws_iam_policy_document" "aws_rds_iam_role_teleport_trusted_entity" {
 resource "aws_iam_role" "aws_rds_iam_role_teleport" {
   count = try(var.aws_installations.teleport, false) ? 1 : 0
 
-  name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
-  path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-  description = "TELEPORT RDS ROLE: ${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
+  name               = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
+  path               = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  description        = "TELEPORT RDS ROLE: ${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
   assume_role_policy = data.aws_iam_policy_document.aws_rds_iam_role_teleport_trusted_entity[0].json
-  tags = var.tags
+  tags               = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "aws_rds_iam_role_policy_teleport_attach" {

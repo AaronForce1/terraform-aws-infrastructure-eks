@@ -149,7 +149,7 @@ module "aws_s3_thanos_slave_bucket_irsa_role" {
 }
 
 data "aws_iam_policy" "aws_cross_account_cluster_iam_policies" {
-  provider =  aws.destination-aws-provider
+  provider = aws.destination-aws-provider
   for_each = {
     for slave_assume_operator_role in var.slave_assume_operator_roles : slave_assume_operator_role.name => slave_assume_operator_role
   }
@@ -165,11 +165,11 @@ module "aws_slave_assume_operator_roles" {
   for_each = {
     for slave_assume_operator_role in var.slave_assume_operator_roles : slave_assume_operator_role.name => slave_assume_operator_role
   }
-  create_role = true
-  role_name = each.value.name
-  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
-  provider_url = replace(var.oidc_url, "https://", "")
-  role_policy_arns = split("/${each.value.attach_policy_name}",data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn)[1] == "" ?  [data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn] : []
+  create_role                   = true
+  role_name                     = each.value.name
+  role_path                     = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  provider_url                  = replace(var.oidc_url, "https://", "")
+  role_policy_arns              = split("/${each.value.attach_policy_name}", data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn)[1] == "" ? [data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn] : []
   oidc_fully_qualified_subjects = [join("", concat(["system:serviceaccount:"], each.value.service_account_access))]
-  tags = each.value.tags
+  tags                          = each.value.tags
 }

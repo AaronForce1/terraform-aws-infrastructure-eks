@@ -18,7 +18,7 @@ module "aws-support" {
   billingcustomer                    = var.billingcustomer
   node_count                         = var.instance_min_size # var.eks_managed_node_groups != null ? var.eks_managed_node_groups[keys(var.eks_managed_node_groups)[0]].min_capacity : var.instance_min_size
   tags                               = local.base_tags
-  route53_hosted_zone_arns           = flatten(concat(
+  route53_hosted_zone_arns = flatten(concat(
     try([aws_route53_zone.hosted_zone[0].arn], []),
     [
       for domain in try(data.aws_route53_zone.cluster_domains, []) : [
@@ -26,9 +26,9 @@ module "aws-support" {
       ]
     ]
   ))
-  thanos_slave_role                  = var.thanos_slave_role
-  eks_slave                          = var.eks_slave
-  slave_assume_operator_roles        = var.slave_assume_operator_roles
+  thanos_slave_role           = var.thanos_slave_role
+  eks_slave                   = var.eks_slave
+  slave_assume_operator_roles = var.slave_assume_operator_roles
   providers = {
     aws.destination-aws-provider = aws.destination-aws-provider
     aws                          = aws

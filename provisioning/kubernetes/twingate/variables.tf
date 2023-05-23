@@ -27,7 +27,7 @@ variable "cluster_endpoint" {
 
 variable "management_group_configurations" {
   type = list(object({
-    name = string
+    name   = string
     create = bool
   }))
 }
@@ -47,7 +47,7 @@ variable "additional_resources" {
       })
     })
     group_configurations = list(object({
-      name = string
+      name   = string
       create = bool
     }))
   }))

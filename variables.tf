@@ -102,9 +102,9 @@ variable "eks_managed_node_groups" {
 variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
   type = object({
-    create          = optional(bool)
-    name            = string
-    ingress_records = optional(list(string))
+    create             = optional(bool)
+    name               = string
+    ingress_records    = optional(list(string))
     additional_domains = optional(list(string)) ## TODO: Expand to include creation / NS allocation / etc.
   })
 }
@@ -407,7 +407,7 @@ variable "helm_configurations" {
       logLevel       = optional(string)
       connectorCount = optional(number)
       management_group_configurations = list(object({
-        name = string
+        name   = string
         create = bool
       }))
       resources = optional(list(object({
@@ -425,12 +425,12 @@ variable "helm_configurations" {
           })
         })
         group_configurations = list(object({
-          name = string
+          name   = string
           create = bool
         }))
       })))
     }))
-    teleport =  optional(object({
+    teleport = optional(object({
       chart_version = optional(string)
       value_file    = optional(string)
       cluster_name  = optional(string)
@@ -450,9 +450,9 @@ variable "helm_configurations" {
 variable "custom_namespaces" {
   description = "Adding namespaces to a default cluster provisioning process"
   type = list(object({
-    name               = string
-    labels             = optional(map(string))
-    annotations        = optional(map(string))
+    name        = string
+    labels      = optional(map(string))
+    annotations = optional(map(string))
   }))
   default = []
 }
@@ -609,10 +609,10 @@ variable "vpc_peering" {
 variable "slave_assume_operator_roles" {
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({
-    name           = string
-    attach_policy_name = string
+    name                   = string
+    attach_policy_name     = string
     service_account_access = list(string)
-    tags = map(string)
+    tags                   = map(string)
   }))
   default = []
 }
