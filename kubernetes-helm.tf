@@ -1,6 +1,6 @@
 module "nginx-controller-ingress" {
   source     = "./provisioning/kubernetes/nginx-controller"
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.aws-support]
   count      = var.helm_installations.ingress ? 1 : 0
 
   root_domain_name                     = var.cluster_root_domain.name
@@ -131,6 +131,7 @@ module "twingate" {
   connector_count                 = coalesce(var.helm_configurations.twingate.connectorCount, 2)
   cluster_endpoint                = replace(data.aws_eks_cluster.cluster.endpoint, "https://", "")
   additional_resources            = coalesce(var.helm_configurations.twingate.resources, [])
+  legacy_resource_list = var.helm_configurations.twingate.resource_manifest
 
   logLevel = coalesce(var.helm_configurations.twingate.logLevel, "error")
 }
