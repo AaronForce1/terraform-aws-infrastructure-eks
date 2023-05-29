@@ -11,7 +11,7 @@
 
 # resource "aws_iam_policy" "aws_rds_iam_policy_teleport" {
 #   count = try(var.aws_installations.teleport, false) ? 1 : 0
-  
+
 #   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"
 #   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 #   description = "TELEPORT RDS IAM policy: ${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport"

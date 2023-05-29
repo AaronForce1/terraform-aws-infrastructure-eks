@@ -1,5 +1,5 @@
 resource "kubectl_manifest" "teleport-cluster-role" {
-  count = var.teleport_integrations.cluster_discovery ? 1 : 0
+  count     = var.teleport_integrations.cluster_discovery ? 1 : 0
   yaml_body = <<EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

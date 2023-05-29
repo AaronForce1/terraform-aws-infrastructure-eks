@@ -280,8 +280,8 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
-    teleport             = optional(object({
-      cluster = optional(bool)
+    teleport = optional(object({
+      cluster           = optional(bool)
       cluster_discovery = optional(bool)
     }))
     teleport_rds_iam = optional(object({
@@ -435,7 +435,7 @@ variable "helm_configurations" {
       })))
       resource_manifest = optional(object({
         address_list = list(object({
-          name = optional(string)
+          name    = optional(string)
           address = string
         }))
         protocols = object({
@@ -450,16 +450,16 @@ variable "helm_configurations" {
           })
         })
         group_configurations = list(object({
-          name = string
+          name   = string
           create = bool
         }))
       }))
     }))
-    teleport =  optional(object({
+    teleport = optional(object({
       installations = list(object({
-        chart_name = string
+        chart_name    = string
         chart_version = string
-        values_file = string
+        values_file   = string
       }))
     }))
   })

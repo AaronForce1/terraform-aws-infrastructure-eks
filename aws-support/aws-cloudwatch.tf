@@ -33,8 +33,8 @@ data "aws_iam_policy_document" "aws_cloudwatch_bucket_iam_policy_document" {
   statement {
     sid = "AllowReadingTagsInstancesRegionsFromEC2"
     actions = [
-      "ec2:DescribeTags", 
-      "ec2:DescribeInstances", 
+      "ec2:DescribeTags",
+      "ec2:DescribeInstances",
       "ec2:DescribeRegions"
     ]
     resources = ["*"]
@@ -75,7 +75,7 @@ module "aws_cloudwatch_bucket_irsa_role" {
 
   role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-cloudwatch-${each.value.name}"
 
-  role_path    = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   custom_role_policy_arns = [aws_iam_policy.aws_cloudwatch_bucket_iam_policies[each.value.name].arn]
 

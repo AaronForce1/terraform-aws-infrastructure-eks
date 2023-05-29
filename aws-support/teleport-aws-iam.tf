@@ -3,9 +3,9 @@
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_state_storage" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
-  
+
   statement {
-    sid = "ClusterStateStorage"
+    sid    = "ClusterStateStorage"
     effect = "Allow"
     actions = [
       "dynamodb:BatchWriteItem",
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "cluster_events_storage" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
 
   statement {
-    sid = "ClusterEventsStorage"
+    sid    = "ClusterEventsStorage"
     effect = "Allow"
     actions = [
       "dynamodb:CreateTable",
@@ -90,9 +90,9 @@ resource "aws_iam_policy" "cluster_events_storage" {
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_s3_recording" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
-  
+
   statement {
-    sid = "BucketActions"
+    sid    = "BucketActions"
     effect = "Allow"
     actions = [
       "s3:PutEncryptionConfiguration",
@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
     ]
   }
   statement {
-    sid = "ObjectActions"
+    sid    = "ObjectActions"
     effect = "Allow"
     actions = [
       "s3:GetObjectVersion",
@@ -141,9 +141,9 @@ resource "aws_iam_policy" "cluster_s3_recording" {
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_discovery" {
   count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
-  
+
   statement {
-    sid = "AutomatedClusterDiscovery"
+    sid    = "AutomatedClusterDiscovery"
     effect = "Allow"
     actions = [
       "eks:DescribeCluster",
@@ -182,14 +182,14 @@ module "teleport_cluster_irsa_role" {
   }
 
   role_policy_arns = {
-    state_storage   = aws_iam_policy.cluster_state_storage[0].arn,
-    events_storage  = aws_iam_policy.cluster_events_storage[0].arn,
+    state_storage        = aws_iam_policy.cluster_state_storage[0].arn,
+    events_storage       = aws_iam_policy.cluster_events_storage[0].arn,
     s3_session_recording = aws_iam_policy.cluster_s3_recording[0].arn,
   }
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cluster_discovery-irsa-role-attachment" {
-  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  count      = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
   role       = module.teleport_cluster_irsa_role[0].iam_role_name
   policy_arn = aws_iam_policy.cluster_discovery[0].arn
 }

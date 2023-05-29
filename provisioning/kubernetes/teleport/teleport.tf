@@ -1,5 +1,5 @@
 resource "helm_release" "teleport" {
-  depends_on = [ kubernetes_namespace.teleport ]
+  depends_on = [kubernetes_namespace.teleport]
   for_each = {
     for app in var.teleport_installations : app.chart_name => app
   }

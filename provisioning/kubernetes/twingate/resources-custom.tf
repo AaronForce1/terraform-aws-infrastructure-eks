@@ -7,15 +7,15 @@ resource "twingate_resource" "additional_resources" {
   name              = "cluster-resource-${each.value.name}"
   address           = each.value.address
   remote_network_id = twingate_remote_network.aws_network.id
-  group_ids         = concat(
-    [for group in local.resource_group_creation: twingate_group.additional_resources_created_groups[group.name].id if group.parent == each.value.name],
-    flatten([for group in each.value.group_configurations: [
-      for block in data.twingate_groups.additional_resources_existing_groups[group.name].groups: 
-        block.id
-      ] 
+  group_ids = concat(
+    [for group in local.resource_group_creation : twingate_group.additional_resources_created_groups[group.name].id if group.parent == each.value.name],
+    flatten([for group in each.value.group_configurations : [
+      for block in data.twingate_groups.additional_resources_existing_groups[group.name].groups :
+      block.id
+      ]
       if !group.create
     ])
-    
+
     # Adding distinct flatten to transform from [["foo"],["bar"]] to ["foo","bar"]
     # distinct(flatten([for group in local.resource_group_existing: 
     #  [
