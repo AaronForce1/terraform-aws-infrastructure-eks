@@ -40,14 +40,23 @@ locals {
     }
   }
 
-  aws_auth_roles = [
-    for x in module.eks_managed_node_group :
-    {
-      "groups" : ["system:bootstrappers", "system:nodes"]
-      "rolearn" : x.iam_role_arn
-      "username" : "system:node:{{EC2PrivateDNSName}}"
-    }
-  ]
+  aws_auth_roles = concat(
+    [
+      for x in module.eks_managed_node_group :
+      {
+        "groups" : ["system:bootstrappers", "system:nodes"]
+        "rolearn" : x.iam_role_arn
+        "username" : "system:node:{{EC2PrivateDNSName}}"
+      }
+    ],
+    var.helm_installations.teleport && var.aws_installations.teleport.cluster_discovery ? [
+      {
+        "groups" : ["teleport"]
+        "rolearn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-role"
+        "username" : "teleport"
+      }
+    ] : []
+  )
 
   base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0].result) : var.vpc_subnet_configuration.base_cidr
 

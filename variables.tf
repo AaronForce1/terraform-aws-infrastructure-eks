@@ -280,6 +280,10 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
+    teleport             = optional(object({
+      cluster = optional(bool)
+      cluster_discovery = optional(bool)
+    }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
@@ -451,10 +455,12 @@ variable "helm_configurations" {
         }))
       }))
     }))
-    teleport = optional(object({
-      chart_version = optional(string)
-      value_file    = optional(string)
-      cluster_name  = optional(string)
+    teleport =  optional(object({
+      installations = list(object({
+        chart_name = string
+        chart_version = string
+        values_file = string
+      }))
     }))
   })
   default = {
@@ -479,6 +485,34 @@ variable "custom_namespaces" {
 }
 
 variable "custom_aws_s3_support_infra" {
+  ## TODO: Expand capabilities to allow more granular control of node_group access
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name           = string
+    bucket_acl     = string
+    aws_kms_key_id = optional(string)
+    lifecycle_rules = optional(list(object({
+      id      = string
+      enabled = bool
+      filter = object({
+        prefix = string
+      })
+      transition = optional(list(object({
+        days          = number
+        storage_class = string
+      })))
+      expiration = object({
+        days = number
+      })
+    })))
+    versioning                           = bool
+    k8s_namespace_service_account_access = list(string)
+    eks_node_group_access                = optional(bool)
+  }))
+  default = []
+}
+
+variable "custom_aws_cloudwatch" {
   ## TODO: Expand capabilities to allow more granular control of node_group access
   description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
   type = list(object({

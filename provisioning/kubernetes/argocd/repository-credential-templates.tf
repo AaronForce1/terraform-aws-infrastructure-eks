@@ -6,6 +6,8 @@ resource "kubernetes_secret" "argocd_application_credential_template" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" = "repo-creds"
+      "app.kubernetes.io/part-of" = "terraform-aws-infrastructure-eks"
+      "app.kubernetes.io/managed-by" = "Terraform" 
     }
   }
 

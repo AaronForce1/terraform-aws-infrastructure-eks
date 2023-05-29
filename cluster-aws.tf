@@ -11,6 +11,7 @@ module "aws-support" {
   name_prefix                        = local.name_prefix
   aws_installations                  = var.aws_installations
   eks_infrastructure_support_buckets = var.custom_aws_s3_support_infra
+  eks_aws_cloudwatch                 = var.custom_aws_cloudwatch
   eks_infrastructure_kms_arn         = aws_kms_key.eks.arn
   oidc_provider_arn                  = module.eks.oidc_provider_arn
   eks_managed_node_group_roles       = local.eks_managed_node_group_roles

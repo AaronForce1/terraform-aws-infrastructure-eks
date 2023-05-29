@@ -1,13 +1,13 @@
 resource "helm_release" "teleport" {
-  name             = "teleport-agent"
+  depends_on = [ kubernetes_namespace.teleport ]
+  for_each = {
+    for app in var.teleport_installations : app.chart_name => app
+  }
+  name             = each.value.chart_name
   repository       = "https://charts.releases.teleport.dev"
-  chart            = "teleport-kube-agent"
+  chart            = each.value.chart_name
   namespace        = "teleport"
   create_namespace = false
-  version          = var.chart_version
-  values = var.custom_manifest != null ? [file(var.custom_manifest.value_file)] : [<<EOT
-
-kubeClusterName: ${var.cluster_name}
-EOT
-  ]
+  version          = each.value.chart_version
+  values           = each.value.values_file != null ? [each.value.values_file] : []
 }
