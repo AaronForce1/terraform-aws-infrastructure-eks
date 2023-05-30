@@ -33,8 +33,8 @@ data "aws_iam_policy_document" "aws_cloudwatch_bucket_iam_policy_document" {
   statement {
     sid = "AllowReadingTagsInstancesRegionsFromEC2"
     actions = [
-      "ec2:DescribeTags",
-      "ec2:DescribeInstances",
+      "ec2:DescribeTags", 
+      "ec2:DescribeInstances", 
       "ec2:DescribeRegions"
     ]
     resources = ["*"]
