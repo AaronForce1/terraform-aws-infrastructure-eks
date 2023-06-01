@@ -10,7 +10,7 @@ module "cert_manager_irsa_role" {
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   attach_cert_manager_policy    = true
-  cert_manager_hosted_zone_arns = [var.route53_hosted_zone_arn]
+  cert_manager_hosted_zone_arns = var.route53_hosted_zone_arns
 
   oidc_providers = {
     main = {

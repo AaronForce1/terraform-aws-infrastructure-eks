@@ -8,7 +8,7 @@ module "external_dns_irsa_role" {
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   attach_external_dns_policy    = true
-  external_dns_hosted_zone_arns = [var.route53_hosted_zone_arn]
+  external_dns_hosted_zone_arns = var.route53_hosted_zone_arns
 
   oidc_providers = {
     main = {

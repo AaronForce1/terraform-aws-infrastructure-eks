@@ -102,9 +102,10 @@ variable "eks_managed_node_groups" {
 variable "cluster_root_domain" {
   description = "Domain root where all kubernetes systems are orchestrating control"
   type = object({
-    create          = optional(bool)
-    name            = string
-    ingress_records = optional(list(string))
+    create             = optional(bool)
+    name               = string
+    ingress_records    = optional(list(string))
+    additional_domains = optional(list(string)) ## TODO: Expand to include creation / NS allocation / etc.
   })
 }
 
@@ -279,8 +280,8 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
-    teleport             = optional(object({
-      cluster = optional(bool)
+    teleport = optional(object({
+      cluster           = optional(bool)
       cluster_discovery = optional(bool)
     }))
     teleport_rds_iam = optional(object({
@@ -410,7 +411,7 @@ variable "helm_configurations" {
       logLevel       = optional(string)
       connectorCount = optional(number)
       management_group_configurations = list(object({
-        name = string
+        name   = string
         create = bool
       }))
       resources = optional(list(object({
@@ -428,13 +429,13 @@ variable "helm_configurations" {
           })
         })
         group_configurations = list(object({
-          name = string
+          name   = string
           create = bool
         }))
       })))
       resource_manifest = optional(object({
         address_list = list(object({
-          name = optional(string)
+          name    = optional(string)
           address = string
         }))
         protocols = object({
@@ -449,17 +450,17 @@ variable "helm_configurations" {
           })
         })
         group_configurations = list(object({
-          name = string
+          name   = string
           create = bool
         }))
       }))
     }))
-    teleport =  optional(object({
-      installations = list(object({
-        chart_name = string
+    teleport = optional(object({
+      installations = optional(list(object({
+        chart_name    = string
         chart_version = string
-        values_file = string
-      }))
+        values_file   = string
+      })))
     }))
   })
   default = {
@@ -476,9 +477,9 @@ variable "helm_configurations" {
 variable "custom_namespaces" {
   description = "Adding namespaces to a default cluster provisioning process"
   type = list(object({
-    name               = string
-    labels             = optional(map(string))
-    annotations        = optional(map(string))
+    name        = string
+    labels      = optional(map(string))
+    annotations = optional(map(string))
   }))
   default = []
 }
@@ -658,4 +659,21 @@ variable "vpc_peering" {
     peer_cidr               = optional(string)
   }))
   default = []
+}
+
+variable "slave_assume_operator_roles" {
+  description = "Adding the ability to provision additional support infrastructure required for certain EKS Helm chart/App-of-App Components"
+  type = list(object({
+    name                   = string
+    attach_policy_name     = string
+    service_account_access = list(string)
+    tags                   = map(string)
+  }))
+  default = []
+}
+
+variable "aws_operator_profile" {
+  type        = string
+  description = "AWS Destination Profile"
+  default     = ""
 }

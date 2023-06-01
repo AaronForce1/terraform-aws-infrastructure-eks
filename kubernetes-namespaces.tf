@@ -14,6 +14,6 @@ resource "kubernetes_namespace" "cluster" {
       try(each.value.labels, [])
     )
     annotations = try(each.value.annotations, [])
-    name = each.value.name
+    name        = each.value.name
   }
 }

@@ -49,7 +49,7 @@ locals {
         "username" : "system:node:{{EC2PrivateDNSName}}"
       }
     ],
-    var.helm_installations.teleport && var.aws_installations.teleport.cluster_discovery ? [
+    var.helm_installations.teleport && try(var.aws_installations.teleport.cluster_discovery, false) ? [
       {
         "groups" : ["teleport"]
         "rolearn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-role"
@@ -98,6 +98,11 @@ locals {
       cidr_blocks = [cidr]
     }
   }
+
+  cluster_domains = concat(
+    try(var.cluster_root_domain.create, false) ? [] : [var.cluster_root_domain.name],
+    coalesce(var.cluster_root_domain.additional_domains, [])
+  )
 }
 
 resource "random_integer" "cidr_vpc" {

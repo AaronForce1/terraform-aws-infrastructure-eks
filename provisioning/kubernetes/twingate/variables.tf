@@ -27,7 +27,7 @@ variable "cluster_endpoint" {
 
 variable "management_group_configurations" {
   type = list(object({
-    name = string
+    name   = string
     create = bool
   }))
 }
@@ -47,7 +47,7 @@ variable "additional_resources" {
       })
     })
     group_configurations = list(object({
-      name = string
+      name   = string
       create = bool
     }))
   }))
@@ -59,7 +59,7 @@ variable "additional_resources" {
 variable "legacy_resource_list" {
   type = object({
     address_list = list(object({
-      name = optional(string)
+      name    = optional(string)
       address = string
     }))
     protocols = object({
@@ -74,24 +74,24 @@ variable "legacy_resource_list" {
       })
     })
     group_configurations = list(object({
-      name = string
+      name   = string
       create = bool
     }))
   })
   default = {
-    address_list: []
-    protocols: {
-      allow_icmp: false
-      tcp: {
-        policy: "DENY_ALL"
-        ports: []
+    address_list : []
+    protocols : {
+      allow_icmp : false
+      tcp : {
+        policy : "DENY_ALL"
+        ports : []
       }
-      udp: {
-        policy: "DENY_ALL"
-        ports: []
+      udp : {
+        policy : "DENY_ALL"
+        ports : []
       }
     }
-    group_configurations: []
+    group_configurations : []
   }
 }
 

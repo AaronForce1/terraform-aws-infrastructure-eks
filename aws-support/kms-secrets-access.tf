@@ -60,7 +60,7 @@ module "external_secrets_irsa_role" {
     }
   }
 
-  # role_policy_arns = [
-  #   aws_iam_policy.external_secrets[0].arn
-  # ]
+  role_policy_arns = [
+    aws_iam_policy.external_secrets[0].arn
+  ]
 }

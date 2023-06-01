@@ -19,7 +19,10 @@ variable "thanos_slave_role" {}
 variable "eks_slave" {
   default = ""
 }
-variable "route53_hosted_zone_arn" {
+variable "route53_hosted_zone_arns" {
+  default = []
+}
+variable "slave_assume_operator_roles" {
   default = ""
 }
 
