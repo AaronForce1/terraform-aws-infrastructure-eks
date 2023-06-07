@@ -1,5 +1,5 @@
 resource "kubectl_manifest" "teleport-cluster-role" {
-  count     = var.teleport_integrations.cluster_discovery ? 1 : 0
+  count     = try(var.teleport_integrations.cluster_discovery, false) ? 1 : 0
   yaml_body = <<EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -31,7 +31,7 @@ EOF
 }
 
 resource "kubectl_manifest" "teleport-cluster-role-binding" {
-  count = var.teleport_integrations.cluster_discovery ? 1 : 0
+  count = try(var.teleport_integrations.cluster_discovery, false) ? 1 : 0
   depends_on = [
     kubectl_manifest.teleport-cluster-role
   ]
