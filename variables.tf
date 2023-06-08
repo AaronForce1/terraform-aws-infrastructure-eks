@@ -283,6 +283,7 @@ variable "aws_installations" {
     teleport = optional(object({
       cluster           = optional(bool)
       cluster_discovery = optional(bool)
+      kubernetes_access_control = optional(bool)
     }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)
@@ -311,9 +312,16 @@ variable "aws_installations" {
     vault_aws_kms = {
       enabled = false
     }
+    teleport = {
+      cluster = false
+      cluster_discovery = false
+      kubernetes_access_control = false
+    }
     teleport_rds_iam = {
       enabled = false
     }
+
+    teleport_kubernetes_access_controls = [{value_file=""}]
   }
 }
 
