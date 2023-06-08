@@ -288,6 +288,9 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
+    teleport_kubernetes_access_controls = optional(list(object({
+      value_file = optional(string)
+    })))
   })
   default = {
     cluster_autoscaler   = true
