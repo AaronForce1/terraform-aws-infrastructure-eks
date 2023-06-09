@@ -11,12 +11,10 @@ variable "teleport_integrations" {
   type = object({
     cluster           = bool
     cluster_discovery = bool
-    kubernetes_access_control = bool
   })
   default = {
     cluster           = false
     cluster_discovery = false
-    kubernetes_access_control = false
   }
 }
 
