@@ -144,6 +144,7 @@ module "teleport" {
 
   teleport_installations = var.helm_configurations.teleport.installations
   teleport_integrations  = var.aws_installations.teleport
+  kubernetes_access_controls = var.aws_installations.teleport_kubernetes_access_controls
 }
 
 # module "gitlab_runner" {
