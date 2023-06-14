@@ -173,6 +173,6 @@ module "aws_slave_assume_operator_roles" {
   provider_url                   = replace(var.oidc_url, "https://", "")
   role_policy_arns               = split("/${each.value.attach_policy_name}", data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn)[1] == "" ? [data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn] : []
   oidc_fully_qualified_subjects  = [join("", concat(["system:serviceaccount:"], each.value.service_account_access))]
-  oidc_fully_qualified_audiences = [ "sts.amazonaws.com" ]
+  oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
   tags                           = each.value.tags
 }

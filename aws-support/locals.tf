@@ -1,9 +1,11 @@
 locals {
   additional_s3_infrastructure_buckets = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? [
     {
-      name                  = "teleport-cluster-session-recordings"
-      bucket_acl            = "private"
-      eks_node_group_access = false
+      name                     = "teleport-cluster-session-recordings"
+      bucket_acl               = "private"
+      object_ownership         = "BucketOwnerPreferred"
+      control_object_ownership = true
+      eks_node_group_access    = false
       lifecycle_rules = [
         {
           id      = "retention"
