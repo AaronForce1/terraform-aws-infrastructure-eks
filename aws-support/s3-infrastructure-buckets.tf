@@ -1,6 +1,6 @@
 module "aws_s3_infra_support_buckets" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.4"
+  version = "~> 3.13"
 
   for_each = {
     for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
@@ -11,10 +11,12 @@ module "aws_s3_infra_support_buckets" {
   acl           = each.value.bucket_acl
   force_destroy = var.tfenv == "prod" ? false : true
 
-  block_public_policy     = true
-  block_public_acls       = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_policy      = true
+  block_public_acls        = true
+  ignore_public_acls       = true
+  restrict_public_buckets  = true
+  object_ownership         = "BucketOwnerPreferred"
+  control_object_ownership = true
 
   server_side_encryption_configuration = {
     rule = {
