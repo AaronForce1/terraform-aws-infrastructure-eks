@@ -163,7 +163,7 @@ module "teleport_cluster_irsa_role" {
 }
 
 ## ----------------------------------
-## IAM Role for teleport-cluster
+## IAM Policy for teleport-eks-auto-discovery
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_discovery" {
   count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
@@ -192,6 +192,55 @@ resource "aws_iam_policy" "cluster_discovery" {
 }
 
 ## ----------------------------------
+## IAM Policy for teleport-rds-auto-discovery
+## ----------------------------------
+data "aws_iam_policy_document" "rds_discovery" {
+  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+
+  statement {
+    sid       = "AutomatedRdsDiscovery"
+    effect    = "Allow"
+    actions   = [
+      "rds:DescribeDBInstances",
+      "rds:ModifyDBInstance"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid       = "AllowPolicyForIamUser"
+    effect    = "Allow"
+    actions   = [
+      "iam:GetRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:DeleteRolePolicy"   
+    ]
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
+    ]
+  }
+
+  statement {
+    sid       = "AllowIamUserConnectRds"
+    effect    = "Allow"
+    actions   = ["rds-db:connect"]
+    resources = ["arn:aws:rds-db:${var.aws_region}:${data.aws_caller_identity.current.account_id}:dbuser:*/*"]
+  }
+}
+
+resource "aws_iam_policy" "rds_discovery" {
+  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+
+  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-discovery"
+  path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  description = "EKS Policy to discover rds automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  policy      = data.aws_iam_policy_document.rds_discovery[0].json
+  tags        = var.tags
+}
+
+## ----------------------------------
 ## IAM Role for teleport-kube-agent
 ## ----------------------------------
 module "teleport_kube_agent_irsa_role" {
@@ -214,3 +263,10 @@ module "teleport_kube_agent_irsa_role" {
     cluster_discovery        = aws_iam_policy.cluster_discovery[0].arn
   }
 }
+
+resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
+  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+  name       = "rds_discovery"
+  roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
+  policy_arn = aws_iam_policy.rds_discovery[0].arn
+} 
