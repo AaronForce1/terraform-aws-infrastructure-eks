@@ -1,5 +1,5 @@
 ## ----------------------------------
-## IAM Role for cluster-state-storage
+## IAM Policy for cluster-state-storage
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_state_storage" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
@@ -44,7 +44,7 @@ resource "aws_iam_policy" "cluster_state_storage" {
 }
 
 ## ----------------------------------
-## IAM Role for cluster-events-storage
+## IAM Policy for cluster-events-storage
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_events_storage" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
@@ -86,7 +86,7 @@ resource "aws_iam_policy" "cluster_events_storage" {
 }
 
 ## ----------------------------------
-## IAM Role for S3: Session Recording
+## IAM Policy for S3: Session Recording
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_s3_recording" {
   count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
@@ -137,7 +137,33 @@ resource "aws_iam_policy" "cluster_s3_recording" {
 }
 
 ## ----------------------------------
-## IAM Role for eks-cluster-discovery
+## IAM Role for teleport-cluster
+## ----------------------------------
+module "teleport_cluster_irsa_role" {
+  count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
+
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.17"
+
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-role"
+  role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+
+  oidc_providers = {
+    main = {
+      provider_arn               = var.oidc_provider_arn
+      namespace_service_accounts = ["teleport:teleport-cluster"]
+    }
+  }
+
+  role_policy_arns = {
+    state_storage        = aws_iam_policy.cluster_state_storage[0].arn,
+    events_storage       = aws_iam_policy.cluster_events_storage[0].arn,
+    s3_session_recording = aws_iam_policy.cluster_s3_recording[0].arn,
+  }
+}
+
+## ----------------------------------
+## IAM Role for teleport-cluster
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_discovery" {
   count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
@@ -165,31 +191,26 @@ resource "aws_iam_policy" "cluster_discovery" {
   tags        = var.tags
 }
 
-module "teleport_cluster_irsa_role" {
-  count = try(coalesce(var.aws_installations.teleport.cluster, false), false) ? 1 : 0
+## ----------------------------------
+## IAM Role for teleport-kube-agent
+## ----------------------------------
+module "teleport_kube_agent_irsa_role" {
+  count = try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.17"
 
-  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-role"
+  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-role"
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
     main = {
       provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = ["teleport:teleport-cluster"]
+      namespace_service_accounts = ["teleport:teleport-kube-agent"]
     }
   }
 
   role_policy_arns = {
-    state_storage        = aws_iam_policy.cluster_state_storage[0].arn,
-    events_storage       = aws_iam_policy.cluster_events_storage[0].arn,
-    s3_session_recording = aws_iam_policy.cluster_s3_recording[0].arn,
+    cluster_discovery        = aws_iam_policy.cluster_discovery[0].arn
   }
-}
-
-resource "aws_iam_role_policy_attachment" "eks_cluster_discovery-irsa-role-attachment" {
-  count      = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
-  role       = module.teleport_cluster_irsa_role[0].iam_role_name
-  policy_arn = aws_iam_policy.cluster_discovery[0].arn
 }
