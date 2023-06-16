@@ -166,7 +166,7 @@ module "teleport_cluster_irsa_role" {
 ## IAM Policy for teleport-eks-auto-discovery
 ## ----------------------------------
 data "aws_iam_policy_document" "cluster_discovery" {
-  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  count = try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? 1 : 0
 
   statement {
     sid    = "AutomatedClusterDiscovery"
@@ -182,7 +182,7 @@ data "aws_iam_policy_document" "cluster_discovery" {
 }
 
 resource "aws_iam_policy" "cluster_discovery" {
-  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  count       = try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? 1 : 0
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-eks-discovery"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
@@ -195,7 +195,7 @@ resource "aws_iam_policy" "cluster_discovery" {
 ## IAM Policy for teleport-rds-auto-discovery
 ## ----------------------------------
 data "aws_iam_policy_document" "rds_discovery" {
-  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+  count = try(coalesce(var.aws_installations.teleport.rds_discovery, false), false) ? 1 : 0
 
   statement {
     sid       = "AutomatedRdsDiscovery"
@@ -231,7 +231,7 @@ data "aws_iam_policy_document" "rds_discovery" {
 }
 
 resource "aws_iam_policy" "rds_discovery" {
-  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+  count       = try(coalesce(var.aws_installations.teleport.rds_discovery, false), false) ? 1 : 0
 
   name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-discovery"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
@@ -244,7 +244,7 @@ resource "aws_iam_policy" "rds_discovery" {
 ## IAM Role for teleport-kube-agent
 ## ----------------------------------
 module "teleport_kube_agent_irsa_role" {
-  count = try(coalesce(var.aws_installations.teleport.kube_agent, false), false) ? 1 : 0
+  count   = try(coalesce(var.aws_installations.teleport.kube_agent, false), false) ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.17"
@@ -261,14 +261,14 @@ module "teleport_kube_agent_irsa_role" {
 }
 
 resource "aws_iam_policy_attachment" "teleport_kube_agent_cluster_discovery" {
-  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  count      = try(coalesce(var.aws_installations.teleport.cluste_discovery, false), false) ? 1 : 0
   name       = "cluster_discovery"
   roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.cluster_discovery[0].arn
 } 
 
 resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
-  count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
+  count      = try(coalesce(var.aws_installations.teleport.rds_discovery, false), false) ? 1 : 0
   name       = "rds_discovery"
   roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.rds_discovery[0].arn
