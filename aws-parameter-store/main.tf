@@ -10,7 +10,7 @@ module "ssm-parameter" {
   secure_type     = try(each.value.secure_type, true)
   description     = try(each.value.description, null)
   tier            = try(each.value.tier, "Standard")
-  overwrite       = try(each.value.overwrite, null)
+  overwrite       = try(each.value.overwrite, true)
   key_id          = try(each.value.key_id, null)
   allowed_pattern = try(each.value.allowed_pattern, null)
   data_type       = try(each.value.data_type, null)
