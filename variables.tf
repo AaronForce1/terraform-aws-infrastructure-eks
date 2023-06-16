@@ -282,7 +282,9 @@ variable "aws_installations" {
     }))
     teleport = optional(object({
       cluster           = optional(bool)
+      kube_agent        = optional(bool)
       cluster_discovery = optional(bool)
+      rds_discovery     = optional(bool)
     }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)
