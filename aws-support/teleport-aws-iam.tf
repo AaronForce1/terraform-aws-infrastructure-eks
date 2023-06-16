@@ -244,7 +244,7 @@ resource "aws_iam_policy" "rds_discovery" {
 ## IAM Role for teleport-kube-agent
 ## ----------------------------------
 module "teleport_kube_agent_irsa_role" {
-  count = try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? 1 : 0
+  count = try(coalesce(var.aws_installations.teleport.kube_agent, false), false) ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.17"
@@ -258,11 +258,14 @@ module "teleport_kube_agent_irsa_role" {
       namespace_service_accounts = ["teleport:teleport-kube-agent"]
     }
   }
-
-  role_policy_arns = {
-    cluster_discovery        = aws_iam_policy.cluster_discovery[0].arn
-  }
 }
+
+resource "aws_iam_policy_attachment" "teleport_kube_agent_cluster_discovery" {
+  count = try(var.aws_installations.teleport.cluster_discovery, false) ? 1 : 0
+  name       = "cluster_discovery"
+  roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
+  policy_arn = aws_iam_policy.cluster_discovery[0].arn
+} 
 
 resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
   count = try(var.aws_installations.teleport.rds_discovery, false) ? 1 : 0
