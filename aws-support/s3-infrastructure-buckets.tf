@@ -1,6 +1,6 @@
 module "aws_s3_infra_support_buckets" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.4"
+  version = "~> 3.13"
 
   for_each = {
     for bucket in concat(var.eks_infrastructure_support_buckets, local.additional_s3_infrastructure_buckets) : bucket.name => bucket
@@ -11,10 +11,12 @@ module "aws_s3_infra_support_buckets" {
   acl           = each.value.bucket_acl
   force_destroy = var.tfenv == "prod" ? false : true
 
-  block_public_policy     = true
-  block_public_acls       = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_policy      = true
+  block_public_acls        = true
+  ignore_public_acls       = true
+  restrict_public_buckets  = true
+  object_ownership         = "BucketOwnerPreferred"
+  control_object_ownership = true
 
   server_side_encryption_configuration = {
     rule = {
@@ -171,6 +173,6 @@ module "aws_slave_assume_operator_roles" {
   provider_url                   = replace(var.oidc_url, "https://", "")
   role_policy_arns               = split("/${each.value.attach_policy_name}", data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn)[1] == "" ? [data.aws_iam_policy.aws_cross_account_cluster_iam_policies[each.key].arn] : []
   oidc_fully_qualified_subjects  = [join("", concat(["system:serviceaccount:"], each.value.service_account_access))]
-  oidc_fully_qualified_audiences = [ "sts.amazonaws.com" ]
+  oidc_fully_qualified_audiences = ["sts.amazonaws.com"]
   tags                           = each.value.tags
 }
