@@ -77,3 +77,27 @@ output "aws_region" {
 output "aws_profile" {
   value = var.aws_profile
 }
+
+output "oidc_url" {
+  value = module.eks.cluster_oidc_issuer_url
+}
+
+output "name_prefix" {
+  value = local.name_prefix
+}
+
+output "eks_infrastructure_kms_arn" {
+  value = aws_kms_key.eks.arn
+}
+
+output "eks_managed_node_group_roles" {
+  value = local.eks_managed_node_group_roles
+}
+
+output "base_tags" {
+  value = local.base_tags
+}
+
+output "teleport_cluster_bool" {
+  value = var.aws_installations.teleport.cluster
+}

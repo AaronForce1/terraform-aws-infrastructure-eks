@@ -98,18 +98,6 @@ module "aws_s3_infra_support_bucket_irsa_role" {
   tags = var.tags
 }
 
-locals {
-  role_policy_attachments = distinct(flatten([
-    for s3 in var.eks_infrastructure_support_buckets : [
-      for role_name in var.eks_managed_node_group_roles : {
-        s3        = s3
-        role_name = role_name.value
-      }
-    ]
-    if s3.eks_node_group_access
-  ]))
-}
-
 resource "aws_iam_role_policy_attachment" "additional" {
   for_each = {
     for role_attachment in local.role_policy_attachments : "${role_attachment.s3.name}-${role_attachment.role_name}" => role_attachment
