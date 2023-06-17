@@ -1,4 +1,5 @@
 resource "helm_release" "certmanager" {
+  depends_on       = [kubernetes_namespace.cert-manager]
   name             = "cert-manager"
   repository       = "https://charts.jetstack.io"
   chart            = "cert-manager"
@@ -7,7 +8,7 @@ resource "helm_release" "certmanager" {
   create_namespace = true
 
   values = var.custom_manifest != null ? [var.custom_manifest] : [<<EOT
-installCRDs: true  
+installCRDs: true
 EOT
   ]
 }
