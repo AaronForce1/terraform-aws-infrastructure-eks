@@ -281,10 +281,11 @@ variable "aws_installations" {
       namespace_service_accounts = optional(list(string))
     }))
     teleport = optional(object({
-      cluster           = optional(bool)
-      kube_agent        = optional(bool)
-      cluster_discovery = optional(bool)
-      rds_discovery     = optional(bool)
+      cluster             = optional(bool)
+      kube_agent          = optional(bool)
+      cluster_discovery   = optional(bool)
+      rds_discovery       = optional(bool)
+      rds_proxy_discovery = optional(bool)
     }))
     teleport_rds_iam = optional(object({
       enabled                    = optional(bool)

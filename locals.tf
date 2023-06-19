@@ -49,7 +49,7 @@ locals {
         "username" : "system:node:{{EC2PrivateDNSName}}"
       }
     ],
-    var.helm_installations.teleport && try(var.aws_installations.teleport.cluster_discovery, false) ? [
+    var.helm_installations.teleport && try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? [
       {
         "groups" : ["teleport"]
         "rolearn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-role"
