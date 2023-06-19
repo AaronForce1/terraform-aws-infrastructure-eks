@@ -202,7 +202,8 @@ data "aws_iam_policy_document" "rds_discovery" {
     effect    = "Allow"
     actions   = [
       "rds:DescribeDBInstances",
-      "rds:ModifyDBInstance"
+      "rds:ModifyDBInstance",
+      "rds:DescribeDBClusters"
     ]
     resources = [
       "*"
