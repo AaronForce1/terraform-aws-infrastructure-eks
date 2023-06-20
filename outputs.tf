@@ -82,6 +82,10 @@ output "oidc_url" {
   value = module.eks.cluster_oidc_issuer_url
 }
 
+output "oidc_provider_arn" {
+  value = module.eks.oidc_provider_arn
+}
+
 output "name_prefix" {
   value = local.name_prefix
 }
@@ -104,4 +108,8 @@ output "teleport_cluster_bool" {
 
 output "route53_hosted_zone_id" {
   value = aws_route53_zone.hosted_zone[*].id
+}
+
+output "route53_hosted_zone_arns" {
+  value = aws_route53_zone.hosted_zone[*].arn
 }
