@@ -124,6 +124,27 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
       "arn:aws:s3:::/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings/*",
     ]
   }
+  statement {
+    sid    = "BucketsActions"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "*",
+    ]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Encrypt",
+      "kms:Decrypt"
+    ]
+    resources = [
+      var.eks_infrastructure_kms_arn
+    ]
+  }
 }
 
 resource "aws_iam_policy" "cluster_s3_recording" {
