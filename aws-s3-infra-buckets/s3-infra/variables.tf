@@ -23,5 +23,6 @@ variable "route53_hosted_zone_arns" {
 variable "slave_assume_operator_roles" {
   default = ""
 }
-variable "teleport_bucket" {}
-
+variable "irsa_role_arn" {
+  type = list(string)
+}

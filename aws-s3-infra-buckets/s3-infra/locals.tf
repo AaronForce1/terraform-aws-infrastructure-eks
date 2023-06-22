@@ -9,8 +9,13 @@ locals {
     if s3.eks_node_group_access
   ]))
 }
+
 locals {
-  additional_s3_infrastructure_buckets = try(coalesce(var.teleport_bucket, false), false) ? [
+  teleport_roles_exist = length(regexall("teleport", join(",", var.irsa_role_arn))) > 0
+}
+
+locals {
+  additional_s3_infrastructure_buckets = local.teleport_roles_exist == true ? [
     {
       name                     = "teleport-cluster-session-recordings"
       bucket_acl               = "private"

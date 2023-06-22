@@ -13,7 +13,7 @@ module "aws-support" {
   thanos_slave_role                  = var.thanos_slave_role
   slave_assume_operator_roles        = var.slave_assume_operator_roles
   eks_slave                          = var.eks_slave
-  teleport_bucket                    = var.teleport_bucket
+  irsa_role_arn                      = var.irsa_role_arn
   providers = {
     aws.destination-aws-provider     = aws.destination-aws-provider
     aws                              = aws

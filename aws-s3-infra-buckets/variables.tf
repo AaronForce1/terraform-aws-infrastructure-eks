@@ -75,7 +75,6 @@ variable "slave_assume_operator_roles" {
   }))
   default = []
 }
-variable "teleport_bucket" {
-  default = false
+variable "irsa_role_arn" {
+  type = list(string)
 }
-

@@ -69,7 +69,7 @@ module "iam-iam-role-for-service-accounts-eks" {
   role_policy_arns = merge(
     try(each.value.role_policy_arns, {}),
     try(each.value.custom_policy, "") != "" ? {
-      custom_policy_arn = try(module.iam_iam-policy[each.key].arn, "")
+      custom_policy_arn = module.iam_iam-policy[each.key].arn
     } : {}
   )
 }
