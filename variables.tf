@@ -281,19 +281,16 @@ variable "aws_installations" {
       namespace_service_accounts = optional(list(string))
     }))
     teleport = optional(object({
-      cluster             = optional(bool)
-      kube_agent          = optional(bool)
-      cluster_discovery   = optional(bool)
-      rds_discovery       = optional(bool)
-      rds_proxy_discovery = optional(bool)
+      cluster                    = optional(bool)
+      kube_agent                 = optional(bool)
+      cluster_discovery          = optional(bool)
+      rds_discovery              = optional(bool)
+      rds_proxy_discovery        = optional(bool)
+      cluster_discovery_support  = optional(bool)
+      kubernetes_access_controls = optional(list(object({
+        value_file = optional(string)
+      })))
     }))
-    teleport_rds_iam = optional(object({
-      enabled                    = optional(bool)
-      namespace_service_accounts = optional(list(string))
-    }))
-    teleport_kubernetes_access_controls = optional(list(object({
-      value_file = optional(string)
-    })))
   })
   default = {
     cluster_autoscaler   = true
@@ -312,9 +309,6 @@ variable "aws_installations" {
       eks_security_groups = true
     }
     vault_aws_kms = {
-      enabled = false
-    }
-    teleport_rds_iam = {
       enabled = false
     }
   }

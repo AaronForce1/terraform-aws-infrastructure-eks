@@ -17,10 +17,3 @@ variable "teleport_integrations" {
     cluster_discovery = false
   }
 }
-
-variable "kubernetes_access_controls" {
-  type = list(object({
-    value_file = string
-  }))
-  default = []
-}
