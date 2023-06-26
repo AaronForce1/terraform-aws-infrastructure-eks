@@ -316,7 +316,7 @@ module "teleport_kube_agent_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.17"
 
-  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-role"
+  role_name = "teleport-kube-agent-role"
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
