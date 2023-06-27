@@ -1,0 +1,3 @@
+variable "karpenter" {
+  type = any
+}
