@@ -53,6 +53,10 @@ module "iam-iam-role-for-service-accounts-eks" {
   karpenter_sqs_queue_arn = try(each.value.karpenter_sqs_queue_arn, null)
   karpenter_tag_key       = try(each.value.karpenter_tag_key, "karpenter.sh/discovery")
 
+  # aws-load-balancer-controller
+  attach_load_balancer_controller_policy                          = each.key == "aws-load-balancer-controller" ? true : false
+  attach_load_balancer_controller_targetgroup_binding_only_policy = each.key == "aws-load-balancer-controller" ? true : false
+
 
   oidc_providers = {
     main = {

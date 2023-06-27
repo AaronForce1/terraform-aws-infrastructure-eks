@@ -682,3 +682,8 @@ variable "aws_operator_profile" {
   description = "AWS Destination Profile"
   default     = ""
 }
+
+variable "additional_aws_auth_roles" {
+  type = any
+  default = {}
+}
