@@ -15,5 +15,4 @@ module "karpenter" {
   tags                            = var.karpenter.base_tags
   irsa_tag_key                    = "karpenter.sh/managed-by"
   irsa_tag_values                 = lookup(var.karpenter, "irsa_tag_values", [var.karpenter.cluster_name])
-
 }
