@@ -70,7 +70,9 @@ variable "helm_configurations" {
     grafana      = optional(string)
     argocd = optional(object({
       chart_version   = optional(string)
+      kma_arn         = optional(string)
       value_file      = optional(string)
+      extra_values    = optional(any)
       application_set = optional(list(string))
       application_sets = optional(list(object({
         filepath = string

@@ -22,6 +22,19 @@ server:
     - --insecure
 EOT
   ]
+  dynamic "set" {
+    for_each = var.custom_manifest.extra_values
+    content {
+      name  = set.key
+      value = set.value
+      type = "auto"
+    }
+  }
+
+  #  set {
+  #    name  = "repoServer.serviceAccount.annotations"
+  #    value = var.custom_manifest.kma_arn != null ? var.custom_manifest.kma_arn : "chart: argo-cd"
+  #  }
 }
 
 resource "kubectl_manifest" "applicationsets" {
