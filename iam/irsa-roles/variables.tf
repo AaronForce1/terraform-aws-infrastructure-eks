@@ -11,6 +11,7 @@ variable "tfenv" {
   default = ""
 }
 variable "route53_hosted_zone_arns" {
+  default = []
   type = any
 }
 variable "oidc_provider_arn" {
