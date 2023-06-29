@@ -311,15 +311,6 @@ variable "aws_installations" {
     vault_aws_kms = {
       enabled = false
     }
-    # teleport = {
-    #   cluster                    = false
-    #   kube_agent                 = false
-    #   cluster_discovery          = false
-    #   rds_discovery              = false
-    #   rds_proxy_discovery        = false
-    #   cluster_discovery_support  = false
-    #   kubernetes_access_controls = [{}]
-    # }
   }
 }
 
