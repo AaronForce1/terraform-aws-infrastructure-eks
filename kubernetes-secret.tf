@@ -25,8 +25,8 @@ resource "kubernetes_secret" "kubernetes_secret" {
     namespace = each.value.namespace
     labels = merge(
       {
-        "hextrust.platform/part-of"    = "terraform-aws-infrastructure-eks"
-        "hextrust.platform/managed-by" = "Terraform"
+        "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
+        "hextech.io/managed-by" = "Terraform"
       },
       try(each.value.labels, [])
     )
@@ -63,8 +63,8 @@ resource "kubernetes_secret" "regcred" {
     name      = each.value.name
     namespace = each.value.namespace
     labels = {
-      "hextrust.platform/part-of"    = "terraform-aws-infrastructure-eks"
-      "hextrust.platform/managed-by" = "Terraform"
+      "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
+      "hextech.io/managed-by" = "Terraform"
     }
   }
 

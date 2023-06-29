@@ -8,8 +8,8 @@ resource "kubernetes_secret" "argocd_application_repository_secrets" {
     namespace = "argocd"
     labels = {
       "argocd.argoproj.io/secret-type" = "repository"
-      "hextrust.platform/part-of"      = "terraform-aws-infrastructure-eks"
-      "hextrust.platform/managed-by"   = "Terraform"
+      "hextech.io/part-of"             = "terraform-aws-infrastructure-eks"
+      "hextech.io/managed-by"          = "Terraform"
     }
   }
 
@@ -29,8 +29,8 @@ resource "kubernetes_secret" "argocd_helm_envsubst_plugin_repositories" {
     name      = "argocd-helm-envsubst-plugin-repositories"
     namespace = "argocd"
     labels = {
-      "hextrust.platform/part-of"    = "terraform-aws-infrastructure-eks"
-      "hextrust.platform/managed-by" = "Terraform"
+      "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
+      "hextech.io/managed-by" = "Terraform"
     }
   }
 

@@ -5,8 +5,8 @@ resource "kubernetes_secret" "regcred" {
     name      = "registry-${each.value.name}"
     namespace = "argocd"
     labels = {
-      "hextrust.platform/part-of"    = "terraform-aws-infrastructure-eks"
-      "hextrust.platform/managed-by" = "Terraform"
+      "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
+      "hextech.io/managed-by" = "Terraform"
     }
   }
 
