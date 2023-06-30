@@ -24,11 +24,9 @@ resource "kubernetes_secret" "kubernetes_secret" {
     name      = each.value.name
     namespace = each.value.namespace
     labels = merge(
-      {
-        "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
-        "hextech.io/managed-by" = "Terraform"
-      },
-      try(each.value.labels, [])
+      { "hextech.io/part-of"    = "terraform-aws-infrastructure-eks" },
+      { "hextech.io/managed-by" = "Terraform" },
+      try(each.value.labels, {})
     )
   }
   data = each.value.secrets_store != "ssm" ? yamldecode(each.value.data) : yamldecode(data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value)
@@ -62,10 +60,11 @@ resource "kubernetes_secret" "regcred" {
   metadata {
     name      = each.value.name
     namespace = each.value.namespace
-    labels = {
-      "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
-      "hextech.io/managed-by" = "Terraform"
-    }
+    labels = merge(
+      { "hextech.io/part-of"    = "terraform-aws-infrastructure-eks" },
+      { "hextech.io/managed-by" = "Terraform" },
+      try(each.value.labels, {})
+    )
   }
 
   data = {
