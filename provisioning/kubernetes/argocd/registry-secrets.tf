@@ -4,10 +4,11 @@ resource "kubernetes_secret" "regcred" {
   metadata {
     name      = "registry-${each.value.name}"
     namespace = "argocd"
-    labels = {
-      "hextech.io/part-of"    = "terraform-aws-infrastructure-eks"
-      "hextech.io/managed-by" = "Terraform"
-    }
+    labels = merge(
+      { "hextech.io/part-of"    = "terraform-aws-infrastructure-eks" },
+      { "hextech.io/managed-by" = "Terraform" },
+      try(each.value.labels, {})
+    )
   }
 
   data = {
