@@ -106,7 +106,7 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
     ]
     ## TODO: Restrict resources to cluster-associated only.
     resources = [
-      "arn:aws:s3:::/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings",
+      "arn:aws:s3:::${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings",
     ]
   }
   statement {
@@ -121,17 +121,7 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
     ]
     ## TODO: Restrict resources to cluster-associated only.
     resources = [
-      "arn:aws:s3:::/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings/*",
-    ]
-  }
-  statement {
-    sid    = "BucketsActions"
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      "*",
+      "arn:aws:s3:::${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings/*",
     ]
   }
   statement {
