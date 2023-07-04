@@ -92,11 +92,13 @@ module "eks-vpc" {
   public_subnet_tags = merge({
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
     "kubernetes.io/role/elb"                     = "1"
+    "SubnetType"                                 = "public"
   }, local.base_tags)
 
   private_subnet_tags = merge({
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
     "kubernetes.io/role/internal-elb"            = "1"
+    "SubnetType"                                 = "private"
   }, local.base_tags)
 }
 
