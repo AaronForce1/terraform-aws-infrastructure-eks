@@ -106,7 +106,7 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
     ]
     ## TODO: Restrict resources to cluster-associated only.
     resources = [
-      "arn:aws:s3:::/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings",
+      "arn:aws:s3:::${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings",
     ]
   }
   statement {
@@ -121,7 +121,18 @@ data "aws_iam_policy_document" "cluster_s3_recording" {
     ]
     ## TODO: Restrict resources to cluster-associated only.
     resources = [
-      "arn:aws:s3:::/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings/*",
+      "arn:aws:s3:::${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-session-recordings/*",
+    ]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Encrypt",
+      "kms:Decrypt"
+    ]
+    resources = [
+      var.eks_infrastructure_kms_arn
     ]
   }
 }
@@ -202,7 +213,8 @@ data "aws_iam_policy_document" "rds_discovery" {
     effect    = "Allow"
     actions   = [
       "rds:DescribeDBInstances",
-      "rds:ModifyDBInstance"
+      "rds:ModifyDBInstance",
+      "rds:DescribeDBClusters"
     ]
     resources = [
       "*"
@@ -240,6 +252,51 @@ resource "aws_iam_policy" "rds_discovery" {
   tags        = var.tags
 }
 
+
+## ----------------------------------
+## IAM Policy for teleport-rds-proxy-auto-discovery
+## ----------------------------------
+data "aws_iam_policy_document" "rds_proxy_discovery" {
+  count = try(coalesce(var.aws_installations.teleport.rds_proxy_discovery, false), false) ? 1 : 0
+
+  statement {
+    sid       = "AutomatedRdsProxyDiscovery"
+    effect    = "Allow"
+    actions   = [
+      "rds:DescribeDBProxies",
+      "rds:DescribeDBProxyEndpoints",
+      "rds:DescribeDBProxyTargets",
+      "rds:ListTagsForResource"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid       = "AllowPolicyForIamUser"
+    effect    = "Allow"
+    actions   = [
+      "iam:GetRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:DeleteRolePolicy"   
+    ]
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "rds_proxy_discovery" {
+  count       = try(coalesce(var.aws_installations.teleport.rds_proxy_discovery, false), false) ? 1 : 0
+
+  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-proxy-discovery"
+  path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
+  description = "EKS Policy to discover rds proxy automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
+  policy      = data.aws_iam_policy_document.rds_proxy_discovery[0].json
+  tags        = var.tags
+}
+
 ## ----------------------------------
 ## IAM Role for teleport-kube-agent
 ## ----------------------------------
@@ -249,7 +306,7 @@ module "teleport_kube_agent_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.17"
 
-  role_name = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-role"
+  role_name = "teleport-kube-agent-role"
   role_path = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   oidc_providers = {
@@ -261,7 +318,7 @@ module "teleport_kube_agent_irsa_role" {
 }
 
 resource "aws_iam_policy_attachment" "teleport_kube_agent_cluster_discovery" {
-  count      = try(coalesce(var.aws_installations.teleport.cluste_discovery, false), false) ? 1 : 0
+  count      = try(coalesce(var.aws_installations.teleport.cluster_discovery, false), false) ? 1 : 0
   name       = "cluster_discovery"
   roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.cluster_discovery[0].arn
@@ -272,4 +329,11 @@ resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
   name       = "rds_discovery"
   roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.rds_discovery[0].arn
+}
+
+resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_proxy_discovery" {
+  count      = try(coalesce(var.aws_installations.teleport.rds_proxy_discovery, false), false) ? 1 : 0
+  name       = "rds_proxy_discovery"
+  roles      = ["${module.teleport_kube_agent_irsa_role[0].iam_role_name}"]
+  policy_arn = aws_iam_policy.rds_proxy_discovery[0].arn
 } 
