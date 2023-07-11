@@ -1,0 +1,3 @@
+variable "lacework" {
+  type = any
+}
