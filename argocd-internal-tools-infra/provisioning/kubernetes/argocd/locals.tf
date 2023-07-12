@@ -22,8 +22,9 @@ locals {
 
   ## ARGOCD: LOCAL VARS FOR TERRAFORM EXPOSED TO ARGO BY DEFAULT
   argocd_applicationSet_clusterVars = {
-    root_domain_name = var.root_domain_name,
-    hosted_zone_id   = var.hosted_zone_id
-    kms_key_id       = var.kms_key_id
+    root_domain_name     = var.root_domain_name,
+    hosted_zone_id       = var.hosted_zone_id
+    kms_key_id           = var.kms_key_id
+    operator_domain_name = var.operator_domain_name
   }
 }
