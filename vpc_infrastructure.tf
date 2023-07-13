@@ -108,6 +108,10 @@ module "eks-vpc" {
     "kubernetes.io/role/internal-elb"            = "1"
     "SubnetType"                                 = "private"
   }, local.base_tags)
+
+  database_subnet_tags = merge({
+    "SubnetType"                                 = "db-private"
+  }, local.base_tags)
 }
 
 module "eks-vpc-endpoints" {
