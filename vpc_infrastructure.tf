@@ -37,7 +37,7 @@ module "subnet_addrs" {
 
 module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.14"
+  version = "~> 5.0.0"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
   cidr = module.subnet_addrs.base_cidr_block
@@ -54,6 +54,14 @@ module "eks-vpc" {
     module.subnet_addrs.networks[1].cidr_block,
     module.subnet_addrs.networks[2].cidr_block,
   ]
+
+  # database network
+  database_inbound_acl_rules         = lookup(var.vpc_db_subnet_configuration, "database_inbound_acl_rules", [{ "cidr_block" : "0.0.0.0/0", "from_port" : 0, "protocol" : "-1", "rule_action" : "allow", "rule_number" : 100, "to_port" : 0 }])
+  database_outbound_acl_rules        = lookup(var.vpc_db_subnet_configuration, "database_outbound_acl_rules", [{ "cidr_block" : "0.0.0.0/0", "from_port" : 0, "protocol" : "-1", "rule_action" : "allow", "rule_number" : 100, "to_port" : 0 }])
+  create_database_subnet_group       = lookup(var.vpc_db_subnet_configuration, "create_database_subnet_group", true)
+  create_database_subnet_route_table = lookup(var.vpc_db_subnet_configuration, "create_database_subnet_route_table", true)
+  database_dedicated_network_acl     = lookup(var.vpc_db_subnet_configuration, "database_dedicated_network_acl", true)
+  database_subnets                   = var.vpc_subnet_configuration.subnet_bit_interval.database != null ? [for k, v in local.azs : cidrsubnet(var.vpc_db_subnet_configuration.database_reserved_cidr, var.vpc_subnet_configuration.subnet_bit_interval.database, k)] : []
 
   # NAT Gateway settings + EIPs
   enable_nat_gateway                = local.nat_gateway_configuration.enable_nat_gateway

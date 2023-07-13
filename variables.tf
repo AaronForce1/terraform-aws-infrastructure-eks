@@ -546,6 +546,7 @@ variable "vpc_subnet_configuration" {
     subnet_bit_interval = object({
       public  = number
       private = number
+      database = optional(number)
     })
     autogenerate = optional(bool)
   })
@@ -558,6 +559,11 @@ variable "vpc_subnet_configuration" {
     }
     autogenerate = true
   }
+}
+
+variable "vpc_db_subnet_configuration" {
+  type = any
+  default = {}
 }
 
 variable "google_clientID" {

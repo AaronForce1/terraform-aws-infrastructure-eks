@@ -3,6 +3,14 @@ locals {
 }
 
 locals {
+  name   = "ex-${basename(path.cwd)}"
+  region = var.aws_region
+
+  vpc_cidr = var.vpc_subnet_configuration.base_cidr
+  azs      = slice(data.aws_availability_zones.available_azs.names, 0, 3)
+}
+
+locals {
   name_prefix = var.cluster_name != "" ? var.cluster_name : "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   base_tags = {
     Environment                      = var.tfenv
