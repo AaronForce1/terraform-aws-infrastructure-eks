@@ -29,7 +29,8 @@ resource "kubernetes_secret" "kubernetes_secret" {
       try(each.value.labels, {})
     )
   }
-  data = each.value.secrets_store != "ssm" ? (try(yamldecode(each.value.data), { (each.value.name) = each.value.data })) : (try(jsondecode(data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value), { (each.value.name) = data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value }))type = coalesce(each.value.type, "Opaque")
+  data = each.value.secrets_store != "ssm" ? (try(yamldecode(each.value.data), { (each.value.name) = each.value.data })) : (try(jsondecode(data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value), { (each.value.name) = data.aws_ssm_parameter.kubernetes_secret["${each.value.name}-${each.value.namespace}"].value }))
+  type = coalesce(each.value.type, "Opaque")
 }
 
 ###########################################################################
