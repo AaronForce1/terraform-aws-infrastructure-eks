@@ -67,6 +67,6 @@ EOF
 ## Teleport Kubernetes Access Controls
 ## ----------------------------------
 resource "kubectl_manifest" "teleport-Kubernetes-access-controls" {
-  count = try(coalesce(var.aws_installations.teleport.kubernetes_access_controls, null), null)  != null ? length(flatten(var.aws_installations.teleport.kubernetes_access_controls.*.value_file)) : 0
+  count     = try(coalesce(var.aws_installations.teleport.kubernetes_access_controls, null), null) != null ? length(flatten(var.aws_installations.teleport.kubernetes_access_controls.*.value_file)) : 0
   yaml_body = var.aws_installations.teleport.kubernetes_access_controls[count.index].value_file
 }
