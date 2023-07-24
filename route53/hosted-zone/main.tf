@@ -13,3 +13,7 @@ output "route53_zone_zone_id" {
   description = "Zone ID of Route53 zone"
   value       = module.route53_zones.route53_zone_zone_id
 }
+
+output "route53_zone_ns" {
+  value = module.route53_zones.route53_zone_name_servers
+}
