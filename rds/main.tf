@@ -1,18 +1,6 @@
 locals {
   name = var.db_instance_name
 }
-#
-#data "aws_subnets" "db-private" {
-#  filter {
-#    name   = "tag:SubnetType"
-#    values = ["db-private"] # insert values here
-#  }
-#}
-#
-#data "aws_subnet" "db_private" {
-#  for_each = data.aws_subnets.db-private.ids
-#  id = each.value
-#}
 
 data "aws_vpc" "selected" {
   id = var.vpc_id
