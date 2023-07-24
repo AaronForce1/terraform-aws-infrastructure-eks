@@ -1,5 +1,5 @@
 locals {
-  name =  var.db_instance_name
+  name = var.db_instance_name
 }
 #
 #data "aws_subnets" "db-private" {
@@ -36,7 +36,7 @@ module "security_group" {
       description = "PostgreSQL access from within VPC"
       cidr_blocks = data.aws_vpc.selected.cidr_block
     }
-    ]
+  ]
 }
 
 
@@ -44,23 +44,23 @@ module "rds" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 6.1"
 
-  identifier              = var.db_instance_name
-  instance_class          = var.db_instance_type
-  engine                  = var.db_engine
-  major_engine_version    = var.db_major_engine_version
-  engine_version          = "${var.db_major_engine_version}.${var.db_minor_engine_version}"
-  family                  = var.db_parameter_group_family
-  allocated_storage       = var.allocated_storage
-  max_allocated_storage   = var.max_allocated_storage
-  port                    = var.db_port
-  db_name                 = var.db_name
-  username                = var.master_username
-  vpc_security_group_ids  = [module.security_group.security_group_id]
-  multi_az                = var.multi_az
-  maintenance_window      = var.maintenance_window
-  deletion_protection     = var.deletion_protection
-  backup_window           = var.backup_window
-  backup_retention_period = var.backup_retention_period#
+  identifier                            = var.db_instance_name
+  instance_class                        = var.db_instance_type
+  engine                                = var.db_engine
+  major_engine_version                  = var.db_major_engine_version
+  engine_version                        = "${var.db_major_engine_version}.${var.db_minor_engine_version}"
+  family                                = var.db_parameter_group_family
+  allocated_storage                     = var.allocated_storage
+  max_allocated_storage                 = var.max_allocated_storage
+  port                                  = var.db_port
+  db_name                               = var.db_name
+  username                              = var.master_username
+  vpc_security_group_ids                = [module.security_group.security_group_id]
+  multi_az                              = var.multi_az
+  maintenance_window                    = var.maintenance_window
+  deletion_protection                   = var.deletion_protection
+  backup_window                         = var.backup_window
+  backup_retention_period               = var.backup_retention_period #
   create_db_parameter_group             = false
   parameter_group_name                  = module.rds_db_parameter_group_db.db_parameter_group_id
   create_db_option_group                = var.create_db_option_group

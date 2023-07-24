@@ -181,10 +181,10 @@ data "aws_iam_openid_connect_provider" "openid" {
   arn = var.oidc_provider_arn
 }
 resource "aws_iam_openid_connect_provider" "this" {
-  provider = aws.destination-aws-provider
-  count = var.slave_assume_operator_roles != [] ? 1 : 0
+  provider        = aws.destination-aws-provider
+  count           = var.slave_assume_operator_roles != [] ? 1 : 0
   url             = var.oidc_url
   client_id_list  = data.aws_iam_openid_connect_provider.openid.client_id_list
   thumbprint_list = data.aws_iam_openid_connect_provider.openid.thumbprint_list
-  tags = var.tags
+  tags            = var.tags
 }
