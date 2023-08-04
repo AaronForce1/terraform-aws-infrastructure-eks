@@ -58,6 +58,7 @@ dist
 .terraform/
 .infracost/
 terraform.tfstate.d/
+.terraform.lock.hcl
 
 ### --
 ### Dev Dependencies

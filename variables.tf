@@ -280,19 +280,6 @@ variable "aws_installations" {
       enabled                    = optional(bool)
       namespace_service_accounts = optional(list(string))
     }))
-    teleport = optional(object({
-      cluster           = optional(bool)
-      kube_agent        = optional(bool)
-      cluster_discovery = optional(bool)
-      rds_discovery     = optional(bool)
-    }))
-    teleport_rds_iam = optional(object({
-      enabled                    = optional(bool)
-      namespace_service_accounts = optional(list(string))
-    }))
-    teleport_kubernetes_access_controls = optional(list(object({
-      value_file = optional(string)
-    })))
   })
   default = {
     cluster_autoscaler   = true
@@ -313,9 +300,6 @@ variable "aws_installations" {
     vault_aws_kms = {
       enabled = false
     }
-    teleport_rds_iam = {
-      enabled = false
-    }
   }
 }
 
@@ -329,7 +313,6 @@ variable "helm_installations" {
     grafana       = bool
     argocd        = bool
     twingate      = bool
-    teleport      = bool
   })
   default = {
     dashboard     = true
@@ -340,7 +323,6 @@ variable "helm_installations" {
     grafana       = true
     argocd        = false
     twingate      = false
-    teleport      = false
   }
 }
 variable "helm_configurations" {
@@ -459,13 +441,6 @@ variable "helm_configurations" {
           create = bool
         }))
       }))
-    }))
-    teleport = optional(object({
-      installations = optional(list(object({
-        chart_name    = string
-        chart_version = string
-        values_file   = string
-      })))
     }))
   })
   default = {

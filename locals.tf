@@ -48,14 +48,7 @@ locals {
         "rolearn" : x.iam_role_arn
         "username" : "system:node:{{EC2PrivateDNSName}}"
       }
-    ],
-    var.helm_installations.teleport && try(var.aws_installations.teleport.cluster_discovery, false) ? [
-      {
-        "groups" : ["teleport"]
-        "rolearn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-role"
-        "username" : "teleport"
-      }
-    ] : []
+    ]
   )
 
   base_cidr = var.vpc_subnet_configuration.autogenerate ? format(var.vpc_subnet_configuration.base_cidr, random_integer.cidr_vpc[0].result) : var.vpc_subnet_configuration.base_cidr

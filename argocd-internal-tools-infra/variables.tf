@@ -37,7 +37,6 @@ variable "helm_installations" {
     grafana       = bool
     argocd        = bool
     twingate      = bool
-    teleport      = bool
   })
   default = {
     dashboard     = true
@@ -48,7 +47,6 @@ variable "helm_installations" {
     grafana       = true
     argocd        = false
     twingate      = false
-    teleport      = false
   }
 }
 variable "helm_configurations" {
@@ -169,13 +167,6 @@ variable "helm_configurations" {
           create = bool
         }))
       }))
-    }))
-    teleport = optional(object({
-      installations = optional(list(object({
-        chart_name    = string
-        chart_version = string
-        values_file   = string
-      })))
     }))
   })
   default = {
