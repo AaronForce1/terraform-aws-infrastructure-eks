@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.23.0"
+  version = "~> 19.15.0"
 
   cluster_name    = local.name_prefix
   cluster_version = var.cluster_version
@@ -8,8 +8,7 @@ module "eks" {
   vpc_id     = module.eks-vpc.vpc_id
   subnet_ids = concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
 
-  cluster_endpoint_private_access = true
-  # cluster_endpoint_private_access_cidrs = module.eks-vpc.private_subnets_cidr_blocks
+  cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
@@ -27,11 +26,11 @@ module "eks" {
   # create_cni_ipv6_iam_policy = true
 
   cluster_addons = var.cluster_addons
-
-  cluster_encryption_config = [{
-    provider_key_arn = aws_kms_key.eks.arn
+  create_kms_key = false
+  cluster_encryption_config = {
     resources        = ["secrets"]
-  }]
+    provider_key_arn = aws_kms_key.eks.arn
+  }
 
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
@@ -49,25 +48,22 @@ module "eks" {
 
   eks_managed_node_groups = length(var.eks_managed_node_groups) > 0 ? {} : local.default_node_group
 
-  cluster_enabled_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+  cluster_enabled_log_types = [
+    "api", "authenticator", "audit", "scheduler", "controllerManager"
+  ]
 
   enable_irsa = true
 
   create_aws_auth_configmap = false
   manage_aws_auth_configmap = false
 
-  # aws_auth_roles    = local.default_aws_auth_roles
-  # aws_auth_users    = var.map_users
-  # aws_auth_accounts = var.map_accounts
-
   cluster_tags = local.base_tags
   tags = {
-    Environment                  = var.tfenv
-    Terraform                    = "true"
-    Namespace                    = var.app_namespace
-    Billingcustomer              = var.billingcustomer
-    Product                      = var.app_name
-    infrastructure-eks-terraform = local.module_version
+    Environment     = var.tfenv
+    Terraform       = "true"
+    Namespace       = var.app_namespace
+    Billingcustomer = var.billingcustomer
+    Product         = var.app_name
   }
 }
 
@@ -151,10 +147,10 @@ resource "aws_kms_replica_key" "eks" {
 
 # tflint-ignore: terraform_unused_declarations
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 # tflint-ignore: terraform_unused_declarations
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }

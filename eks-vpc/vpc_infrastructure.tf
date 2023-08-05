@@ -1,6 +1,7 @@
 data "aws_availability_zones" "available_azs" {
   state = "available"
 }
+data "aws_availability_zones" "available" {}
 
 module "subnet_addrs" {
   source  = "hashicorp/subnets/cidr"
@@ -32,17 +33,28 @@ module "subnet_addrs" {
       name     = "private-3"
       new_bits = var.vpc_subnet_configuration.subnet_bit_interval.private
     },
+    {
+      name     = "db-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.database
+    },
+    {
+      name     = "db-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.database
+    },
+    {
+      name     = "db-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.database
+    }
   ]
 }
 
 module "eks-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.14"
+  version = "~> 5.1"
 
   name = "eks-${var.app_namespace}-${var.tfenv}-cluster-vpc"
-  cidr = module.subnet_addrs.base_cidr_block
+  cidr = local.base_cidr
   azs  = data.aws_availability_zones.available_azs.names
-  # TODO: Modularise these arrays: https://gitlab.com/nicosingh/medium-deploy-eks-cluster-using-terraform/-/blob/master/network.tf
 
   private_subnets = [
     module.subnet_addrs.networks[3].cidr_block,
@@ -54,16 +66,64 @@ module "eks-vpc" {
     module.subnet_addrs.networks[1].cidr_block,
     module.subnet_addrs.networks[2].cidr_block,
   ]
+  database_subnets = [
+    module.subnet_addrs.networks[6].cidr_block,
+    module.subnet_addrs.networks[7].cidr_block,
+    module.subnet_addrs.networks[8].cidr_block,
+  ]
 
+  customer_gateways  = var.customer_gateways
+  enable_vpn_gateway = var.customer_gateways != {} ? true : false
   # NAT Gateway settings + EIPs
-  enable_nat_gateway                = local.nat_gateway_configuration.enable_nat_gateway
-  enable_dns_hostnames              = local.nat_gateway_configuration.enable_dns_hostnames
-  single_nat_gateway                = local.nat_gateway_configuration.single_nat_gateway
-  one_nat_gateway_per_az            = local.nat_gateway_configuration.one_nat_gateway_per_az
-  reuse_nat_ips                     = local.nat_gateway_configuration.reuse_nat_ips
-  external_nat_ip_ids               = local.nat_gateway_configuration.external_nat_ip_ids
-  enable_vpn_gateway                = local.nat_gateway_configuration.enable_vpn_gateway
-  propagate_public_route_tables_vgw = local.nat_gateway_configuration.propagate_public_route_tables_vgw
+  enable_nat_gateway                 = local.nat_gateway_configuration.enable_nat_gateway
+  enable_dns_hostnames               = local.nat_gateway_configuration.enable_dns_hostnames
+  single_nat_gateway                 = local.nat_gateway_configuration.single_nat_gateway
+  one_nat_gateway_per_az             = local.nat_gateway_configuration.one_nat_gateway_per_az
+  reuse_nat_ips                      = local.nat_gateway_configuration.reuse_nat_ips
+  external_nat_ip_ids                = local.nat_gateway_configuration.external_nat_ip_ids
+  propagate_public_route_tables_vgw  = local.nat_gateway_configuration.propagate_public_route_tables_vgw
+  propagate_private_route_tables_vgw = local.nat_gateway_configuration.propagate_private_route_tables_vgw
+  manage_default_network_acl         = false
+
+  public_dedicated_network_acl = true
+  public_inbound_acl_rules     = var.public_inbound_acl_rules
+  public_outbound_acl_rules = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+
+  private_dedicated_network_acl = true
+  private_inbound_acl_rules     = var.private_inbound_acl_rules
+  private_outbound_acl_rules = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    }
+  ]
+
+  database_dedicated_network_acl = true
+  database_inbound_acl_rules     = var.database_inbound_acl_rules
+  database_outbound_acl_rules = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = local.base_cidr
+    }
+  ]
+
 
   # Manage Default VPC
   manage_default_vpc = false
@@ -92,17 +152,23 @@ module "eks-vpc" {
   public_subnet_tags = merge({
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
     "kubernetes.io/role/elb"                     = "1"
+    "SubnetType"                                 = "public"
   }, local.base_tags)
 
   private_subnet_tags = merge({
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
     "kubernetes.io/role/internal-elb"            = "1"
+    "SubnetType"                                 = "private"
+  }, local.base_tags)
+
+  database_subnet_tags = merge({
+    "SubnetType" = "db-private"
   }, local.base_tags)
 }
 
 module "eks-vpc-endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "~> 3.14"
+  version = "~> 5.1"
 
   vpc_id = module.eks-vpc.vpc_id
   security_group_ids = [

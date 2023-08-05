@@ -2,9 +2,6 @@
 ## MODULE: EKS
 ## -----------
 
-// output "kubecfg" {
-//   value = module.eks.kubeconfig
-// }
 output "kubernetes-cluster-certificate-authority-data" {
   value = module.eks.cluster_certificate_authority_data
 }
@@ -55,17 +52,25 @@ output "public_subnets_cidr_blocks" {
   }
 }
 
+output "db_subnets_cidr_blocks" {
+  value = {
+    ipv4 = module.eks-vpc.database_subnets_cidr_blocks
+    ipv6 = module.eks-vpc.database_subnets_ipv6_cidr_blocks
+  }
+}
+
 ## -----------
 ## MODULE: subnet_addrs
 ## -----------
 
 output "base_cidr_block" {
-  value = module.subnet_addrs.base_cidr_block
+  value = module.eks-vpc.vpc_cidr_block
 }
 
 output "eks_managed_node_groups" {
   value = module.eks.eks_managed_node_groups
 }
+
 
 ###
 ### Check you are using proper region

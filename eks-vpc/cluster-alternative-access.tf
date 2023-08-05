@@ -3,7 +3,7 @@ resource "kubectl_manifest" "configmaps_admin_service_account" {
     apiVersion = "v1"
     kind       = "ServiceAccount"
     metadata = {
-      name = "configmaps-admin"
+      name       = "configmaps-admin"
       finalizers = ["kubernetes"]
     }
     secrets = [
@@ -19,7 +19,7 @@ resource "kubectl_manifest" "configmaps_admin_cluster_role" {
     apiVersion = "rbac.authorization.k8s.io/v1"
     kind       = "ClusterRole"
     metadata = {
-      name = "configmaps-admin"
+      name       = "configmaps-admin"
       finalizers = ["kubernetes"]
     }
     rules = [
@@ -37,7 +37,7 @@ resource "kubectl_manifest" "configmaps_admin_cluster_role_binding" {
     apiVersion = "rbac.authorization.k8s.io/v1"
     kind       = "ClusterRoleBinding"
     metadata = {
-      name = "configmaps-admin"
+      name       = "configmaps-admin"
       finalizers = ["kubernetes"]
     }
     subjects = [
@@ -61,7 +61,7 @@ resource "kubectl_manifest" "configmaps_admin_secret" {
     apiVersion = "v1"
     kind       = "Secret"
     metadata = {
-      name = "configmaps-admin-service-account-token"
+      name       = "configmaps-admin-service-account-token"
       finalizers = ["kubernetes"]
       annotations = {
         "kubernetes.io/service-account.name" = "configmaps-admin"
@@ -80,9 +80,9 @@ data "kubernetes_secret" "configmaps_admin_secret" {
 }
 
 resource "aws_ssm_parameter" "configmaps_admin_service_account_token" {
-  depends_on =[data.kubernetes_secret.configmaps_admin_secret]
-  name  = "/${var.app_namespace}/${var.tfenv}/cluster-access-bearer-token"
-  type  = "String"
-  value = "${data.kubernetes_secret.configmaps_admin_secret.data.token}"
+  depends_on  = [data.kubernetes_secret.configmaps_admin_secret]
+  name        = "/${var.app_namespace}/${var.tfenv}/cluster-access-bearer-token"
+  type        = "String"
+  value       = data.kubernetes_secret.configmaps_admin_secret.data.token
   description = "Decrypted token for accessing cluster by service account"
 }
