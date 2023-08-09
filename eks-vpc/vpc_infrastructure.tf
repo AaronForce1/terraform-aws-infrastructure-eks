@@ -44,7 +44,20 @@ module "subnet_addrs" {
     {
       name     = "db-3"
       new_bits = var.vpc_subnet_configuration.subnet_bit_interval.database
-    }
+    },
+    {
+      name     = "intra-1"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.intra
+    },
+    {
+      name     = "intra-2"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.intra
+    },
+    {
+      name     = "intra-3"
+      new_bits = var.vpc_subnet_configuration.subnet_bit_interval.intra
+    },
+
   ]
 }
 
@@ -71,6 +84,12 @@ module "eks-vpc" {
     module.subnet_addrs.networks[7].cidr_block,
     module.subnet_addrs.networks[8].cidr_block,
   ]
+  intra_subnets = [
+    module.subnet_addrs.networks[9].cidr_block,
+    module.subnet_addrs.networks[10].cidr_block,
+    module.subnet_addrs.networks[11].cidr_block,
+  ]
+  intra_dedicated_network_acl = true
 
   customer_gateways  = var.customer_gateways
   enable_vpn_gateway = var.customer_gateways != {} ? true : false

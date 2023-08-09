@@ -6,7 +6,7 @@ module "eks" {
   cluster_version = var.cluster_version
 
   vpc_id     = module.eks-vpc.vpc_id
-  subnet_ids = concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
+  subnet_ids = var.eks_private_subnets_only ? module.eks-vpc.private_subnets : concat(module.eks-vpc.public_subnets, module.eks-vpc.private_subnets)
 
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = length(var.cluster_endpoint_public_access_cidrs) > 0 ? true : false

@@ -299,6 +299,7 @@ variable "vpc_subnet_configuration" {
       public   = number
       private  = number
       database = number
+      intra    = number
     })
     autogenerate = optional(bool)
   })
@@ -310,6 +311,7 @@ variable "vpc_subnet_configuration" {
       public   = 2
       private  = 6
       database = 8
+      intra    = 10
     }
     autogenerate = true
   }
@@ -423,4 +425,8 @@ variable "database_inbound_acl_rules" {
       "rule_action" : "allow", "rule_number" : 100, "to_port" : 0
     }
   ]
+}
+
+variable "eks_private_subnets_only" {
+  default = false
 }
