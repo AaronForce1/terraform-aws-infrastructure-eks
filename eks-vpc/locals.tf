@@ -38,9 +38,9 @@ locals {
     [
       for x in module.eks_managed_node_group :
       {
-        groups : ["system:bootstrappers", "system:nodes"]
-        rolearn : x.iam_role_arn
-        username : "system:node:{{EC2PrivateDNSName}}"
+        "groups" : ["system:bootstrappers", "system:nodes"]
+        "rolearn" : x.iam_role_arn
+        "username" : "system:node:{{EC2PrivateDNSName}}"
       }
     ]
   )
@@ -87,9 +87,7 @@ locals {
   }
 
   cluster_domains = concat(
-    try(var.cluster_root_domain.create, false) ? [] : [
-      var.cluster_root_domain.name
-    ],
+    try(var.cluster_root_domain.create, false) ? [] : [var.cluster_root_domain.name],
     coalesce(var.cluster_root_domain.additional_domains, [])
   )
 }
