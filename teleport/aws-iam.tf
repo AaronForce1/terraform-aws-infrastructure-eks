@@ -26,8 +26,8 @@ data "aws_iam_policy_document" "cluster_state_storage" {
       "dynamodb:UpdateContinuousBackups"
     ]
     resources = [
-      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-storage",
-      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-storage/stream/*"
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-storage",
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-storage/stream/*"
     ]
   }
 }
@@ -67,8 +67,8 @@ data "aws_iam_policy_document" "cluster_events_storage" {
       "dynamodb:UpdateContinuousBackups"
     ]
     resources = [
-      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-audit",
-      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-audit/index/*"
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-audit",
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-cluster-audit/index/*"
     ]
   }
 }
