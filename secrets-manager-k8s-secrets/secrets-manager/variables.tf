@@ -1,6 +1,6 @@
 variable "secrets" {
   description = "List of maps, each containing 'name', 'namespace', and 'values'"
-  type = any
+  type        = any
 }
 
 variable "secretsmanager_name" {

@@ -3,6 +3,9 @@ locals {
   vpc_attachments_with_routes = chunklist(flatten([
     for k, v in var.vpc_attachments : setproduct([{ key = k }], v.tgw_routes) if can(v.tgw_routes)
   ]), 2)
+  vpn_attachments_with_routes = chunklist(flatten([
+    for k, v in var.vpc_attachments : setproduct([{ key = k }], v.tgw_routes) if can(v.tgw_routes)
+  ]), 2)
 
   tgw_default_route_table_tags_merged = merge(
     var.tags,

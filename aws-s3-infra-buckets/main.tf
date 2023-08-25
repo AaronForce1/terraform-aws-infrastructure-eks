@@ -15,7 +15,7 @@ module "aws-support" {
   eks_slave                          = var.eks_slave
   irsa_role_arn                      = var.irsa_role_arn
   providers = {
-    aws.destination-aws-provider     = aws.destination-aws-provider
-    aws                              = aws
+    aws.destination-aws-provider = aws.destination-aws-provider
+    aws                          = aws
   }
 }

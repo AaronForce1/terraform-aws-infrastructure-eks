@@ -27,7 +27,7 @@ EOT
     content {
       name  = set.key
       value = set.value
-      type = "auto"
+      type  = "auto"
     }
   }
 

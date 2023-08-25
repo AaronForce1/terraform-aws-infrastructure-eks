@@ -4,6 +4,6 @@ resource "aws_secretsmanager_secret_version" "secrets_version" {
 }
 
 resource "aws_secretsmanager_secret" "secrets" {
-  name = var.secretsmanager_name
+  name       = var.secretsmanager_name
   kms_key_id = var.kms_key_arn
 }

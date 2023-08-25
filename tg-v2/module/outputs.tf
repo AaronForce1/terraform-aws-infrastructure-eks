@@ -103,3 +103,7 @@ output "tgw_route_table_ids" {
   value = [for k, v in aws_ec2_transit_gateway_route_table.this : v.id]
 }
 
+output "cgw" {
+  value = length(module.customer-gateway) > 0 ? module.customer-gateway[0].ids : null
+}
+

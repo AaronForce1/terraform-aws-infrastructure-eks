@@ -1,6 +1,6 @@
 module "argocd" {
-  source     = "./provisioning/kubernetes/argocd"
-  count      = var.helm_installations.argocd ? 1 : 0
+  source = "./provisioning/kubernetes/argocd"
+  count  = var.helm_installations.argocd ? 1 : 0
 
   chart_version                     = var.helm_configurations.argocd.chart_version
   root_domain_name                  = var.cluster_root_domain.name

@@ -25,4 +25,7 @@ output "attachment_id" {
 output "route_table_ids" {
   value = module.tgw.tgw_route_table_ids
 }
+output "cgw_ids" {
+  value = local.create_tgw ? module.tgw.cgw : null
+}
 

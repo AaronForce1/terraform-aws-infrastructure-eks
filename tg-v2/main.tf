@@ -5,8 +5,8 @@ variable "region" {
 
 locals {
   peer_profile                          = var.peer_profile
-  create_tgw                            = lookup(var.tgw, "create_tgw", true)
-  share_tgw                             = lookup(var.tgw, "share_tgw", true)
+  create_tgw                            = lookup(var.tgw, "create_tgw", false)
+  share_tgw                             = lookup(var.tgw, "share_tgw", false)
   name                                  = lookup(var.tgw, "name", "ex-tgw-${replace(basename(path.cwd), "_", "-")}")
   description                           = lookup(var.tgw, "description", "Hextrust TGW shared with several peered AWS accounts")
   amazon_side_asn                       = 64532
@@ -22,6 +22,8 @@ locals {
     Component = "Network/Security"
   }
   transit_gateway_route_table_id = lookup(var.tgw, "transit_gateway_route_table_id", null)
+  customer_gateways              = lookup(var.tgw, "customer_gateways", {})
+  create_cgw                     = lookup(var.tgw, "create_cgw", false)
 }
 
 ################################################################################
@@ -52,4 +54,6 @@ module "tgw" {
   ram_principals                        = local.ram_principals
   transit_gateway_id                    = local.transit_gateway_id
   tags                                  = local.tags
+  create_cgw                            = local.create_cgw
+  customer_gateways                     = local.customer_gateways
 }

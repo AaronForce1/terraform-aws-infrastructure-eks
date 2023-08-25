@@ -7,8 +7,8 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 module "secrets_manager" {
-  source = "./secrets-manager"
-  secrets = var.secrets
+  source              = "./secrets-manager"
+  secrets             = var.secrets
   secretsmanager_name = var.secretsmanager_secrets_name
   kms_key_arn         = var.kms_key_arn
 }

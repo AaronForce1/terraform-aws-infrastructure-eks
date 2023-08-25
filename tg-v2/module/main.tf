@@ -87,7 +87,6 @@ resource "aws_ec2_transit_gateway_route" "this" {
 
   destination_cidr_block = local.vpc_attachments_with_routes[count.index][1].destination_cidr_block
   blackhole              = try(local.vpc_attachments_with_routes[count.index][1].blackhole, null)
-
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.this[local.vpc_attachments_with_routes[count.index][0].key].id
   transit_gateway_attachment_id  = tobool(try(local.vpc_attachments_with_routes[count.index][1].blackhole, false)) == false ? aws_ec2_transit_gateway_vpc_attachment.this[local.vpc_attachments_with_routes[count.index][0].key].id : null
 }
@@ -163,4 +162,17 @@ resource "aws_ram_resource_share_accepter" "this" {
   count = !var.create_tgw && var.share_tgw ? 1 : 0
 
   share_arn = var.ram_resource_share_arn
+}
+
+################################################################################
+# VPN Gateway for on premise
+################################################################################
+
+
+module "customer-gateway" {
+  source  = "terraform-aws-modules/customer-gateway/aws"
+  version = "2.0.1"
+
+  count             = var.create_cgw ? 1 : 0
+  customer_gateways = var.customer_gateways
 }

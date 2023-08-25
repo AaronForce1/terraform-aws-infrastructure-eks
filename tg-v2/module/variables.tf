@@ -171,3 +171,11 @@ variable "transit_gateway_id" {
 variable "peer_profile" {
   default = "test"
 }
+
+variable "create_cgw" {
+  type = bool
+}
+
+variable "customer_gateways" {
+  type = map(map(any))
+}

@@ -1,21 +1,21 @@
 variable "oidc_url" {
-  type = string
+  type    = string
   default = ""
 }
 variable "app_name" {
-  type = string
+  type    = string
   default = ""
 }
 variable "app_namespace" {
-  type = string
+  type    = string
   default = ""
 }
 variable "tfenv" {
-  type = string
+  type    = string
   default = ""
 }
 variable "name_prefix" {
-  type = string
+  type    = string
   default = ""
 }
 variable "eks_infrastructure_support_buckets" {
@@ -46,15 +46,15 @@ variable "eks_infrastructure_support_buckets" {
   default = []
 }
 variable "eks_managed_node_group_roles" {
-  type = any
+  type    = any
   default = [""]
 }
 variable "eks_infrastructure_kms_arn" {
-  type = string
+  type    = string
   default = ""
 }
 variable "base_tags" {
-  type = any
+  type    = any
   default = [""]
 }
 variable "thanos_slave_role" {

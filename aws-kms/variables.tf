@@ -2,6 +2,6 @@ variable "kms" {
   type = any
 }
 variable "region" {
-  type = string
+  type    = string
   default = "ap-southeast-1"
 }

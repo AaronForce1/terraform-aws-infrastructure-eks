@@ -2,7 +2,7 @@ variable "base_tags" {
   default = ""
 }
 module "karpenter" {
-  source = "terraform-aws-modules/eks/aws//modules/karpenter"
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "19.15.3"
 
   cluster_name                    = var.karpenter.cluster_name #module.eks.cluster_name
