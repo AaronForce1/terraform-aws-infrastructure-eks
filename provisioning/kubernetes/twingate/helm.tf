@@ -48,7 +48,7 @@ connector:
   network: ${var.network_name}
   url: ${var.url}
   existingSecret: "twingate-credentials-${data.twingate_connector.connector[count.index].name}"
-  dnsServer:
+  dnsServer: ${var.dns_server}
 EOT
   ]
 }

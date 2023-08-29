@@ -25,6 +25,11 @@ variable "cluster_endpoint" {
   type = string
 }
 
+variable "dns_server" {
+  type = string
+  default = "8.8.8.8"
+}
+
 variable "management_group_configurations" {
   type = list(object({
     name   = string
