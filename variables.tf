@@ -410,6 +410,7 @@ variable "helm_configurations" {
       network        = string
       logLevel       = optional(string)
       connectorCount = optional(number)
+      dnsServer      = optional(string)
       management_group_configurations = list(object({
         name   = string
         create = bool

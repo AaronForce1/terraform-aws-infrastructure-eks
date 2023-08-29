@@ -126,6 +126,7 @@ module "twingate" {
 
   name                            = "${var.app_name}-${var.app_namespace}-${var.tfenv}"
   url                             = coalesce(var.helm_configurations.twingate.url, "twingate.com")
+  dns_server                      = coalesce(var.helm_configurations.twingate.dnsServer, "8.8.8.8")
   network_name                    = coalesce(var.helm_configurations.twingate.network, "")
   management_group_configurations = try(var.helm_configurations.twingate.management_group_configurations, [])
   connector_count                 = coalesce(var.helm_configurations.twingate.connectorCount, 2)
