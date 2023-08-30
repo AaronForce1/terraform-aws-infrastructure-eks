@@ -149,3 +149,8 @@ variable "retention_period" {
 variable "master_username" {
   default = "root"
 }
+
+variable "additional_ingress_with_cidr_blocks" {
+  type    = list(any)
+  default = []
+}

@@ -16,7 +16,7 @@ module "security_group" {
   vpc_id      = var.vpc_id
 
   # ingress
-  ingress_with_cidr_blocks = [
+  ingress_with_cidr_blocks = concat([
     {
       from_port   = 5432
       to_port     = 5432
@@ -24,7 +24,7 @@ module "security_group" {
       description = "PostgreSQL access from within VPC"
       cidr_blocks = data.aws_vpc.selected.cidr_block
     }
-  ]
+  ], var.additional_ingress_with_cidr_blocks)
 }
 
 
