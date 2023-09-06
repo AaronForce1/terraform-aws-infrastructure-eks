@@ -43,3 +43,6 @@ variable "teleport_integrations" {
     agent_service_account_name = "teleport-kube-agent"
   }
 }
+variable "existing_role" {
+  default = true
+}

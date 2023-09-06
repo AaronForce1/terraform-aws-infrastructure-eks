@@ -193,7 +193,7 @@ resource "aws_iam_policy" "cluster_discovery" {
   provider = aws.destination-aws-provider
   count    = try(coalesce(var.teleport_integrations.cluster_discovery, false), false) ? 1 : 0
 
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-eks-discovery"
+  name        = var.existing_role ? "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-eks-discovery" : "${var.app_name}-${var.app_namespace}-${var.tfenv}-${lookup(var.teleport_integrations, "discovered_account", "develop")}-teleport-eksd"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   description = "EKS Policy to discover clusters automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.cluster_discovery[0].json
@@ -245,7 +245,7 @@ resource "aws_iam_policy" "rds_discovery" {
   provider = aws.destination-aws-provider
   count    = try(coalesce(var.teleport_integrations.rds_discovery, false), false) ? 1 : 0
 
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-discovery"
+  name        = var.existing_role ? "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-discovery" : "${var.app_name}-${var.app_namespace}-${var.tfenv}-${lookup(var.teleport_integrations, "discovered_account", "develop")}-teleport-rd"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   description = "EKS Policy to discover rds automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.rds_discovery[0].json
@@ -292,7 +292,7 @@ resource "aws_iam_policy" "rds_proxy_discovery" {
   provider = aws.destination-aws-provider
   count    = try(coalesce(var.teleport_integrations.rds_proxy_discovery, false), false) ? 1 : 0
 
-  name        = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-proxy-discovery"
+  name        = var.existing_role ? "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-rds-proxy-discovery" : "${var.app_name}-${var.app_namespace}-${var.tfenv}-${lookup(var.teleport_integrations, "discovered_account", "develop")}-teleport-rpd"
   path        = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
   description = "EKS Policy to discover rds proxy automatically ${var.app_name}-${var.app_namespace}-${var.tfenv}"
   policy      = data.aws_iam_policy_document.rds_proxy_discovery[0].json
@@ -310,7 +310,7 @@ module "teleport_kube_agent_trusted_role" {
   version = "5.27.0"
 
   create_role = true
-  role_name   = "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-trusted-role"
+  role_name   = var.existing_role ? "${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-trusted-role" : "${var.app_name}-${var.app_namespace}-${var.tfenv}-${lookup(var.teleport_integrations, "discovered_account", "develop")}-teleport-kube-atr"
   role_path   = "/${var.app_name}/${var.app_namespace}/${var.tfenv}/"
 
   role_sts_externalid = data.aws_caller_identity.current.account_id
@@ -324,7 +324,7 @@ module "teleport_kube_agent_trusted_role" {
 resource "aws_iam_policy_attachment" "teleport_kube_agent_cluster_discovery" {
   provider   = aws.destination-aws-provider
   count      = try(coalesce(var.teleport_integrations.cluster_discovery, false), false) ? 1 : 0
-  name       = "cluster_discovery"
+  name       = var.existing_role ? "cluster_discovery" : "cluster_discovery-${lookup(var.teleport_integrations, "discovered_account", "develop")}"
   roles      = ["${module.teleport_kube_agent_trusted_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.cluster_discovery[0].arn
 }
@@ -332,7 +332,7 @@ resource "aws_iam_policy_attachment" "teleport_kube_agent_cluster_discovery" {
 resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
   provider   = aws.destination-aws-provider
   count      = try(coalesce(var.teleport_integrations.rds_discovery, false), false) ? 1 : 0
-  name       = "rds_discovery"
+  name       = var.existing_role ? "rds_discovery" : "rds_discovery-${lookup(var.teleport_integrations, "discovered_account", "develop")}"
   roles      = ["${module.teleport_kube_agent_trusted_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.rds_discovery[0].arn
 }
@@ -340,7 +340,7 @@ resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_discovery" {
 resource "aws_iam_policy_attachment" "teleport_kube_agent_rds_proxy_discovery" {
   provider   = aws.destination-aws-provider
   count      = try(coalesce(var.teleport_integrations.rds_proxy_discovery, false), false) ? 1 : 0
-  name       = "rds_proxy_discovery"
+  name       = var.existing_role ? "rds_proxy_discovery" : "rds_proxy_discovery-${lookup(var.teleport_integrations, "discovered_account", "develop")}"
   roles      = ["${module.teleport_kube_agent_trusted_role[0].iam_role_name}"]
   policy_arn = aws_iam_policy.rds_proxy_discovery[0].arn
 }
@@ -358,7 +358,8 @@ data "aws_iam_policy_document" "teleport_kube_agent_assumerole" {
       "sts:AssumeRole"
     ]
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.destination.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-trusted-role"
+      module.teleport_kube_agent_trusted_role[0].iam_role_arn
+#      "arn:aws:iam::${data.aws_caller_identity.destination.account_id}:role/${var.app_name}/${var.app_namespace}/${var.tfenv}/${var.app_name}-${var.app_namespace}-${var.tfenv}-teleport-kube-agent-trusted-role"
     ]
   }
 }
@@ -376,7 +377,7 @@ resource "aws_iam_policy" "teleport_kube_agent_assumerole" {
 ## ----------------------------------
 ## IAM Role for teleport-kube-agent-assume-role
 ## ----------------------------------
-module "teleport_kube_agent_irsa_role" {
+  module "teleport_kube_agent_irsa_role" {
   count = try(coalesce(var.teleport_integrations.kube_agent, false), false) ? 1 : 0
 
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
