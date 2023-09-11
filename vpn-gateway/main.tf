@@ -34,9 +34,6 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "vpn" {
 }
 
 resource "aws_ec2_transit_gateway_route" "blackhole" {
-  for_each = {
-    for k, v in lookup(var.vpn_gateway, "vpn_attachments", {}) : k => v
-  }
   destination_cidr_block         = "0.0.0.0/0"
   blackhole                      = true
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.this.id
