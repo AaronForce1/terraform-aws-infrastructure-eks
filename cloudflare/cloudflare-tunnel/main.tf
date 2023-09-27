@@ -21,8 +21,8 @@ resource "cloudflare_tunnel_route" "example" {
 resource "kubernetes_secret" "cloudflare_credentials" {
 
   metadata {
-    name      = "cloudflare-tunnel-secret"
-    namespace = "cloudflare"
+    name = coalesce(var.tunnel_secret_name, "cloudflare-tunnel-secret")
+    namespace = coalesce(var.tunnel_secret_namespace, "cloudflare")
     labels = merge(
       {
         "app.kubernetes.io/part-of" = "cloudflare"

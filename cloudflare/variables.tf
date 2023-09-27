@@ -18,3 +18,13 @@ variable "vpc_network" {
 variable "eks_cluster_name" {
   type = string
 }
+
+variable "tunnel_secret_name" {
+  type    = string
+  default = ""
+}
+
+variable "tunnel_secret_namespace" {
+  type    = string
+  default = ""
+}
