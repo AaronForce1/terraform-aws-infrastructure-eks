@@ -11,12 +11,13 @@ module "kms" {
   source  = "terraform-aws-modules/kms/aws"
   version = "1.5.0"
 
-  deletion_window_in_days = lookup(var.kms, "deletion_window_in_days", 7)
-  description             = lookup(var.kms, "description", "KMS key for encrypt & decrypt")
-  enable_key_rotation     = lookup(var.kms, "enable_key_rotation", true)
-  is_enabled              = lookup(var.kms, "is_enabled", true)
-  key_usage               = lookup(var.kms, "key_usage", "ENCRYPT_DECRYPT")
-  multi_region            = lookup(var.kms, "multi_region", false)
+  deletion_window_in_days  = lookup(var.kms, "deletion_window_in_days", 7)
+  description              = lookup(var.kms, "description", "KMS key for encrypt & decrypt")
+  enable_key_rotation      = lookup(var.kms, "enable_key_rotation", true)
+  is_enabled               = lookup(var.kms, "is_enabled", true)
+  key_usage                = lookup(var.kms, "key_usage", "ENCRYPT_DECRYPT")
+  multi_region             = lookup(var.kms, "multi_region", false)
+  customer_master_key_spec = lookup(var.kms, "customer_master_key_spec", "SYMMETRIC_DEFAULT")
 
   # Policy
   enable_default_policy                  = lookup(var.kms, "enable_default_policy", true)
