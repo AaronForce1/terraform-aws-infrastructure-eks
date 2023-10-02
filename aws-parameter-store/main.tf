@@ -1,6 +1,6 @@
 module "ssm-parameter" {
-  source  = "terraform-aws-modules/ssm-parameter/aws"
-  version = "1.0.1"
+  source   = "terraform-aws-modules/ssm-parameter/aws"
+  version  = "1.0.1"
   for_each = var.parameters
 
   name            = try(each.value.name, each.key)
