@@ -9,14 +9,6 @@ module "cloudflare-tunnel" {
   tunnel_secret_namespace = var.tunnel_secret_namespace
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = var.eks_cluster_name
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = var.eks_cluster_name
-}
-
 output "token" {
   value     = module.cloudflare-tunnel.token
   sensitive = true
