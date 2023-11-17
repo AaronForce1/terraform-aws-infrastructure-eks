@@ -74,7 +74,7 @@ resource "kubernetes_secret" "regcred" {
           "username" = each.value.secrets_store != "ssm" ? each.value.docker_username : data.aws_ssm_parameter.regcred_username["${each.value.name}-${each.value.namespace}"].value
           "password" = each.value.secrets_store != "ssm" ? each.value.docker_password : data.aws_ssm_parameter.regcred_password["${each.value.name}-${each.value.namespace}"].value
           "email"    = each.value.docker_email
-          "auth"     = base64encode("${each.value.secrets_store != "ssm" ? each.value.username : data.aws_ssm_parameter.regcred_username["${each.value.name}-${each.value.namespace}"].value}:${each.value.secrets_store != "ssm" ? each.value.docker_password : data.aws_ssm_parameter.regcred_password["${each.value.name}-${each.value.namespace}"].value}")
+          "auth"     = base64encode("${each.value.secrets_store != "ssm" ? each.value.docker_username : data.aws_ssm_parameter.regcred_username["${each.value.name}-${each.value.namespace}"].value}:${each.value.secrets_store != "ssm" ? each.value.docker_password : data.aws_ssm_parameter.regcred_password["${each.value.name}-${each.value.namespace}"].value}")
         }
       }
     }))
